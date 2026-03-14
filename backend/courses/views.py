@@ -1,0 +1,176 @@
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from users.permissions import IsSuperAdmin
+from .models import Course, Module, Lesson, Announcement, Category, Review
+from .serializers import (
+    CourseSerializer, ModuleSerializer, LessonSerializer, 
+    AnnouncementSerializer, CategorySerializer, ReviewSerializer
+)
+from .recommendations import get_suggested_courses
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.select_related('instructor', 'category').prefetch_related('modules', 'modules__lessons')
+    serializer_class = CourseSerializer
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'approve', 'reject', 'instructors']:
+             # Use a combination or check for admin
+             # For now, IsAuthenticated + internal role check is often used, but let's be explicit
+             return [IsAuthenticated()]
+        return [IsAuthenticatedOrReadOnly()]
+
+    def get_queryset(self):
+        qs = self.queryset
+        search_query = self.request.query_params.get('search', None)
+        instructor_filter = self.request.query_params.get('instructor')
+        moderation_filter = self.request.query_params.get('status')
+        
+        if search_query:
+            from django.db.models import Q
+            qs = qs.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(instructor__username__icontains=search_query)
+            )
+
+        category_id = self.request.query_params.get('category')
+        if category_id:
+            qs = qs.filter(category_id=category_id)
+
+        if instructor_filter == 'me' and self.request.user.is_authenticated:
+            qs = qs.filter(instructor=self.request.user)
+        
+        if moderation_filter:
+            qs = qs.filter(moderation_status=moderation_filter)
+            
+        return qs
+
+    @action(detail=False, methods=['get'], permission_classes=[IsSuperAdmin])
+    def instructors(self, request):
+        """List all available instructors (Admins only)"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        instructors = User.objects.filter(role='instructor')
+        data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in instructors]
+        return Response(data)
+
+    def perform_create(self, serializer):
+        instructor_id = self.request.data.get('instructor')
+        if instructor_id and self.request.user.role == 'admin':
+            # Admin can assign any instructor
+            serializer.save(instructor_id=instructor_id)
+        else:
+            # Teachers assign themselves
+            serializer.save(instructor=self.request.user)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def approve(self, request, pk=None):
+        course = self.get_object()
+        course.moderation_status = 'approved'
+        course.save()
+        return Response({'status': 'Course approved'})
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def reject(self, request, pk=None):
+        course = self.get_object()
+        course.moderation_status = 'rejected'
+        course.save()
+        return Response({'status': 'Course rejected'})
+
+    @action(detail=True, methods=['get'])
+    def preview(self, request, pk=None):
+        """Detailed preview for moderation"""
+        course = self.get_object()
+        serializer = self.get_serializer(course)
+        # We can add more detailed info here if needed
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def recommendations(self, request):
+        """Get personalized course suggestions for the authenticated student"""
+        from django.core.cache import cache
+        cache_key = f"user_{request.user.id}_recommendations"
+        data = cache.get(cache_key)
+        
+        if not data:
+            suggestions = get_suggested_courses(request.user)
+            serializer = self.get_serializer(suggestions, many=True)
+            data = serializer.data
+            cache.set(cache_key, data, 60 * 15)  # Cache for 15 minutes
+            
+        return Response(data)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def enroll(self, request, pk=None):
+        """Enroll the current student in the course."""
+        course = self.get_object()
+        from .models import CourseEnrollment
+        from users.communication import send_enrollment_email
+        
+        enrollment, created = CourseEnrollment.objects.get_or_create(
+            student=request.user,
+            course=course
+        )
+        
+        if created:
+            # Trigger enrollment email
+            if request.user.email:
+                send_enrollment_email(request.user, course)
+            return Response({'status': 'Successfully enrolled'}, status=status.HTTP_201_CREATED)
+        
+        return Response({'status': 'Already enrolled'}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def my_courses(self, request):
+        """Get courses the student is enrolled in."""
+        enrollments = request.user.enrollments.all()
+        courses = [e.course for e in enrollments]
+        serializer = self.get_serializer(courses, many=True)
+        return Response(serializer.data)
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsSuperAdmin()]
+        return [IsAuthenticatedOrReadOnly()]
+
+class ModuleViewSet(viewsets.ModelViewSet):
+    queryset = Module.objects.all()
+    serializer_class = ModuleSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class AnnouncementViewSet(viewsets.ModelViewSet):
+    queryset = Announcement.objects.select_related('teacher', 'course')
+    serializer_class = AnnouncementSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(teacher=self.request.user)
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.select_related('course', 'student')
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Ensure student only reviews once per course
+        course_id = self.request.data.get('course')
+        if Review.objects.filter(course_id=course_id, student=self.request.user).exists():
+            raise serializers.ValidationError({"detail": "You have already reviewed this course."})
+        serializer.save(student=self.request.user)
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        course_id = self.request.query_params.get('course')
+        if course_id:
+            qs = qs.filter(course_id=course_id)
+        return qs
