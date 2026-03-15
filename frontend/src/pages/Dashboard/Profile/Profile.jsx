@@ -67,7 +67,7 @@ const Profile = () => {
                     <GlassCard heavy style={{ padding: '32px', textAlign: 'center', position: 'relative' }}>
                         <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 24px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid rgba(255,255,255,0.1)', overflow: 'hidden' }}>
                             {user.profile_picture ? (
-                                <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:8000${user.profile_picture}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${import.meta.env.VITE_API_BASE_URL}${user.profile_picture}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
                                 <span style={{ fontSize: '3rem', fontWeight: 700, color: 'white' }}>{initials}</span>
                             )}

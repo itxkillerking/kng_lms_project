@@ -123,7 +123,7 @@ const Dashboard = () => {
                             flexShrink: 0 
                         }}>
                             {user?.profile_picture ? (
-                                <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:8000${user.profile_picture}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${import.meta.env.VITE_API_BASE_URL}${user.profile_picture}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
                                 <UserIcon size={isExtraSmall ? 28 : 32} color="white" />
                             )}
