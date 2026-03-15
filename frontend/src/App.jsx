@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -49,33 +50,33 @@ function App() {
           <ScrollToTop />
           <EmailFloat />
           <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/catalog" element={<CourseCatalog />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/course/:id" element={<CourseDetailPage />} />
-            <Route path="/instructor/:id" element={<InstructorProfilePage />} />
-            
-            <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/learn/:id" element={<CourseView />} />
-              <Route path="/gradebook" element={<Gradebook />} />
-              <Route path="/certificates" element={<Certificates />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route element={<AdminRoute />}>
-                <Route path="/admin/*" element={<AdminDashboard />} />
-              </Route>
-              <Route path="/teacher/*" element={<TeacherDashboard />} />
-            </Route>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/catalog" element={<CourseCatalog />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/course/:id" element={<CourseDetailPage />} />
+              <Route path="/instructor/:id" element={<InstructorProfilePage />} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
-      </Router>
-    </AuthProvider>
+              <Route element={<PrivateRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/learn/:id" element={<CourseView />} />
+                <Route path="/gradebook" element={<Gradebook />} />
+                <Route path="/certificates" element={<Certificates />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin/*" element={<AdminDashboard />} />
+                </Route>
+                <Route path="/teacher/*" element={<TeacherDashboard />} />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
