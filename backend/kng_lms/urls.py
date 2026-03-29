@@ -19,6 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# TEMPORARY: Create admin user if not exists
+try:
+    from users.models import User
+    if not User.objects.filter(username='Aqibmunir').exists():
+        User.objects.create_superuser('Aqibmunir', 'admin@example.com', 'Aqib134', role='admin')
+        print("TEMPORARY: Admin user 'Aqibmunir' created via startup script.")
+except Exception as e:
+    print(f"TEMPORARY: Error creating admin user: {e}")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
@@ -30,5 +39,9 @@ urlpatterns = [
     path('api/core/', include('core_settings.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from django.urls import re_path
+from django.views.static import serve
+
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
