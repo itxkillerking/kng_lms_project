@@ -90,6 +90,14 @@ class CustomTokenObtainPairView(BaseTokenObtainPairView):
         if response.status_code == 200:
             try:
                 user = User.objects.get(username=request.data.get('username'))
+                
+                # Check for Suspended Account
+                if user.account_status == 'suspended':
+                    return Response(
+                        {'detail': 'Your account is suspended cannot login', 'code': 'account_suspended'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+                
                 UserActivityLog.objects.create(user=user, action='login')
             except User.DoesNotExist:
                 pass
