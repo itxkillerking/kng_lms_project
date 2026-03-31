@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GlassCard } from '../../../components/common/GlassCard';
 import { GlassButton } from '../../../components/common/GlassButton';
@@ -6,16 +6,27 @@ import { GlassInput } from '../../../components/common/GlassInput';
 import { ChevronLeft, Save, Sparkles, Image as ImageIcon, Briefcase, FileText, DollarSign, UploadCloud } from 'lucide-react';
 import api from '../../../services/api';
 
+import { useQueryClient } from '@tanstack/react-query';
+
 export const CourseCreator = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
     
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         price: '0',
+        category: '',
     });
     const [thumbnailFile, setThumbnailFile] = useState(null);
+
+    useEffect(() => {
+        api.get('categories/').then(res => {
+            setCategories(res.data.results || res.data);
+        }).catch(err => console.error("Failed to fetch categories", err));
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,6 +41,9 @@ export const CourseCreator = () => {
         data.append('title', formData.title);
         data.append('description', formData.description);
         data.append('price', parseFloat(formData.price));
+        if (formData.category) {
+            data.append('category', formData.category);
+        }
         if (thumbnailFile) {
             data.append('thumbnail', thumbnailFile);
         }
@@ -39,10 +53,23 @@ export const CourseCreator = () => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             console.log("Course created:", response.data);
+            queryClient.invalidateQueries(['instructor-courses']);
             navigate('/teacher/courses');
         } catch (error) {
             console.error("Error creating course:", error);
-            alert("Failed to create course. Please check your inputs.");
+            const errorData = error.response?.data;
+            let errorMessage = "Failed to create course. Please check your inputs.";
+            
+            if (errorData) {
+                if (typeof errorData === 'object') {
+                    errorMessage = Object.entries(errorData)
+                        .map(([key, val]) => `${key}: ${val}`)
+                        .join('\n');
+                } else {
+                    errorMessage = errorData;
+                }
+            }
+            alert(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -76,12 +103,29 @@ export const CourseCreator = () => {
                                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Course Title</label>
                                 <GlassInput 
                                     name="title"
-                                    placeholder="e.g. Master Class in UI/UX Design"
+                                    placeholder="e.g. Master Class in LLM Development"
                                     value={formData.title}
                                     onChange={handleChange}
                                     required
                                     style={{ color: 'white' }}
                                 />
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Category</label>
+                                <select 
+                                    name="category"
+                                    className="glass-select glass-input"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    required
+                                    style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                >
+                                    <option value="" disabled style={{ background: '#1a1a1a' }}>Select Category...</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id} style={{ background: '#1a1a1a' }}>{cat.name}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div>

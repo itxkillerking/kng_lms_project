@@ -12,6 +12,17 @@ const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
+    // Redirect instructors and admins to their respective dashboards
+    useEffect(() => {
+        if (user) {
+            if (user.role === 'instructor') {
+                navigate('/teacher', { replace: true });
+            } else if (user.role === 'admin') {
+                navigate('/admin', { replace: true });
+            }
+        }
+    }, [user, navigate]);
+
     // Robust Window Width Handling
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     

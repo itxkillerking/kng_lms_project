@@ -8,25 +8,19 @@ import { useQuery } from '@tanstack/react-query';
 
 export const CourseManager = () => {
     const [page, setPage] = useState(1);
-    const [allCourses, setAllCourses] = useState([]);
     
     const { isLoading, isError, data, isFetching } = useQuery({
         queryKey: ['instructor-courses', page],
         queryFn: async () => {
             const response = await api.get(`courses/?instructor=me&page=${page}`);
             return response.data;
-        }
+        },
+        keepPreviousData: true
     });
 
-    React.useEffect(() => {
-        if (data) {
-            const results = Array.isArray(data) ? data : data.results || [];
-            setAllCourses(prev => {
-                const existingIds = new Set(prev.map(c => c.id));
-                const uniqueNew = results.filter(c => !existingIds.has(c.id));
-                return [...prev, ...uniqueNew];
-            });
-        }
+    const results = useMemo(() => {
+        if (!data) return [];
+        return Array.isArray(data) ? data : data.results || [];
     }, [data]);
 
     const hasMore = data && !Array.isArray(data) && data.next !== null;
@@ -55,8 +49,8 @@ export const CourseManager = () => {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {allCourses.length > 0 ? (
-                    allCourses.map(course => (
+                {results.length > 0 ? (
+                    results.map(course => (
                         <GlassCard key={course.id} style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ height: '160px', background: course.thumbnail ? `url(${course.thumbnail}) center/cover` : 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', position: 'relative' }}>
                                 <div style={{ position: 'absolute', top: '12px', right: '12px' }}>

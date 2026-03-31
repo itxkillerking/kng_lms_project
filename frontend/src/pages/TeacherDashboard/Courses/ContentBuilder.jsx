@@ -93,6 +93,7 @@ export const ContentBuilder = () => {
 
     const handleLessonSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const formData = new FormData();
         formData.append('module', currentModuleId);
         formData.append('title', lessonForm.title);
@@ -209,11 +210,14 @@ export const ContentBuilder = () => {
             {/* Lesson Modal */}
             {showLessonModal && (
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-                    <GlassCard style={{ width: '100%', maxWidth: '600px', padding: '40px' }} className="animate-scale-in">
-                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>Configure your video content and metadata.</p>
+                    <GlassCard style={{ width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden' }} className="animate-scale-in">
+                        <div style={{ padding: '32px 40px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
+                            <p style={{ color: 'var(--text-secondary)' }}>Configure your video content and metadata.</p>
+                        </div>
 
-                        <form onSubmit={handleLessonSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        <div style={{ padding: '24px 40px', overflowY: 'auto', flex: 1 }}>
+                            <form id="lesson-form" onSubmit={handleLessonSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                             <div>
                                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem' }}>Lesson Title</label>
                                 <input 
@@ -301,14 +305,21 @@ export const ContentBuilder = () => {
                                     <input id="lesson-attachment" type="file" style={{ display: 'none' }} onChange={e => setLessonForm({...lessonForm, attachment_file: e.target.files[0]})} />
                                 </div>
                             </div>
-
-                            <div style={{ display: 'flex', gap: '16px', marginTop: '12px' }}>
-                                <GlassButton type="button" onClick={() => setShowLessonModal(false)} style={{ flex: 1 }}>Cancel</GlassButton>
-                                <GlassButton type="submit" className="primary" style={{ flex: 2, background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))' }}>
-                                    {editingLessonId ? 'Update Lesson' : 'Add Lesson'}
-                                </GlassButton>
-                            </div>
                         </form>
+                    </div>
+
+                        <div style={{ padding: '20px 40px 32px', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px' }}>
+                            <GlassButton type="button" onClick={() => setShowLessonModal(false)} style={{ flex: 1 }}>Cancel</GlassButton>
+                            <GlassButton 
+                                type="submit" 
+                                form="lesson-form"
+                                className="primary" 
+                                style={{ flex: 2, background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))' }}
+                                disabled={loading}
+                            >
+                                {loading ? 'Saving...' : (editingLessonId ? 'Update Lesson' : 'Add Lesson')}
+                            </GlassButton>
+                        </div>
                     </GlassCard>
                 </div>
             )}

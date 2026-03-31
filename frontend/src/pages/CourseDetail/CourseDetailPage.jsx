@@ -197,27 +197,39 @@ const CourseDetailPage = () => {
                         </section>
 
                         {/* Instructor */}
-                        <section>
+                        <section id="instructor">
                             <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '32px' }}>Your Instructor</h2>
-                            <GlassCard style={{ padding: isSmallMobile ? '24px' : '40px', borderRadius: '32px' }}>
-                                <div style={{ display: 'flex', flexDirection: isSmallMobile ? 'column' : 'row', gap: isSmallMobile ? '24px' : '32px', alignItems: isSmallMobile ? 'center' : 'start', textAlign: isSmallMobile ? 'center' : 'left' }}>
-                                    <div style={{ width: isSmallMobile ? '100px' : '120px', height: isSmallMobile ? '100px' : '120px', borderRadius: '30px', background: 'linear-gradient(135deg, #0A84FF 0%, #BF5AF2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', fontWeight: 900, flexShrink: 0, overflow: 'hidden' }}>
-                                        {course.instructor_picture ? (
-                                            <img src={course.instructor_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        ) : (
-                                            course.instructor_name?.charAt(0)
-                                        )}
+                            <GlassCard style={{ padding: isSmallMobile ? '24px' : '40px', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', flexDirection: isSmallMobile ? 'column' : 'row', gap: isSmallMobile ? '32px' : '48px', alignItems: isSmallMobile ? 'center' : 'flex-start' }}>
+                                    <div style={{ flexShrink: 0, textAlign: 'center' }}>
+                                        <div style={{ width: '120px', height: '120px', borderRadius: '32px', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                            {course.instructor_picture ? (
+                                                <img src={course.instructor_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                <UserIcon size={48} color="white" />
+                                            )}
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+                                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
+                                                <Globe size={16} color="rgba(255,255,255,0.4)" />
+                                            </div>
+                                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
+                                                <Mail size={16} color="rgba(255,255,255,0.4)" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
+                                    <div style={{ textAlign: isSmallMobile ? 'center' : 'left' }}>
                                         <Link to={`/instructor/${course.instructor}`} style={{ textDecoration: 'none' }}>
-                                            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '4px', color: 'white' }}>{course.instructor_name}</h3>
+                                            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '6px', color: 'white' }}>{course.instructor_name}</h3>
                                         </Link>
-                                        <p style={{ color: '#0A84FF', fontWeight: 700, fontSize: '1rem', marginBottom: '16px' }}>{course.instructor_title || 'Expert Instructor'}</p>
-                                        <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontSize: '1.05rem' }}>
+                                        <p style={{ color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                            {course.instructor_title || 'Expert Instructor'}
+                                        </p>
+                                        <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '24px' }}>
                                             {course.instructor_bio || 'A dedicated educator focused on delivering high-quality technical curriculum for modern professionals.'}
                                         </p>
-                                        <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: isSmallMobile ? 'center' : 'flex-start', gap: '4px', marginTop: '16px' }}>
-                                            View Full Profile <ChevronRight size={16} />
+                                        <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: isSmallMobile ? 'center' : 'flex-start', gap: '6px', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.gap = '10px'} onMouseLeave={e => e.currentTarget.style.gap = '6px'}>
+                                            Explore Instructor Profile <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
                                         </Link>
                                     </div>
                                 </div>

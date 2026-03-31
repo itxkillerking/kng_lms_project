@@ -93,8 +93,6 @@ const InstructorProfilePage = () => {
                                     <Mail size={18} color="rgba(255,255,255,0.4)" />
                                 </div>
                             </div>
-
-                            <GlassButton primary style={{ width: '100%' }}>Follow Instructor</GlassButton>
                         </GlassCard>
 
                         <GlassCard style={{ padding: '24px' }}>
