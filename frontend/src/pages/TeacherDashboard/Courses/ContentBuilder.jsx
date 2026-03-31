@@ -28,6 +28,7 @@ export const ContentBuilder = () => {
         attachment_file: null,
         duration: 0
     });
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     useEffect(() => {
         fetchCourseData();
@@ -110,21 +111,39 @@ export const ContentBuilder = () => {
             formData.append('attachment_file', lessonForm.attachment_file);
         }
 
+        // Automatic lesson sequencing: only for new lessons
+        if (!editingLessonId) {
+            const currentModule = modules.find(m => m.id === currentModuleId);
+            const nextIndex = currentModule?.lessons?.length || 0;
+            formData.append('order_index', nextIndex);
+        }
+
         try {
+            const axiosConfig = {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(percentCompleted);
+                }
+            };
+
             if (editingLessonId) {
-                await api.patch(`lessons/${editingLessonId}/`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.patch(`lessons/${editingLessonId}/`, formData, axiosConfig);
             } else {
-                await api.post('lessons/', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.post('lessons/', formData, axiosConfig);
             }
             setShowLessonModal(false);
+            setUploadProgress(0);
             fetchCourseData(); // Refresh list
         } catch (err) {
             console.error(err);
-            alert("Failed to save lesson. Ensure all fields are valid.");
+            const errorMessage = err.response?.data 
+                ? Object.entries(err.response.data).map(([k, v]) => `${k}: ${v}`).join('\n')
+                : "Ensure all fields are valid and your file isn't too large.";
+            alert("Failed to save lesson:\n" + errorMessage);
+        } finally {
+            setLoading(false);
+            setUploadProgress(0);
         }
     };
 
@@ -305,6 +324,19 @@ export const ContentBuilder = () => {
                                     <input id="lesson-attachment" type="file" style={{ display: 'none' }} onChange={e => setLessonForm({...lessonForm, attachment_file: e.target.files[0]})} />
                                 </div>
                             </div>
+
+                            {uploadProgress > 0 && (
+                                <div style={{ marginTop: '10px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.85rem' }}>
+                                        <span style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>
+                                            {uploadProgress < 100 ? `Uploading Video: ${uploadProgress}%` : 'Finalizing & Processing...'}
+                                        </span>
+                                    </div>
+                                    <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                                        <div style={{ width: `${uploadProgress}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-blue), var(--accent-purple))', transition: 'width 0.3s ease' }}></div>
+                                    </div>
+                                </div>
+                            )}
                         </form>
                     </div>
 
