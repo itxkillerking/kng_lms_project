@@ -4,6 +4,7 @@ import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, Chev
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { useAuth } from '../../context/AuthContext';
+import NotificationBadge from '../../components/common/NotificationBadge';
 import SplashScreen from '../../components/common/SplashScreen';
 import { TeacherOverview } from './Overview/TeacherOverview';
 import { CourseManager } from './Courses/CourseManager';

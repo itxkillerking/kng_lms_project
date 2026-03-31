@@ -4,6 +4,7 @@ import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Shield, User as UserIcon, LogOut, Search, Sparkles, Star, AlertCircle, MessageSquare } from 'lucide-react';
 import SplashScreen from '../../components/common/SplashScreen';
+import NotificationBadge from '../../components/common/NotificationBadge';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useQuery } from '@tanstack/react-query';

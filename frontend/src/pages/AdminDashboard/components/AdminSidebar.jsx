@@ -13,9 +13,9 @@ import {
     X,
     MessageSquare
 } from 'lucide-react';
+import NotificationBadge from '../../../components/common/NotificationBadge';
 import { useAuth } from '../../../context/AuthContext';
 import { GlassCard } from '../../../components/common/GlassCard';
-import { NotificationBadge } from '../../../components/common/NotificationBadge';
 
 export const AdminSidebar = ({ isOpen, setIsOpen }) => {
     const { logout, user } = useAuth();
