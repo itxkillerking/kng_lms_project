@@ -41,3 +41,10 @@ class SuspensionRequestSerializer(serializers.ModelSerializer):
         model = SuspensionRequest
         fields = '__all__'
         read_only_fields = ('instructor', 'status', 'created_at', 'resolved_at')
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """Serializer for public instructor profile viewing."""
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'bio', 'profile_picture', 'instructor_title', 'experience')
+        read_only_fields = ('id', 'username')

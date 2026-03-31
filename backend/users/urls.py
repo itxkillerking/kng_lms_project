@@ -8,7 +8,8 @@ from .views import (
     RegisterView, CurrentUserView, AdminUserViewSet,
     CustomTokenObtainPairView, LogoutView,
     RequestOTPView, VerifyOTPView,
-    InstructorStudentsView, SuspensionRequestViewSet
+    InstructorStudentsView, SuspensionRequestViewSet,
+    PublicProfileView
 )
 
 router = DefaultRouter()
@@ -24,5 +25,6 @@ urlpatterns = [
     path('otp/request/', RequestOTPView.as_view(), name='request_otp'),
     path('otp/verify/', VerifyOTPView.as_view(), name='verify_otp'),
     path('instructor-students/', InstructorStudentsView.as_view(), name='instructor_students'),
+    path('profile/<int:pk>/', PublicProfileView.as_view(), name='public_profile'),
     path('', include(router.urls)),
 ]

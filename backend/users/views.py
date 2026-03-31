@@ -229,6 +229,14 @@ class InstructorStudentsView(generics.ListAPIView):
             })
         return Response(data)
 
+from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer, SuspensionRequestSerializer, PublicProfileSerializer
+
+class PublicProfileView(generics.RetrieveAPIView):
+    """Retrieve basic biographical details about any user."""
+    queryset = User.objects.all()
+    serializer_class = PublicProfileSerializer
+    permission_classes = [AllowAny]
+
 class SuspensionRequestViewSet(viewsets.ModelViewSet):
     serializer_class = SuspensionRequestSerializer
     permission_classes = [IsAuthenticated]

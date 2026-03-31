@@ -17,24 +17,21 @@ const InstructorProfilePage = () => {
     useEffect(() => {
         const fetchInstructorData = async () => {
             try {
-                // Fetch user detail
-                const userRes = await api.get(`users/me/`); // In a real app, this would be a public user endpoint
-                // But since we only have /me/ for now, let's try to fetch courses by instructor ID
+                // Fetch specific instructor detail by ID
+                const instructorRes = await api.get(`users/profile/${id}/`);
+                const data = instructorRes.data;
+                
+                setInstructor({
+                    name: `${data.first_name || ''} ${data.last_name || ''}`.trim() || data.username,
+                    title: data.instructor_title,
+                    bio: data.bio,
+                    picture: data.profile_picture,
+                    experience: data.experience
+                });
+
+                // Fetch courses taught by this specific instructor
                 const coursesRes = await api.get(`courses/?instructor=${id}`);
-                
                 setCourses(coursesRes.data.results || coursesRes.data);
-                
-                // If there are courses, the first course has instructor info we can use
-                if (coursesRes.data.results?.length > 0 || coursesRes.data?.length > 0) {
-                    const firstCourse = coursesRes.data.results?.[0] || coursesRes.data[0];
-                    setInstructor({
-                        name: firstCourse.instructor_name,
-                        title: firstCourse.instructor_title,
-                        bio: firstCourse.instructor_bio,
-                        picture: firstCourse.instructor_picture,
-                        experience: firstCourse.instructor_experience
-                    });
-                }
             } catch (error) {
                 console.error("Error fetching instructor profile:", error);
             } finally {
