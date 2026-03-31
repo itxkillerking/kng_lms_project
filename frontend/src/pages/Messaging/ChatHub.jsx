@@ -168,10 +168,14 @@ export const ChatHub = () => {
                 {activeChat ? (
                     <>
                         {/* Header */}
-                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)', position: 'relative' }}>
+                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)', position: 'relative', zIndex: 1001 }}>
                             <div 
                                 style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
-                                onClick={() => navigate(`/profile/${activeChat.other_user_id}`)}
+                                onClick={() => {
+                                    const role = activeChat.other_user_role;
+                                    const path = role === 'instructor' ? `/instructor/${activeChat.other_user_id}` : `/profile/${activeChat.other_user_id}`;
+                                    navigate(path);
+                                }}
                             >
                                 <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', overflow: 'hidden' }}>
                                     {activeChat.other_user_picture ? <img src={activeChat.other_user_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>{activeChat.other_user_name[0]}</div>}
@@ -190,29 +194,35 @@ export const ChatHub = () => {
                                     <MoreVertical size={20} />
                                 </button>
                                 
-                                {showMenu && (
-                                    <div style={{ 
-                                        position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '200px', 
-                                        background: 'rgba(20,20,25,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)',
-                                        borderRadius: '16px', padding: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', zIndex: 1000
-                                    }}>
-                                        <button 
-                                            onClick={() => { setShowMenu(false); navigate(`/profile/${activeChat.other_user_id}`); }}
-                                            style={{ width: '100%', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '10px', fontSize: '0.9rem', textAlign: 'left' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                                        >
-                                            <User size={18} /> View Full Profile
-                                        </button>
-                                        <button 
-                                            style={{ width: '100%', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '10px', fontSize: '0.9rem', textAlign: 'left' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                                        >
-                                            <X size={18} /> Clear Chat History
-                                        </button>
-                                    </div>
-                                )}
+                                        {showMenu && (
+                                            <div style={{ 
+                                                position: 'absolute', top: '100%', right: 0, marginTop: '12px', width: '220px', 
+                                                background: 'rgba(25,25,35,0.98)', backdropFilter: 'blur(40px)', border: '1px solid rgba(255,255,255,0.12)',
+                                                borderRadius: '18px', padding: '10px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', zIndex: 2000
+                                            }}>
+                                                <button 
+                                                    onClick={() => { 
+                                                        setShowMenu(false); 
+                                                        const role = activeChat.other_user_role;
+                                                        const path = role === 'instructor' ? `/instructor/${activeChat.other_user_id}` : `/profile/${activeChat.other_user_id}`;
+                                                        navigate(path);
+                                                    }}
+                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <User size={18} color="var(--accent-blue)" /> <b>View Full Profile</b>
+                                                </button>
+                                                <button 
+                                                    onClick={() => { setShowMenu(false); alert("History clearing is managed by administrators for security."); }}
+                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                                >
+                                                    <X size={18} /> Clear Chat
+                                                </button>
+                                            </div>
+                                        )}
                             </div>
                         </div>
 
