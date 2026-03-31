@@ -14,7 +14,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     // Queries for robust data fetching
-    const { data: coursesData = [], isLoading: coursesLoading } = useQuery({
+    const { data: coursesData = [], isLoading: coursesLoading, error: coursesError, refetch: refetchCourses } = useQuery({
         queryKey: ['my-courses'],
         queryFn: async () => {
             const res = await api.get('courses/my_courses/');
@@ -22,7 +22,7 @@ const Dashboard = () => {
         }
     });
 
-    const { data: certsData = [], isLoading: certsLoading } = useQuery({
+    const { data: certsData = [], isLoading: certsLoading, error: certsError, refetch: refetchCerts } = useQuery({
         queryKey: ['my-certificates'],
         queryFn: async () => {
             const res = await api.get('certificates/');
@@ -30,7 +30,7 @@ const Dashboard = () => {
         }
     });
 
-    const { data: quizData = [], isLoading: quizLoading } = useQuery({
+    const { data: quizData = [], isLoading: quizLoading, error: quizError, refetch: refetchQuizzes } = useQuery({
         queryKey: ['my-quizzes'],
         queryFn: async () => {
             const res = await api.get('quiz-attempts/');
@@ -39,6 +39,14 @@ const Dashboard = () => {
     });
 
     const loading = coursesLoading || certsLoading || quizLoading;
+    const hasError = coursesError || certsError || quizError;
+    
+    const handleRetry = () => {
+        refetchCourses();
+        refetchCerts();
+        refetchQuizzes();
+    };
+
     const courses = coursesData;
     const certificates = certsData;
     const quizAttempts = quizData;
@@ -91,12 +99,25 @@ const Dashboard = () => {
         }} />;
     }
 
-    if (loading) {
+    if (loading || hasError) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ width: '40px', height: '40px', border: '3px solid rgba(10, 132, 255, 0.2)', borderTop: '3px solid #0A84FF', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '16px' }}></div>
-                    <p>Preparing your experience...</p>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '20px' }}>
+                <div>
+                    {hasError ? (
+                        <>
+                            <AlertCircle size={48} color="#FF453A" style={{ marginBottom: '16px' }} />
+                            <h2 style={{ color: 'white', marginBottom: '8px' }}>Connection Issue</h2>
+                            <p style={{ marginBottom: '24px' }}>We couldn't sync your dashboard data right now.</p>
+                            <GlassButton onClick={handleRetry} style={{ borderRadius: '12px', padding: '10px 24px' }}>
+                                Try to Reconnect
+                            </GlassButton>
+                        </>
+                    ) : (
+                        <>
+                            <div style={{ width: '40px', height: '40px', border: '3px solid rgba(10, 132, 255, 0.2)', borderTop: '3px solid #0A84FF', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
+                            <p>Preparing your experience...</p>
+                        </>
+                    )}
                 </div>
                 <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
             </div>

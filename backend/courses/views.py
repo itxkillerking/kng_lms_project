@@ -22,9 +22,21 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = self.queryset
+        user = self.request.user
+        
+        # Base Filtering: Only show approved courses to students and guests
+        if not user.is_authenticated or user.role not in ['admin', 'instructor']:
+            qs = qs.filter(moderation_status='approved')
+        elif user.role == 'instructor':
+            # Instructors see all approved courses + their own pending/rejected ones
+            from django.db.models import Q
+            qs = qs.filter(Q(moderation_status='approved') | Q(instructor=user))
+        # Admins see everything (no filter)
+
+        # Apply search and other filters
         search_query = self.request.query_params.get('search', None)
         instructor_filter = self.request.query_params.get('instructor')
-        moderation_filter = self.request.query_params.get('status')
+        moderation_param = self.request.query_params.get('status')
         
         if search_query:
             from django.db.models import Q
@@ -38,11 +50,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         if category_id:
             qs = qs.filter(category_id=category_id)
 
-        if instructor_filter == 'me' and self.request.user.is_authenticated:
-            qs = qs.filter(instructor=self.request.user)
+        if instructor_filter == 'me' and user.is_authenticated:
+            qs = qs.filter(instructor=user)
         
-        if moderation_filter:
-            qs = qs.filter(moderation_status=moderation_filter)
+        if moderation_param:
+            qs = qs.filter(moderation_status=moderation_param)
             
         return qs
 

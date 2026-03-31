@@ -25,7 +25,7 @@ const CourseView = () => {
     }, []);
     
     // Queries for robust data fetching
-    const { data: course, isLoading: courseLoading } = useQuery({
+    const { data: course, isLoading: courseLoading, error: courseError, refetch: refetchCourse } = useQuery({
         queryKey: ['course', id],
         queryFn: async () => {
             const res = await api.get(`courses/${id}/`);
@@ -33,13 +33,18 @@ const CourseView = () => {
         }
     });
 
-    const { data: progressData = [], isLoading: progressLoading } = useQuery({
+    const { data: progressData = [], isLoading: progressLoading, error: progressError, refetch: refetchProgress } = useQuery({
         queryKey: ['my-progress'],
         queryFn: async () => {
             const res = await api.get('progress/');
             return Array.isArray(res.data) ? res.data : (res.data.results || []);
         }
     });
+
+    const handleRetry = () => {
+        refetchCourse();
+        refetchProgress();
+    };
 
     const [activeItem, setActiveItem] = useState(null);
     const [completedLessons, setCompletedLessons] = useState([]);
@@ -64,13 +69,33 @@ const CourseView = () => {
                 }
             }
         }
-    }, [course, progressData]);
+    }, [course, progressData, activeItem]);
 
     const loading = courseLoading || progressLoading;
+    const hasError = courseError || progressError;
 
-    if (loading) return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)' }}>
-            <Loader className="animate-spin" size={48} color="#0A84FF" />
+    if (loading || hasError) return (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px' }}>
+            {hasError ? (
+                <>
+                    <HelpCircle size={48} color="#FF453A" style={{ marginBottom: '16px' }} />
+                    <h2 style={{ color: 'white', marginBottom: '8px' }}>Classroom Access Error</h2>
+                    <p style={{ marginBottom: '24px' }}>We couldn't load the course materials. Please check your connection.</p>
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <GlassButton onClick={() => navigate('/dashboard')} style={{ borderRadius: '12px' }}>
+                            Go to Dashboard
+                        </GlassButton>
+                        <GlassButton onClick={handleRetry} style={{ borderRadius: '12px' }}>
+                            Retry Loading
+                        </GlassButton>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <Loader className="animate-spin" size={48} color="#0A84FF" />
+                    <p style={{ marginTop: '16px' }}>Entering classroom...</p>
+                </>
+            )}
         </div>
     );
     
