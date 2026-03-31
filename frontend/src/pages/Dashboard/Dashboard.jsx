@@ -6,11 +6,42 @@ import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Sh
 import SplashScreen from '../../components/common/SplashScreen';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
+import { useQuery } from '@tanstack/react-query';
 import Footer from '../../components/layout/Footer';
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+
+    // Queries for robust data fetching
+    const { data: coursesData = [], isLoading: coursesLoading } = useQuery({
+        queryKey: ['my-courses'],
+        queryFn: async () => {
+            const res = await api.get('courses/my_courses/');
+            return Array.isArray(res.data) ? res.data : (res.data.results || []);
+        }
+    });
+
+    const { data: certsData = [], isLoading: certsLoading } = useQuery({
+        queryKey: ['my-certificates'],
+        queryFn: async () => {
+            const res = await api.get('certificates/');
+            return Array.isArray(res.data) ? res.data : (res.data.results || []);
+        }
+    });
+
+    const { data: quizData = [], isLoading: quizLoading } = useQuery({
+        queryKey: ['my-quizzes'],
+        queryFn: async () => {
+            const res = await api.get('quiz-attempts/');
+            return Array.isArray(res.data) ? res.data : (res.data.results || []);
+        }
+    });
+
+    const loading = coursesLoading || certsLoading || quizLoading;
+    const courses = coursesData;
+    const certificates = certsData;
+    const quizAttempts = quizData;
 
     // Redirect instructors and admins to their respective dashboards
     useEffect(() => {
@@ -32,18 +63,7 @@ const Dashboard = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const isExtraSmall = windowWidth <= 480;
-    const isMobile = windowWidth <= 768;
-    const isTablet = windowWidth <= 1100;
-    const isLargeDesktop = windowWidth >= 1600;
-
-    const [courses, setCourses] = useState([]);
-    const [certificates, setCertificates] = useState([]);
-    const [quizAttempts, setQuizAttempts] = useState([]);
-    const [assignments, setAssignments] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [showSplash, setShowSplash] = useState(false);
-
     useEffect(() => {
         const hasShownSplash = sessionStorage.getItem('kls_splash_shown');
         if (!hasShownSplash) {
@@ -51,29 +71,10 @@ const Dashboard = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const [coursesRes, certRes, quizRes, assignRes] = await Promise.all([
-                    api.get('courses/my_courses/').catch(() => ({ data: [] })),
-                    api.get('certificates/').catch(() => ({ data: [] })),
-                    api.get('quiz-attempts/').catch(() => ({ data: [] })),
-                    api.get('assignment-submissions/').catch(() => ({ data: [] }))
-                ]);
-                
-                const coursesData = Array.isArray(coursesRes.data) ? coursesRes.data : coursesRes.data.results || [];
-                setCourses(coursesData);
-                setCertificates(Array.isArray(certRes.data) ? certRes.data : certRes.data.results || []);
-                setQuizAttempts(Array.isArray(quizRes.data) ? quizRes.data : quizRes.data.results || []);
-                setAssignments(Array.isArray(assignRes.data) ? assignRes.data : assignRes.data.results || []);
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDashboardData();
-    }, []);
+    const isExtraSmall = windowWidth <= 480;
+    const isMobile = windowWidth <= 768;
+    const isTablet = windowWidth <= 1100;
+    const isLargeDesktop = windowWidth >= 1600;
 
     const handleLogout = () => {
         logout();

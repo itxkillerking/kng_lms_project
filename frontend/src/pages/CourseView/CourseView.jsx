@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { PlayCircle, HelpCircle, FileText, Menu, X, ArrowLeft, Loader, CheckCircle, Clock, Download, ChevronRight, Award } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { QuizView } from './QuizView';
 import { AssignmentView } from './AssignmentView';
 import { ReviewSection } from './ReviewSection';
@@ -12,65 +13,60 @@ import { ReviewSection } from './ReviewSection';
 const CourseView = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [course, setCourse] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [activeItem, setActiveItem] = useState(null);
-    const [completedLessons, setCompletedLessons] = useState([]);
-    const [progressUpdating, setProgressUpdating] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
-    const isMobile = window.innerWidth <= 768;
 
+    // Handle window resizing
     useEffect(() => {
-        const fetchCourse = async () => {
-            try {
-                const [courseRes, progressData] = await Promise.all([
-                    api.get(`courses/${id}/`).then(res => res.data).catch(err => {
-                        console.error("Course fetch error:", err);
-                        return null;
-                    }),
-                    api.get('progress/').then(res => {
-                        return Array.isArray(res.data) ? res.data : (res.data.results || []);
-                    }).catch(err => {
-                        console.error("Progress fetch error:", err);
-                        return [];
-                    })
-                ]);
-                
-                if (!courseRes) {
-                    setLoading(false);
-                    return;
-                }
-                
-                setCourse(courseRes);
-                
-                const completedIds = progressData
-                    .filter(p => p.is_complete && courseRes.modules?.some(m => m.lessons.some(l => l.id === p.lesson)))
-                    .map(p => p.lesson);
-                setCompletedLessons(completedIds);
-                
-                if (courseRes.modules?.length > 0) {
-                    for (const module of courseRes.modules) {
-                        if (module.lessons?.length > 0) {
-                            setActiveItem({ ...module.lessons[0], type: 'lesson' });
-                            break;
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Unexpected error in fetchCourse:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCourse();
-        
         const handleResize = () => {
             if (window.innerWidth > 1024) setSidebarOpen(true);
             else if (window.innerWidth <= 768) setSidebarOpen(false);
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, [id]);
+    }, []);
+    
+    // Queries for robust data fetching
+    const { data: course, isLoading: courseLoading } = useQuery({
+        queryKey: ['course', id],
+        queryFn: async () => {
+            const res = await api.get(`courses/${id}/`);
+            return res.data;
+        }
+    });
+
+    const { data: progressData = [], isLoading: progressLoading } = useQuery({
+        queryKey: ['my-progress'],
+        queryFn: async () => {
+            const res = await api.get('progress/');
+            return Array.isArray(res.data) ? res.data : (res.data.results || []);
+        }
+    });
+
+    const [activeItem, setActiveItem] = useState(null);
+    const [completedLessons, setCompletedLessons] = useState([]);
+    const [progressUpdating, setProgressUpdating] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+    const isMobile = window.innerWidth <= 768;
+
+    // Sync active item and completed lessons
+    useEffect(() => {
+        if (course && progressData) {
+            const completedIds = progressData
+                .filter(p => p.is_complete && course.modules?.some(m => m.lessons.some(l => l.id === p.lesson)))
+                .map(p => p.lesson);
+            setCompletedLessons(completedIds);
+            
+            if (!activeItem && course.modules?.length > 0) {
+                for (const module of course.modules) {
+                    if (module.lessons?.length > 0) {
+                        setActiveItem({ ...module.lessons[0], type: 'lesson' });
+                        break;
+                    }
+                }
+            }
+        }
+    }, [course, progressData]);
+
+    const loading = courseLoading || progressLoading;
 
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)' }}>

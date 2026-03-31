@@ -103,4 +103,4 @@ class CourseSerializer(serializers.ModelSerializer):
             'category_name', 'average_rating', 'review_count', 'student_count', 'progress',
             'total_lessons', 'total_quizzes', 'total_assignments', 'total_duration_mins'
         ]
-        read_only_fields = () # Allow instructor to be set manually by admin
+        read_only_fields = ('instructor', 'moderation_status') # Allow instructor to be set automatically
