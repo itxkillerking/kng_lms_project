@@ -22,7 +22,7 @@ export const ContentBuilder = () => {
     // New Lesson Form
     const [lessonForm, setLessonForm] = useState({
         title: '',
-        video_type: 'link',
+        video_type: 'drive',
         video_url: '',
         video_file: null,
         attachment_file: null,
@@ -87,7 +87,7 @@ export const ContentBuilder = () => {
             });
         } else {
             setEditingLessonId(null);
-            setLessonForm({ title: '', video_type: 'link', video_url: '', video_file: null, attachment_file: null, duration: 0 });
+            setLessonForm({ title: '', video_type: 'drive', video_url: '', video_file: null, attachment_file: null, duration: 0 });
         }
         setShowLessonModal(true);
     };
@@ -101,9 +101,8 @@ export const ContentBuilder = () => {
         formData.append('video_type', lessonForm.video_type);
         formData.append('duration', lessonForm.duration);
         
-        if (lessonForm.video_type === 'file' && lessonForm.video_file) {
-            formData.append('video_file', lessonForm.video_file);
-        } else {
+        
+        if (lessonForm.video_url) {
             formData.append('video_url', lessonForm.video_url);
         }
 
@@ -201,7 +200,7 @@ export const ContentBuilder = () => {
                                     {module.lessons.map(lesson => (
                                         <div key={lesson.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid transparent', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--glass-border)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                {lesson.video_type === 'youtube' ? <Youtube size={18} color="#FF0000" /> : <Play size={18} color="var(--accent-blue)" />}
+                                                {lesson.video_type === 'youtube' ? <Youtube size={18} color="#FF0000" /> : lesson.video_type === 'drive' ? <Cloud size={18} color="#4285F4" /> : <Play size={18} color="var(--accent-blue)" />}
                                                 <div>
                                                     <p style={{ fontWeight: 600, color: 'white', marginBottom: '2px' }}>{lesson.title}</p>
                                                     <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
@@ -258,11 +257,8 @@ export const ContentBuilder = () => {
                                         value={lessonForm.video_type}
                                         onChange={e => setLessonForm({...lessonForm, video_type: e.target.value})}
                                     >
-                                        <option value="file" style={{ background: '#1a1a1a', color: 'white' }}>File Upload</option>
-                                        <option value="link" style={{ background: '#1a1a1a', color: 'white' }}>External Link</option>
-                                        <option value="youtube" style={{ background: '#1a1a1a', color: 'white' }}>YouTube</option>
-                                        <option value="vimeo" style={{ background: '#1a1a1a', color: 'white' }}>Vimeo</option>
                                         <option value="drive" style={{ background: '#1a1a1a', color: 'white' }}>Google Drive</option>
+                                        <option value="youtube" style={{ background: '#1a1a1a', color: 'white' }}>YouTube</option>
                                     </select>
                                 </div>
                                 <div>
@@ -279,25 +275,23 @@ export const ContentBuilder = () => {
 
                             <div>
                                 <label style={{ display: 'block', marginBottom: '12px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Content Source</label>
-                                {lessonForm.video_type === 'file' ? (
-                                    <div style={{ border: '2px dashed var(--glass-border)', borderRadius: '12px', padding: '32px', textAlign: 'center', cursor: 'pointer', background: 'rgba(255,255,255,0.03)' }} onClick={() => document.getElementById('lesson-video').click()}>
-                                        <UploadCloud size={32} color="var(--accent-blue)" style={{ marginBottom: '12px', opacity: 0.7 }} />
-                                        <p style={{ fontSize: '0.9rem', color: 'white' }}>{lessonForm.video_file ? lessonForm.video_file.name : 'Select video file...'}</p>
-                                        <input id="lesson-video" type="file" accept="video/*" style={{ display: 'none' }} onChange={e => setLessonForm({...lessonForm, video_file: e.target.files[0]})} />
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.7, color: 'var(--accent-blue)' }}>
+                                        {lessonForm.video_type === 'youtube' ? <Youtube size={18} /> : <Cloud size={18} />}
                                     </div>
-                                ) : (
-                                    <div style={{ position: 'relative' }}>
-                                        <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.7, color: 'var(--accent-blue)' }}>
-                                            {lessonForm.video_type === 'youtube' ? <Youtube size={18} /> : lessonForm.video_type === 'drive' ? <Cloud size={18} /> : <LinkIcon size={18} />}
-                                        </div>
-                                        <input 
-                                            className="glass-input" 
-                                            style={{ width: '100%', paddingLeft: '48px', color: 'white' }}
-                                            placeholder={`Paste ${lessonForm.video_type} URL here...`}
-                                            value={lessonForm.video_url}
-                                            onChange={e => setLessonForm({...lessonForm, video_url: e.target.value})}
-                                        />
-                                    </div>
+                                    <input 
+                                        className="glass-input" 
+                                        style={{ width: '100%', paddingLeft: '48px', color: 'white' }}
+                                        placeholder={lessonForm.video_type === 'drive' ? 'Paste Google Drive Sharing link...' : 'Paste YouTube Video URL...'}
+                                        value={lessonForm.video_url}
+                                        onChange={e => setLessonForm({...lessonForm, video_url: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                {lessonForm.video_type === 'drive' && (
+                                    <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--accent-blue)', opacity: 0.8 }}>
+                                        Note: Ensure video is set to "Anyone with the link can view"
+                                    </p>
                                 )}
                             </div>
 

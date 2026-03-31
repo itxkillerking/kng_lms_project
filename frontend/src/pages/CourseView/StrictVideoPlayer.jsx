@@ -12,14 +12,59 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
     const [showSpeedMenu, setShowSpeedMenu] = useState(false);
     const [playbackRate, setPlaybackRate] = useState(1);
 
-    // Speed options as requested: 1x, 1.5x, 2x, 3x
     const speedOptions = [1, 1.5, 2, 3];
 
+    // --- GOOGLE DRIVE & YOUTUBE LOGIC ---
+    const getProcessedSrc = (url) => {
+        if (!url) return "";
+        
+        // Handle Google Drive
+        if (url.includes('drive.google.com')) {
+            const match = url.match(/\/d\/(.+?)\/(view|edit|usp=sharing)/) || url.match(/id=(.+?)(&|$)/);
+            const fileId = match ? match[1] : null;
+            if (fileId) {
+                // Return direct stream link
+                return `https://drive.google.com/uc?id=${fileId}&export=download`;
+            }
+        }
+
+        // Handle YouTube
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            const match = url.match(/(?:v=|\/embed\/|youtu.be\/)([^&?#/]+)/);
+            return match ? { type: 'youtube', id: match[1] } : url;
+        }
+
+        return url;
+    };
+
+    const processed = getProcessedSrc(src);
+    const isYouTube = typeof processed === 'object' && processed.type === 'youtube';
+
+    // Reset state when source changes
     useEffect(() => {
-        // Reset state when source changes
         setMaxTimeWatched(0);
         setProgress(0);
     }, [src]);
+
+    if (isYouTube) {
+        return (
+            <div style={{ width: '100%', height: '100%', background: '#000', borderRadius: '12px', overflow: 'hidden' }}>
+                <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${processed.id}?rel=0&modestbranding=1`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    onLoad={() => {
+                        // Mark as complete after brief delay if no strict tracking possible
+                        setTimeout(() => onComplete && onComplete(lessonId), 5000); 
+                    }}
+                />
+            </div>
+        );
+    }
 
     const togglePlay = () => {
         if (videoRef.current.paused) {
@@ -79,7 +124,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
         <div style={{ width: '100%', height: '100%', position: 'relative', background: '#000', borderRadius: '12px', overflow: 'hidden', group: 'player' }}>
             <video
                 ref={videoRef}
-                src={src}
+                src={processed}
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 onTimeUpdate={handleTimeUpdate}
                 onClick={togglePlay}

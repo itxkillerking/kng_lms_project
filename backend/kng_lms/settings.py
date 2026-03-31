@@ -60,6 +60,12 @@ INSTALLED_APPS = [
 DATA_UPLOAD_MAX_MEMORY_SIZE = 2147483648
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2147483648
 
+# Stream large files (PDFs/Slides) to disk to prevent RAM crashes on PythonAnywhere
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
