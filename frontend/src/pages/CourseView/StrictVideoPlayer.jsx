@@ -20,11 +20,10 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
         
         // Handle Google Drive
         if (url.includes('drive.google.com')) {
-            const match = url.match(/\/d\/(.+?)\/(view|edit|usp=sharing)/) || url.match(/id=(.+?)(&|$)/);
+            const match = url.match(/\/d\/(.+?)\/(view|edit|usp=sharing|preview)/) || url.match(/id=(.+?)(&|$)/);
             const fileId = match ? match[1] : null;
             if (fileId) {
-                // Return direct stream link
-                return `https://drive.google.com/uc?id=${fileId}&export=download`;
+                return { type: 'drive', id: fileId };
             }
         }
 
@@ -39,6 +38,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
 
     const processed = getProcessedSrc(src);
     const isYouTube = typeof processed === 'object' && processed.type === 'youtube';
+    const isDrive = typeof processed === 'object' && processed.type === 'drive';
 
     // Reset state when source changes
     useEffect(() => {
@@ -46,19 +46,23 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
         setProgress(0);
     }, [src]);
 
-    if (isYouTube) {
+    if (isYouTube || isDrive) {
+        const embedSrc = isYouTube 
+            ? `https://www.youtube.com/embed/${processed.id}?rel=0&modestbranding=1`
+            : `https://drive.google.com/file/d/${processed.id}/preview`;
+            
         return (
             <div style={{ width: '100%', height: '100%', background: '#000', borderRadius: '12px', overflow: 'hidden' }}>
                 <iframe
                     width="100%"
                     height="100%"
-                    src={`https://www.youtube.com/embed/${processed.id}?rel=0&modestbranding=1`}
-                    title="YouTube video player"
+                    src={embedSrc}
+                    title="Video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     onLoad={() => {
-                        // Mark as complete after brief delay if no strict tracking possible
+                        // Mark as complete after brief delay for external players
                         setTimeout(() => onComplete && onComplete(lessonId), 5000); 
                     }}
                 />
