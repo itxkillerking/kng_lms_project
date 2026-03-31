@@ -7,7 +7,7 @@ import { GlassButton } from '../../components/common/GlassButton';
 import { 
   PlayCircle, Clock, BookOpen, Users, 
   ChevronRight, CheckCircle, Info, Star,
-  Award, Globe, Calendar, ArrowLeft, Mail
+  Award, Globe, Calendar, ArrowLeft, Mail, Briefcase, Book, Linkedin
 } from 'lucide-react';
 
 const CourseDetailPage = () => {
@@ -196,44 +196,87 @@ const CourseDetailPage = () => {
                             </div>
                         </section>
 
-                        {/* Instructor */}
+                        {/* Enhanced Instructor Section */}
                         <section id="instructor">
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '32px' }}>Your Instructor</h2>
-                            <GlassCard style={{ padding: isSmallMobile ? '24px' : '40px', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ display: 'flex', flexDirection: isSmallMobile ? 'column' : 'row', gap: isSmallMobile ? '32px' : '48px', alignItems: isSmallMobile ? 'center' : 'flex-start' }}>
-                                    <div style={{ flexShrink: 0, textAlign: 'center' }}>
-                                        <div style={{ width: '120px', height: '120px', borderRadius: '32px', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <Award size={24} color="#0A84FF" /> About Your Instructor
+                            </h2>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '300px 1fr', gap: '40px' }}>
+                                {/* Left Sidebar: Identity & Stats */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                    <GlassCard heavy style={{ padding: '32px', textAlign: 'center', borderRadius: '28px' }}>
+                                        <div style={{ width: '120px', height: '120px', margin: '0 auto 24px', borderRadius: '32px', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             {course.instructor_picture ? (
                                                 <img src={course.instructor_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             ) : (
                                                 <UserIcon size={48} color="white" />
                                             )}
                                         </div>
+                                        <Link to={`/instructor/${course.instructor}`} style={{ textDecoration: 'none' }}>
+                                            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '6px', color: 'white' }}>{course.instructor_name}</h3>
+                                        </Link>
+                                        <p style={{ color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.85rem', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                            {course.instructor_title || 'Expert Instructor'}
+                                        </p>
+                                        
                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
                                             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
                                                 <Globe size={16} color="rgba(255,255,255,0.4)" />
                                             </div>
                                             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
+                                                <Linkedin size={16} color="rgba(255,255,255,0.4)" />
+                                            </div>
+                                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
                                                 <Mail size={16} color="rgba(255,255,255,0.4)" />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div style={{ textAlign: isSmallMobile ? 'center' : 'left' }}>
-                                        <Link to={`/instructor/${course.instructor}`} style={{ textDecoration: 'none' }}>
-                                            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '6px', color: 'white' }}>{course.instructor_name}</h3>
-                                        </Link>
-                                        <p style={{ color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                            {course.instructor_title || 'Expert Instructor'}
-                                        </p>
-                                        <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '24px' }}>
+                                    </GlassCard>
+
+                                    {/* Small Stats Card */}
+                                    <GlassCard style={{ padding: '24px', borderRadius: '24px' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Total Courses</span>
+                                                <span style={{ fontWeight: 800 }}>{course.instructor_courses_count || '1'}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Students</span>
+                                                <span style={{ fontWeight: 800 }}>{course.student_count}+</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Reviews</span>
+                                                <span style={{ fontWeight: 800 }}>{course.review_count}</span>
+                                            </div>
+                                        </div>
+                                    </GlassCard>
+                                </div>
+
+                                {/* Right Content: Story & Experience */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                                    <div>
+                                        <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Book size={18} color="var(--accent-blue)" /> About Me
+                                        </h4>
+                                        <p style={{ color: 'white', opacity: 0.7, lineHeight: 1.8, fontSize: '1.05rem', whiteSpace: 'pre-wrap' }}>
                                             {course.instructor_bio || 'A dedicated educator focused on delivering high-quality technical curriculum for modern professionals.'}
                                         </p>
-                                        <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: isSmallMobile ? 'center' : 'flex-start', gap: '6px', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.gap = '10px'} onMouseLeave={e => e.currentTarget.style.gap = '6px'}>
-                                            Explore Instructor Profile <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
-                                        </Link>
                                     </div>
+                                    
+                                    <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Briefcase size={18} color="var(--accent-purple)" /> Technical Background
+                                        </h4>
+                                        <div style={{ color: 'white', opacity: 0.7, lineHeight: 1.8, fontSize: '1rem', whiteSpace: 'pre-wrap' }}>
+                                            {course.instructor_experience || 'Extensive professional experience in high-performance software engineering and architecture.'}
+                                        </div>
+                                    </div>
+
+                                    <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content' }}>
+                                        Full Instructor Profile <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
+                                    </Link>
                                 </div>
-                            </GlassCard>
+                            </div>
                         </section>
                     </div>
 
