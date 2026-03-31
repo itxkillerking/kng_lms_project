@@ -22,6 +22,7 @@ const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard/TeacherDash
 const Profile = lazy(() => import('./pages/Dashboard/Profile/Profile'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard/AdminDashboard'));
 const About = lazy(() => import('./pages/About/About'));
+const PublicProfilePage = lazy(() => import('./pages/Profile/PublicProfilePage'));
 const ChatHub = lazy(() => import('./pages/Messaging/ChatHub').then(module => ({ default: module.ChatHub })));
 
 // Simple loading fallback
@@ -61,6 +62,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/instructor/:id" element={<InstructorProfilePage />} />
+              <Route path="/profile/:id" element={<PublicProfilePage />} />
 
               <Route element={<PrivateRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />

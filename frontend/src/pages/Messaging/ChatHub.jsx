@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
@@ -11,6 +12,7 @@ import {
 
 export const ChatHub = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [conversations, setConversations] = useState([]);
     const [activeChat, setActiveChat] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -18,8 +20,21 @@ export const ChatHub = () => {
     const [loading, setLoading] = useState(true);
     const [file, setFile] = useState(null);
     const [studentProfile, setStudentProfile] = useState(null);
+    const [showMenu, setShowMenu] = useState(false);
     const chatEndRef = useRef(null);
     const fileInputRef = useRef(null);
+    const menuRef = useRef(null);
+
+    // Close menu on click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setShowMenu(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     // Fetch conversations list (polling every 5s)
     const fetchConversations = async () => {
@@ -153,8 +168,11 @@ export const ChatHub = () => {
                 {activeChat ? (
                     <>
                         {/* Header */}
-                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)', position: 'relative' }}>
+                            <div 
+                                style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
+                                onClick={() => navigate(`/profile/${activeChat.other_user_id}`)}
+                            >
                                 <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', overflow: 'hidden' }}>
                                     {activeChat.other_user_picture ? <img src={activeChat.other_user_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>{activeChat.other_user_name[0]}</div>}
                                 </div>
@@ -163,7 +181,39 @@ export const ChatHub = () => {
                                     <p style={{ fontSize: '0.750rem', color: '#30D158', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Online Session</p>
                                 </div>
                             </div>
-                            <MoreVertical size={20} color="rgba(255,255,255,0.4)" />
+                            
+                            <div style={{ position: 'relative' }} ref={menuRef}>
+                                <button 
+                                    onClick={() => setShowMenu(!showMenu)}
+                                    style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: '8px', borderRadius: '10px' }}
+                                >
+                                    <MoreVertical size={20} />
+                                </button>
+                                
+                                {showMenu && (
+                                    <div style={{ 
+                                        position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '200px', 
+                                        background: 'rgba(20,20,25,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)',
+                                        borderRadius: '16px', padding: '8px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', zIndex: 1000
+                                    }}>
+                                        <button 
+                                            onClick={() => { setShowMenu(false); navigate(`/profile/${activeChat.other_user_id}`); }}
+                                            style={{ width: '100%', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '10px', fontSize: '0.9rem', textAlign: 'left' }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                        >
+                                            <User size={18} /> View Full Profile
+                                        </button>
+                                        <button 
+                                            style={{ width: '100%', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '10px', fontSize: '0.9rem', textAlign: 'left' }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                                        >
+                                            <X size={18} /> Clear Chat History
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Messages History */}

@@ -46,5 +46,5 @@ class PublicProfileSerializer(serializers.ModelSerializer):
     """Serializer for public instructor profile viewing."""
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'bio', 'profile_picture', 'instructor_title', 'experience')
+        fields = ('id', 'username', 'first_name', 'last_name', 'role', 'bio', 'profile_picture', 'instructor_title', 'experience')
         read_only_fields = ('id', 'username')
