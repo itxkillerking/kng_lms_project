@@ -7,7 +7,7 @@ import { GlassButton } from '../../components/common/GlassButton';
 import { 
   PlayCircle, Clock, BookOpen, Users, 
   ChevronRight, CheckCircle, Info, Star,
-  Award, Globe, Calendar, ArrowLeft
+  Award, Globe, Calendar, ArrowLeft, Mail
 } from 'lucide-react';
 
 const CourseDetailPage = () => {
