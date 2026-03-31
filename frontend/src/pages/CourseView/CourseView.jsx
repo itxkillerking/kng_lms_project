@@ -9,6 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import { QuizView } from './QuizView';
 import { AssignmentView } from './AssignmentView';
 import { ReviewSection } from './ReviewSection';
+import { StrictVideoPlayer } from './StrictVideoPlayer';
+import { CommentSection } from './CommentSection';
 
 const CourseView = () => {
     const { id } = useParams();
