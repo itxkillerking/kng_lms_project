@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
-import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Shield, User as UserIcon, LogOut, Search, Sparkles, Star, AlertCircle } from 'lucide-react';
+import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Shield, User as UserIcon, LogOut, Search, Sparkles, Star, AlertCircle, MessageSquare } from 'lucide-react';
 import SplashScreen from '../../components/common/SplashScreen';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';

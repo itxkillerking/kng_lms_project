@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X } from 'lucide-react';
+import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X, MessageSquare } from 'lucide-react';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { useAuth } from '../../context/AuthContext';
