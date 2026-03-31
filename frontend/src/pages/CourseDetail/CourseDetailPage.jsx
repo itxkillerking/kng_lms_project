@@ -4,10 +4,10 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
-import { 
-  PlayCircle, Clock, BookOpen, Users, 
-  ChevronRight, CheckCircle, Info, Star,
-  Award, Globe, Calendar, ArrowLeft, Mail, Briefcase, Book, Linkedin
+import {
+    PlayCircle, Clock, BookOpen, Users,
+    ChevronRight, CheckCircle, Info, Star,
+    Award, Globe, Calendar, ArrowLeft, Mail, Briefcase, Book, Linkedin
 } from 'lucide-react';
 
 const CourseDetailPage = () => {
@@ -35,7 +35,7 @@ const CourseDetailPage = () => {
             try {
                 const response = await api.get(`courses/${id}/`);
                 setCourse(response.data);
-                
+
                 if (user) {
                     const enrollRes = await api.get('courses/my_courses/');
                     const enrolledIds = enrollRes.data.map(c => c.id);
@@ -95,9 +95,9 @@ const CourseDetailPage = () => {
     return (
         <div style={{ minHeight: '100vh', background: '#040407', color: 'white', paddingBottom: '100px' }}>
             {/* Dark Hero Section */}
-            <div style={{ 
-                position: 'relative', 
-                padding: isMobile ? '100px 20px 60px' : '120px 20px 80px', 
+            <div style={{
+                position: 'relative',
+                padding: isMobile ? '100px 20px 60px' : '120px 20px 80px',
                 background: 'linear-gradient(180deg, rgba(10, 132, 255, 0.05) 0%, rgba(4, 4, 7, 0) 100%)',
                 borderBottom: '1px solid rgba(255,255,255,0.05)'
             }}>
@@ -105,7 +105,7 @@ const CourseDetailPage = () => {
                     <Link to="/catalog" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', marginBottom: '32px', fontSize: '0.9rem', fontWeight: 600 }}>
                         <ArrowLeft size={16} /> Back to Catalog
                     </Link>
-                    
+
                     <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 400px', gap: isMobile ? '40px' : '60px', alignItems: 'start' }}>
                         <div style={{ display: isMobile ? 'contents' : 'block' }}>
                             <div>
@@ -113,7 +113,7 @@ const CourseDetailPage = () => {
                                     {course.category_name || 'Technology'}
                                 </div>
                                 <h1 style={{ fontSize: isSmallMobile ? '2.2rem' : isMobile ? '2.8rem' : '3.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '20px', letterSpacing: '-0.02em' }}>{course.title}</h1>
-                                
+
                                 {/* Restored/Added Social Proof */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '32px', flexWrap: 'wrap' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FFD60A', fontSize: '1.1rem', fontWeight: 700 }}>
@@ -127,7 +127,7 @@ const CourseDetailPage = () => {
                                 <p style={{ fontSize: isSmallMobile ? '1rem' : '1.2rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, marginBottom: '40px', maxWidth: '700px' }}>
                                     {course.description || "Master advanced concepts with expert-led training. This course covers everything from fundamentals to production-grade implementation."}
                                 </p>
-                                
+
                                 <div style={{ display: 'flex', gap: isSmallMobile ? '20px' : '32px', flexWrap: 'wrap' }}>
                                     {sections.map((s, i) => (
                                         <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -180,7 +180,7 @@ const CourseDetailPage = () => {
                                     <GlassCard key={m.id} style={{ padding: '24px', borderRadius: '20px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: (m.lessons?.length > 0 ? '16px' : '0') }}>
                                             <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                <span style={{ fontSize: '0.9rem', fontWeight: 900, color: 'rgba(255,255,255,0.2)' }}>0{i+1}</span>
+                                                <span style={{ fontSize: '0.9rem', fontWeight: 900, color: 'rgba(255,255,255,0.2)' }}>0{i + 1}</span>
                                                 <h4 style={{ fontWeight: 800, fontSize: '1.1rem' }}>{m.title}</h4>
                                             </div>
                                             <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)' }}>{m.lessons?.length} items</span>
@@ -196,108 +196,65 @@ const CourseDetailPage = () => {
                             </div>
                         </section>
 
-                        {/* Enhanced Instructor Section */}
+                        {/* Instructor */}
                         <section id="instructor">
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <Award size={24} color="#0A84FF" /> About Your Instructor
-                            </h2>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '300px 1fr', gap: '40px' }}>
-                                {/* Left Sidebar: Identity & Stats */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                    <GlassCard heavy style={{ padding: '32px', textAlign: 'center', borderRadius: '28px' }}>
-                                        <div style={{ width: '120px', height: '120px', margin: '0 auto 24px', borderRadius: '32px', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '32px' }}>Your Instructor</h2>
+                            <GlassCard style={{ padding: isSmallMobile ? '24px' : '40px', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', flexDirection: isSmallMobile ? 'column' : 'row', gap: isSmallMobile ? '32px' : '48px', alignItems: isSmallMobile ? 'center' : 'flex-start' }}>
+                                    <div style={{ flexShrink: 0, textAlign: 'center' }}>
+                                        <div style={{ width: '120px', height: '120px', borderRadius: '32px', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             {course.instructor_picture ? (
                                                 <img src={course.instructor_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             ) : (
                                                 <UserIcon size={48} color="white" />
                                             )}
                                         </div>
-                                        <Link to={`/instructor/${course.instructor}`} style={{ textDecoration: 'none' }}>
-                                            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '6px', color: 'white' }}>{course.instructor_name}</h3>
-                                        </Link>
-                                        <p style={{ color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.85rem', marginBottom: '24px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                            {course.instructor_title || 'Expert Instructor'}
-                                        </p>
-                                        
                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
                                             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
                                                 <Globe size={16} color="rgba(255,255,255,0.4)" />
                                             </div>
                                             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
-                                                <Linkedin size={16} color="rgba(255,255,255,0.4)" />
-                                            </div>
-                                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer' }}>
                                                 <Mail size={16} color="rgba(255,255,255,0.4)" />
                                             </div>
                                         </div>
-                                    </GlassCard>
-
-                                    {/* Small Stats Card */}
-                                    <GlassCard style={{ padding: '24px', borderRadius: '24px' }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Total Courses</span>
-                                                <span style={{ fontWeight: 800 }}>{course.instructor_courses_count || '1'}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Students</span>
-                                                <span style={{ fontWeight: 800 }}>{course.student_count}+</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>Reviews</span>
-                                                <span style={{ fontWeight: 800 }}>{course.review_count}</span>
-                                            </div>
-                                        </div>
-                                    </GlassCard>
-                                </div>
-
-                                {/* Right Content: Story & Experience */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                                    <div>
-                                        <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <Book size={18} color="var(--accent-blue)" /> About Me
-                                        </h4>
-                                        <p style={{ color: 'white', opacity: 0.7, lineHeight: 1.8, fontSize: '1.05rem', whiteSpace: 'pre-wrap' }}>
+                                    </div>
+                                    <div style={{ textAlign: isSmallMobile ? 'center' : 'left' }}>
+                                        <Link to={`/instructor/${course.instructor}`} style={{ textDecoration: 'none' }}>
+                                            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '6px', color: 'white' }}>{course.instructor_name}</h3>
+                                        </Link>
+                                        <p style={{ color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                            {course.instructor_title || 'Expert Instructor'}
+                                        </p>
+                                        <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '24px' }}>
                                             {course.instructor_bio || 'A dedicated educator focused on delivering high-quality technical curriculum for modern professionals.'}
                                         </p>
+                                        <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: isSmallMobile ? 'center' : 'flex-start', gap: '6px', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.gap = '10px'} onMouseLeave={e => e.currentTarget.style.gap = '6px'}>
+                                            Explore Instructor Profile <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
+                                        </Link>
                                     </div>
-                                    
-                                    <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <h4 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <Briefcase size={18} color="var(--accent-purple)" /> Technical Background
-                                        </h4>
-                                        <div style={{ color: 'white', opacity: 0.7, lineHeight: 1.8, fontSize: '1rem', whiteSpace: 'pre-wrap' }}>
-                                            {course.instructor_experience || 'Extensive professional experience in high-performance software engineering and architecture.'}
-                                        </div>
-                                    </div>
-
-                                    <Link to={`/instructor/${course.instructor}`} style={{ color: 'var(--accent-blue)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', width: 'fit-content' }}>
-                                        Full Instructor Profile <ArrowLeft size={16} style={{ transform: 'rotate(180deg)' }} />
-                                    </Link>
                                 </div>
-                            </div>
+                            </GlassCard>
                         </section>
                     </div>
 
                     {/* Right Info Column (Optional/Extra) */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                             <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>Course Info</h3>
-                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                     <span style={{ color: 'rgba(255,255,255,0.4)' }}>Quizzes</span>
-                                     <span style={{ fontWeight: 700 }}>{course.total_quizzes}</span>
-                                 </div>
-                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                     <span style={{ color: 'rgba(255,255,255,0.4)' }}>Assignments</span>
-                                     <span style={{ fontWeight: 700 }}>{course.total_assignments}</span>
-                                 </div>
-                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                     <span style={{ color: 'rgba(255,255,255,0.4)' }}>Student Level</span>
-                                     <span style={{ fontWeight: 700 }}>All Levels</span>
-                                 </div>
-                             </div>
+                            <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>Course Info</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>Quizzes</span>
+                                    <span style={{ fontWeight: 700 }}>{course.total_quizzes}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>Assignments</span>
+                                    <span style={{ fontWeight: 700 }}>{course.total_assignments}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>Student Level</span>
+                                    <span style={{ fontWeight: 700 }}>All Levels</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div style={{ padding: '24px', background: 'rgba(10, 132, 255, 0.05)', borderRadius: '24px', border: '1px solid rgba(10, 132, 255, 0.1)' }}>
@@ -331,16 +288,16 @@ const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolli
             </div>
             <p style={{ fontSize: '0.9rem', color: '#30D158', fontWeight: 700, marginTop: '8px' }}>Full lifetime access</p>
         </div>
-        
-        <GlassButton 
-            variant="primary" 
+
+        <GlassButton
+            variant="primary"
             style={{ width: '100%', py: '18px', fontSize: '1.1rem', borderRadius: '16px', fontWeight: 800 }}
             onClick={handleEnroll}
             disabled={enrolling}
         >
             {isEnrolled ? 'Go to Classroom' : (enrolling ? 'Enrolling...' : 'Enroll Now')}
         </GlassButton>
-        
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
                 <CheckCircle size={14} color="#30D158" /> Access on mobile and TV
@@ -349,7 +306,7 @@ const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolli
                 <CheckCircle size={14} color="#30D158" /> Certificate of completion
             </div>
         </div>
-        
+
         <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
             30-Day Money-Back Guarantee
         </p>
