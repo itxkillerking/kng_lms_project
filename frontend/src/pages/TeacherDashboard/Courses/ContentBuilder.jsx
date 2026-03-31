@@ -149,7 +149,7 @@ export const ContentBuilder = () => {
     if (loading) return <div>Loading Builder...</div>;
 
     return (
-        <div className="animate-fade-in">
+        <div className="animate-fade-in" style={{ height: '100%', overflowY: 'auto', paddingRight: '10px' }}>
             <Link to="/teacher/courses" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', textDecoration: 'none', marginBottom: '32px' }}>
                 <ChevronLeft size={20} /> Back to Courses
             </Link>
@@ -228,7 +228,7 @@ export const ContentBuilder = () => {
             {/* Lesson Modal */}
             {showLessonModal && (
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-                    <GlassCard style={{ width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden' }} className="animate-scale-in">
+                    <GlassCard style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden' }} className="animate-scale-in">
                         <div style={{ padding: '32px 40px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
                             <p style={{ color: 'var(--text-secondary)' }}>Configure your video content and metadata.</p>

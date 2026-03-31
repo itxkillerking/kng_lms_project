@@ -38,6 +38,7 @@ class Assignment(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='assignments')
     title = models.CharField(max_length=255)
     instructions_text = models.TextField()
+    resource_url = models.URLField(max_length=500, blank=True, null=True, help_text="Google Drive link for project materials")
     max_score = models.PositiveIntegerField(default=100)
     deadline = models.DateTimeField(blank=True, null=True)
     allowed_file_types = models.CharField(max_length=255, default=".pdf,.zip,.doc,.docx", help_text="Comma-separated extensions")

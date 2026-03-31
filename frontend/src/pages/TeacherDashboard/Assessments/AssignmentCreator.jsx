@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { GlassCard } from '../../../components/common/GlassCard';
 import { GlassButton } from '../../../components/common/GlassButton';
-import { ChevronLeft, Save, FileText, Calendar, Trophy, AlertCircle, Plus, Trash2, UploadCloud, X } from 'lucide-react';
+import { ChevronLeft, Save, FileText, Calendar, Trophy, AlertCircle, Plus, Trash2, UploadCloud, X, Cloud, Link as LinkIcon } from 'lucide-react';
 import api from '../../../services/api';
 
 export const AssignmentCreator = () => {
@@ -19,10 +19,9 @@ export const AssignmentCreator = () => {
         instructions_text: '',
         max_score: 100,
         deadline: '',
-        allowed_file_types: '.pdf,.zip,.doc,.docx'
+        allowed_file_types: '.pdf,.zip,.doc,.docx',
+        resource_url: ''
     });
-    const [attachmentFiles, setAttachmentFiles] = useState([]);
-    const [existingAttachments, setExistingAttachments] = useState([]);
 
     const [allCourses, setAllCourses] = useState([]);
     const moduleId = searchParams.get('module');
@@ -53,9 +52,9 @@ export const AssignmentCreator = () => {
                     instructions_text: res.data.instructions_text,
                     max_score: res.data.max_score,
                     deadline: res.data.deadline ? res.data.deadline.slice(0, 16) : '',
-                    allowed_file_types: res.data.allowed_file_types
+                    allowed_file_types: res.data.allowed_file_types,
+                    resource_url: res.data.resource_url || ''
                 });
-                setExistingAttachments(res.data.attachments || []);
                 setLoading(false);
             }).catch(err => {
                 console.error(err);
@@ -64,47 +63,15 @@ export const AssignmentCreator = () => {
         }
     }, [courseId, editId, moduleId]);
 
-    const handleFileChange = (e) => {
-        if (e.target.files) {
-            setAttachmentFiles([...attachmentFiles, ...Array.from(e.target.files)]);
-        }
-    };
-
-    const removeNewFile = (index) => {
-        setAttachmentFiles(attachmentFiles.filter((_, i) => i !== index));
-    };
-
-    const removeExistingAttachment = async (id) => {
-        if (!window.confirm("Delete this attachmentPermanently?")) return;
-        try {
-            await api.delete(`assignment-attachments/${id}/`);
-            setExistingAttachments(existingAttachments.filter(a => a.id !== id));
-        } catch (err) {
-            alert("Failed to delete attachment");
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            let assignmentId = editId;
             if (editId) {
                 await api.patch(`assignments/${editId}/`, formData);
             } else {
-                const res = await api.post('assignments/', formData);
-                assignmentId = res.data.id;
-            }
-
-            // Upload new attachments
-            for (const file of attachmentFiles) {
-                const fData = new FormData();
-                fData.append('assignment', assignmentId);
-                fData.append('file', file);
-                fData.append('filename', file.name);
-                await api.post('assignment-attachments/', fData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.post('assignments/', formData);
             }
 
             navigate('/teacher/assessments');
@@ -194,42 +161,30 @@ export const AssignmentCreator = () => {
                             </div>
                         </GlassCard>
 
-                        {/* Multiple File Upload Section */}
+                        {/* Google Drive Resource Section */}
                         <GlassCard style={{ padding: 'clamp(20px, 4vw, 32px)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <Plus size={18} color="var(--accent-blue)" /> Resources & Templates
-                                </h3>
-                                <GlassButton type="button" onClick={() => document.getElementById('assignment-files').click()} style={{ fontSize: '0.85rem', gap: '8px' }}>
-                                    <UploadCloud size={16} /> Add Files
-                                </GlassButton>
-                                <input id="assignment-files" type="file" multiple style={{ display: 'none' }} onChange={handleFileChange} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                                <Cloud size={20} color="var(--accent-blue)" />
+                                <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Project Resources (Google Drive)</h3>
                             </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {existingAttachments.map(file => (
-                                    <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <FileText size={16} color="var(--success)" />
-                                            <span style={{ fontSize: '0.9rem', color: 'white' }}>{file.filename}</span>
-                                        </div>
-                                        <button type="button" onClick={() => removeExistingAttachment(file.id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}><Trash2 size={16} /></button>
-                                    </div>
-                                ))}
-                                {attachmentFiles.map((file, index) => (
-                                    <div key={`new-${index}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(10, 132, 255, 0.05)', border: '1px solid var(--accent-blue)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <FileText size={16} color="var(--accent-blue)" />
-                                            <span style={{ fontSize: '0.9rem', color: 'white' }}>{file.name}</span>
-                                            <span style={{ fontSize: '0.7rem', color: 'var(--accent-blue)', fontWeight: 600 }}>(NEW)</span>
-                                        </div>
-                                        <button type="button" onClick={() => removeNewFile(index)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}><X size={16} /></button>
-                                    </div>
-                                ))}
-                                {attachmentFiles.length === 0 && existingAttachments.length === 0 && (
-                                    <p style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>No attachments added yet.</p>
-                                )}
+                            
+                            <div style={{ position: 'relative' }}>
+                                <input 
+                                    className="glass-input" 
+                                    style={{ width: '100%', paddingLeft: '48px', color: 'white' }}
+                                    placeholder="Paste Google Drive sharing link for resources..."
+                                    value={formData.resource_url}
+                                    onChange={e => setFormData({...formData, resource_url: e.target.value})}
+                                />
+                                <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>
+                                    <LinkIcon size={18} color="var(--accent-blue)" />
+                                </div>
                             </div>
+                            
+                            <p style={{ marginTop: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                <AlertCircle size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                                Direct file uploads are disabled to save server space. Use Google Drive for large PDFs, ZIPs, or project templates.
+                            </p>
                         </GlassCard>
                     </div>
 
