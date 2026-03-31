@@ -10,10 +10,12 @@ import {
     ShieldCheck,
     ChevronRight,
     Menu,
-    X
+    X,
+    MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { GlassCard } from '../../../components/common/GlassCard';
+import { NotificationBadge } from '../../../components/common/NotificationBadge';
 
 export const AdminSidebar = ({ isOpen, setIsOpen }) => {
     const { logout, user } = useAuth();
@@ -21,6 +23,7 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
 
     const navItems = [
         { label: 'Analytics', path: '/admin', icon: BarChart3, end: true },
+        { label: 'Direct Messages', path: '/chat', icon: MessageSquare, badge: true },
         { label: 'User Control', path: '/admin/users', icon: Users },
         { label: 'Course Management', path: '/admin/courses', icon: BookOpen },
         { label: 'Course Moderation', path: '/admin/moderation', icon: ShieldCheck },

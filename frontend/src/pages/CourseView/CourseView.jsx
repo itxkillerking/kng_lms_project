@@ -147,11 +147,10 @@ const CourseView = () => {
                         borderBottom: '1px solid rgba(255,255,255,0.05)'
                     }}>
                         {activeItem.video_url ? (
-                            <video 
-                                controls 
-                                autoPlay
-                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                                src={activeItem.video_url}
+                            <StrictVideoPlayer 
+                                src={activeItem.video_url} 
+                                onComplete={handleToggleComplete} 
+                                lessonId={activeItem.id} 
                             />
                         ) : (
                             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)' }}>
@@ -237,10 +236,10 @@ const CourseView = () => {
                                 </GlassCard>
 
                                 <div style={{ marginTop: '20px' }}>
-                                    <ReviewSection courseId={id} />
+                                    <CommentSection lessonId={activeItem.id} />
                                 </div>
                             </div>
-
+...
                             {/* Sidebar / Resources */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <GlassCard style={{ padding: '24px', borderRadius: '24px', border: '1px solid rgba(10, 132, 255, 0.1)' }}>

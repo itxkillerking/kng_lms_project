@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Module, Lesson, Announcement, Category, Review
+from .models import Course, Module, Lesson, Announcement, Category, Review, LessonComment
 from django.db.models import Avg
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -23,10 +23,40 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('student',)
 
+class LessonCommentSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    user_role = serializers.CharField(source='user.role', read_only=True)
+    user_picture = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LessonComment
+        fields = ['id', 'lesson', 'user', 'user_name', 'user_role', 'user_picture', 'content', 'parent', 'replies', 'created_at']
+        read_only_fields = ('user',)
+
+    def get_user_picture(self, obj):
+        if obj.user and obj.user.profile_picture:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.user.profile_picture.url)
+            return f"http://localhost:8000{obj.user.profile_picture.url}"
+        return None
+
+    def get_replies(self, obj):
+        if obj.parent is None:
+            return LessonCommentSerializer(obj.replies.all(), many=True, context=self.context).data
+        return []
+
 class LessonSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField()
+    
     class Meta:
         model = Lesson
         fields = '__all__'
+
+    def get_comments(self, obj):
+        comments = obj.comments.filter(parent=None)
+        return LessonCommentSerializer(comments, many=True, context=self.context).data
 
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)

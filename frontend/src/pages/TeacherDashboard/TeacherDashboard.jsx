@@ -53,6 +53,7 @@ const TeacherDashboard = () => {
   const navItems = [
     { label: 'Overview', path: '/teacher', icon: Layout },
     { label: 'My Students', path: '/teacher/students', icon: Users },
+    { label: 'Direct Messages', path: '/chat', icon: MessageSquare, badge: true },
     { label: 'My Courses', path: '/teacher/courses', icon: BookOpen },
     { label: 'Quizzes & Assignments', path: '/teacher/assessments', icon: FileText },
     { label: 'Grading', path: '/teacher/grading', icon: CheckSquare },

@@ -1,14 +1,30 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from users.permissions import IsSuperAdmin
-from .models import Course, Module, Lesson, Announcement, Category, Review
+from .models import Course, Module, Lesson, Announcement, Category, Review, LessonComment, CourseEnrollment
 from .serializers import (
     CourseSerializer, ModuleSerializer, LessonSerializer, 
-    AnnouncementSerializer, CategorySerializer, ReviewSerializer
+    AnnouncementSerializer, CategorySerializer, ReviewSerializer,
+    LessonCommentSerializer
 )
 from .recommendations import get_suggested_courses
+
+class LessonCommentViewSet(viewsets.ModelViewSet):
+    queryset = LessonComment.objects.all().order_by('-created_at')
+    serializer_class = LessonCommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lesson_id = self.request.query_params.get('lesson_id')
+        if lesson_id:
+            queryset = queryset.filter(lesson_id=lesson_id)
+        return queryset
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.select_related('instructor', 'category').prefetch_related('modules', 'modules__lessons')

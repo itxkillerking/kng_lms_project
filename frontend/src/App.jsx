@@ -22,6 +22,7 @@ const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard/TeacherDash
 const Profile = lazy(() => import('./pages/Dashboard/Profile/Profile'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard/AdminDashboard'));
 const About = lazy(() => import('./pages/About/About'));
+const ChatHub = lazy(() => import('./pages/Messaging/ChatHub').then(module => ({ default: module.ChatHub })));
 
 // Simple loading fallback
 const PageLoader = () => (
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/gradebook" element={<Gradebook />} />
                 <Route path="/certificates" element={<Certificates />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/chat" element={<ChatHub />} />
                 <Route element={<AdminRoute />}>
                   <Route path="/admin/*" element={<AdminDashboard />} />
                 </Route>

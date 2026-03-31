@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/certificates/', include('certificates.urls')),
     path('api/progress/', include('progress.urls')),
     path('api/core/', include('core_settings.urls')),
+    path('api/chat/', include('messaging.urls')),
 ]
 
 from django.urls import re_path

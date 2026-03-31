@@ -53,7 +53,12 @@ INSTALLED_APPS = [
     'progress',
     'certificates',
     'core_settings',
+    'messaging',
 ]
+
+# Increase upload limits for large educational files (400 MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 419430400
+FILE_UPLOAD_MAX_MEMORY_SIZE = 419430400
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

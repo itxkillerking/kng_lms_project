@@ -181,6 +181,11 @@ const Dashboard = () => {
                         flexWrap: 'wrap', 
                         width: isTablet ? '100%' : 'auto' 
                     }}>
+                        <Link to="/chat" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
+                            <GlassButton wide style={{ borderRadius: '16px', border: '1px solid rgba(10, 132, 255, 0.1)', padding: '14px 28px', color: '#0A84FF', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <MessageSquare size={18} /> Direct Messages <NotificationBadge />
+                            </GlassButton>
+                        </Link>
                         <Link to="/profile" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
                             <GlassButton wide style={{ borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.05)', padding: '14px 28px' }}>
                                 Profile Settings
