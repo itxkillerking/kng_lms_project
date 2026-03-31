@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 
-export const NotificationBadge = ({ count: manualCount }) => {
+const NotificationBadge = ({ count: manualCount }) => {
     const [unreadCount, setUnreadCount] = useState(manualCount || 0);
 
     useEffect(() => {
@@ -42,3 +42,5 @@ export const NotificationBadge = ({ count: manualCount }) => {
         </span>
     );
 };
+
+export default NotificationBadge;
