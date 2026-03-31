@@ -23,6 +23,8 @@ class User(AbstractUser):
     experience = models.TextField(blank=True, help_text="Professional experience and history")
     phone_number = models.CharField(max_length=15, blank=True)
     joined_at = models.DateTimeField(default=timezone.now)
+    website_url = models.URLField(max_length=255, blank=True)
+    linkedin_url = models.URLField(max_length=255, blank=True)
     
     class Meta:
         indexes = [

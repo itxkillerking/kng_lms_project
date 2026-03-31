@@ -4,7 +4,7 @@ from .models import User, UserActivityLog, SuspensionRequest
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'role', 'first_name', 'last_name', 'bio', 'profile_picture', 'phone_number', 'instructor_title', 'experience', 'joined_at', 'is_verified_teacher', 'account_status', 'email_verified')
+        fields = ('id', 'username', 'email', 'role', 'first_name', 'last_name', 'bio', 'profile_picture', 'phone_number', 'instructor_title', 'experience', 'joined_at', 'is_verified_teacher', 'account_status', 'email_verified', 'website_url', 'linkedin_url')
         read_only_fields = ('joined_at',) # role is now manageable via admin actions
 
 class UserActivityLogSerializer(serializers.ModelSerializer):
@@ -46,5 +46,5 @@ class PublicProfileSerializer(serializers.ModelSerializer):
     """Serializer for public instructor profile viewing."""
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'role', 'bio', 'profile_picture', 'instructor_title', 'experience')
+        fields = ('id', 'username', 'first_name', 'last_name', 'role', 'bio', 'profile_picture', 'instructor_title', 'experience', 'website_url', 'linkedin_url')
         read_only_fields = ('id', 'username')

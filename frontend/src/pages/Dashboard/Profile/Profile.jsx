@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { GlassCard } from '../../../components/common/GlassCard';
 import { GlassButton } from '../../../components/common/GlassButton';
-import { User as UserIcon, Mail, Phone, Calendar, Edit3, Save, X, Camera, Shield, ZoomIn, ZoomOut, Check } from 'lucide-react';
+import { User as UserIcon, Mail, Phone, Calendar, Edit3, Save, X, Camera, Shield, ZoomIn, ZoomOut, Check, Globe, Linkedin } from 'lucide-react';
 import api from '../../../services/api';
 import Cropper from 'react-easy-crop';
 import { getCroppedImgBlob } from '../../../utils/cropImage';
@@ -30,7 +30,9 @@ const Profile = () => {
         bio: '',
         phone_number: '',
         instructor_title: '',
-        experience: ''
+        experience: '',
+        website_url: '',
+        linkedin_url: ''
     });
 
     // Image Crop State
@@ -49,7 +51,9 @@ const Profile = () => {
                 phone_number: user.phone_number || '',
                 email: user.email || '',
                 instructor_title: user.instructor_title || '',
-                experience: user.experience || ''
+                experience: user.experience || '',
+                website_url: user.website_url || '',
+                linkedin_url: user.linkedin_url || ''
             });
         }
     }, [user]);
@@ -252,6 +256,36 @@ const Profile = () => {
                                             <Phone size={16} color="#0A84FF" />
                                         </div>
                                         {user.phone_number || <span style={{ color: 'rgba(255,255,255,0.3)' }}>No phone number added</span>}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Social Links Section */}
+                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '32px', marginTop: '32px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <label style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Website Portfolio URL</label>
+                                {isEditing ? (
+                                    <input className="glass-input" placeholder="https://example.com" value={formData.website_url} onChange={e => setFormData({...formData, website_url: e.target.value})} style={{ background: 'rgba(255,255,255,0.03)' }} />
+                                ) : (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.1rem', fontWeight: 500, padding: '4px 0' }}>
+                                        <div style={{ background: 'rgba(10, 132, 255, 0.1)', padding: '6px', borderRadius: '8px' }}>
+                                            <Globe size={16} color="#0A84FF" />
+                                        </div>
+                                        {user.website_url ? <a href={user.website_url} target="_blank" rel="noreferrer" style={{ color: 'white', textDecoration: 'none', borderBottom: '1px solid #0A84FF' }}>Visit Website</a> : <span style={{ color: 'rgba(255,255,255,0.3)' }}>No link added</span>}
+                                    </div>
+                                )}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <label style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>LinkedIn Profile URL</label>
+                                {isEditing ? (
+                                    <input className="glass-input" placeholder="https://linkedin.com/in/username" value={formData.linkedin_url} onChange={e => setFormData({...formData, linkedin_url: e.target.value})} style={{ background: 'rgba(255,255,255,0.03)' }} />
+                                ) : (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.1rem', fontWeight: 500, padding: '4px 0' }}>
+                                        <div style={{ background: 'rgba(10, 132, 255, 0.1)', padding: '6px', borderRadius: '8px' }}>
+                                            <Linkedin size={16} color="#0A84FF" />
+                                        </div>
+                                        {user.linkedin_url ? <a href={user.linkedin_url} target="_blank" rel="noreferrer" style={{ color: 'white', textDecoration: 'none', borderBottom: '1px solid #0A84FF' }}>View Profile</a> : <span style={{ color: 'rgba(255,255,255,0.3)' }}>No link added</span>}
                                     </div>
                                 )}
                             </div>

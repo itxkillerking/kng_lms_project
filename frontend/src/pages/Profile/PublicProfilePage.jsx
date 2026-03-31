@@ -82,9 +82,24 @@ const PublicProfilePage = () => {
                             </p>
                             
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-                                {[Globe, Linkedin, Mail].map((Icon, i) => (
-                                    <div key={i} style={{ width: '44px', height: '44px', borderRadius: '14px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-                                        <Icon size={18} color="rgba(255,255,255,0.6)" />
+                                {[
+                                    { Icon: Globe, url: profile.website_url },
+                                    { Icon: Linkedin, url: profile.linkedin_url },
+                                    { Icon: Mail, url: profile.email ? `mailto:${profile.email}` : null }
+                                ].map((item, i) => (
+                                    <div 
+                                        key={i} 
+                                        onClick={() => item.url && window.open(item.url, '_blank')}
+                                        style={{ 
+                                            width: '44px', height: '44px', borderRadius: '14px', 
+                                            background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                            border: '1px solid rgba(255,255,255,0.08)', cursor: item.url ? 'pointer' : 'default', transition: 'all 0.2s',
+                                            opacity: item.url ? 1 : 0.3
+                                        }} 
+                                        onMouseEnter={e => { if(item.url) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)'; } }} 
+                                        onMouseLeave={e => { if(item.url) { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; } }}
+                                    >
+                                        <item.Icon size={18} color="rgba(255,255,255,0.6)" />
                                     </div>
                                 ))}
                             </div>
