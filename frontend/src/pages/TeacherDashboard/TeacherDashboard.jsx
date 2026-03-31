@@ -148,6 +148,7 @@ const TeacherDashboard = () => {
               >
                 <Icon size={20} color={isActive ? '#0A84FF' : 'currentColor'} />
                 <span style={{ fontWeight: isActive ? 700 : 500, fontSize: '0.95rem' }}>{item.label}</span>
+                {item.badge && <NotificationBadge style={{ marginLeft: '8px' }} />}
                 {isActive && <ChevronRight size={16} style={{ marginLeft: 'auto' }} color="#0A84FF" />}
               </Link>
             );

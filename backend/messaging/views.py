@@ -22,16 +22,44 @@ class MessagingViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def conversations(self, request):
-        """Get a list of all users the current user has chatted with."""
+        """Get a list of all users the current user has chatted with, plus contextual contacts."""
         user = request.user
-        # Get all users involved in messages with current user
+        # 1. Get real conversation partners (anyone they've already chatted with)
         sent_to = Message.objects.filter(sender=user).values_list('recipient', flat=True)
         received_from = Message.objects.filter(recipient=user).values_list('sender', flat=True)
         all_contact_ids = set(list(sent_to) + list(received_from))
         
+        # 2. Role-based contact discovery
+        from courses.models import CourseEnrollment
+        
+        if user.role == 'admin':
+            # Admins can see all active users
+            all_users = User.objects.filter(account_status='active').exclude(id=user.id).values_list('id', flat=True)
+            all_contact_ids.update(all_users)
+        elif user.role == 'instructor':
+            # Instructors see students in their courses
+            my_students = CourseEnrollment.objects.filter(course__instructor=user).values_list('student', flat=True)
+            all_contact_ids.update(my_students)
+            # Instructors also see all admins
+            admins = User.objects.filter(role='admin').exclude(id=user.id).values_list('id', flat=True)
+            all_contact_ids.update(admins)
+        elif user.role == 'student':
+            # Students see instructors of enrolled courses
+            enrolled_instructors = CourseEnrollment.objects.filter(student=user).values_list('course__instructor', flat=True)
+            all_contact_ids.update(enrolled_instructors)
+            # Students also see all admins
+            admins = User.objects.filter(role='admin').exclude(id=user.id).values_list('id', flat=True)
+            all_contact_ids.update(admins)
+
         results = []
         for contact_id in all_contact_ids:
-            contact = User.objects.get(id=contact_id)
+            if contact_id == user.id: continue # Don't chat with self
+            
+            try:
+                contact = User.objects.get(id=contact_id)
+            except User.DoesNotExist:
+                continue
+
             last_msg = Message.objects.filter(
                 Q(sender=user, recipient=contact) | Q(sender=contact, recipient=user)
             ).last()
@@ -41,15 +69,20 @@ class MessagingViewSet(viewsets.ModelViewSet):
             results.append({
                 'other_user_id': contact.id,
                 'other_user_name': f"{contact.first_name} {contact.last_name}".strip() or contact.username,
-                'other_user_picture': contact.profile_picture.url if contact.profile_picture else None,
+                'other_user_picture': request.build_absolute_uri(contact.profile_picture.url) if contact.profile_picture else None,
                 'other_user_role': contact.role,
-                'last_message': last_msg.content[:50] if last_msg.content else "File attachment",
-                'last_timestamp': last_msg.timestamp,
+                'last_message': last_msg.content[:50] if last_msg and last_msg.content else ("File attachment" if last_msg else "Start a new conversation..."),
+                'last_timestamp': last_msg.timestamp if last_msg else None,
                 'unread_count': unread
             })
         
-        # Sort by latest message
-        results.sort(key=lambda x: x['last_timestamp'], reverse=True)
+        # Sort: Active conversations first, then suggested ones
+        results.sort(key=lambda x: (x['last_timestamp'] is None, x['last_timestamp'] if x['last_timestamp'] else 0), reverse=True)
+        # Note: reverse=True with None logic might need care. 
+        # Actually x['last_timestamp'] is None will be True (1) or False (0).
+        # Better:
+        results.sort(key=lambda x: x['last_timestamp'].timestamp() if x['last_timestamp'] else 0, reverse=True)
+        
         return Response(results)
 
     @action(detail=False, methods=['get'])

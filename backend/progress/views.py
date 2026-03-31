@@ -3,12 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import UserLessonProgress
+from .serializers import UserLessonProgressSerializer
 from courses.models import Lesson, CourseEnrollment
 from certificates.models import Certificate
 from django.utils import timezone
 
 class UserLessonProgressViewSet(viewsets.ModelViewSet):
     queryset = UserLessonProgress.objects.all()
+    serializer_class = UserLessonProgressSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

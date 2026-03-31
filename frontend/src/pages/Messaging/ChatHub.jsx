@@ -126,9 +126,22 @@ export const ChatHub = () => {
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                     <span style={{ fontWeight: 800, fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{conv.other_user_name}</span>
-                                    <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>{new Date(conv.last_timestamp).getHours()}:{new Date(conv.last_timestamp).getMinutes().toString().padStart(2, '0')}</span>
+                                    {conv.last_timestamp && (
+                                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>
+                                            {new Date(conv.last_timestamp).getHours()}:{new Date(conv.last_timestamp).getMinutes().toString().padStart(2, '0')}
+                                        </span>
+                                    )}
                                 </div>
-                                <p style={{ fontSize: '0.85rem', color: conv.unread_count > 0 ? '#0A84FF' : 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: conv.unread_count > 0 ? 700 : 400 }}>{conv.last_message}</p>
+                                <p style={{ 
+                                    fontSize: '0.85rem', 
+                                    color: conv.unread_count > 0 ? '#0A84FF' : (conv.last_timestamp ? 'rgba(255,255,255,0.4)' : '#30D158'), 
+                                    whiteSpace: 'nowrap', 
+                                    overflow: 'hidden', 
+                                    textOverflow: 'ellipsis', 
+                                    fontWeight: (conv.unread_count > 0 || !conv.last_timestamp) ? 700 : 400 
+                                }}>
+                                    {conv.last_message}
+                                </p>
                             </div>
                         </div>
                     ))}
