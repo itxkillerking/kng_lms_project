@@ -8,10 +8,12 @@ from .views import (
     RegisterView, CurrentUserView, AdminUserViewSet,
     CustomTokenObtainPairView, LogoutView,
     RequestOTPView, VerifyOTPView,
+    InstructorStudentsView, SuspensionRequestViewSet
 )
 
 router = DefaultRouter()
 router.register('admin', AdminUserViewSet, basename='admin-users')
+router.register('suspension-requests', SuspensionRequestViewSet, basename='suspension-requests')
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -21,5 +23,6 @@ urlpatterns = [
     path('me/', CurrentUserView.as_view(), name='current_user'),
     path('otp/request/', RequestOTPView.as_view(), name='request_otp'),
     path('otp/verify/', VerifyOTPView.as_view(), name='verify_otp'),
+    path('instructor-students/', InstructorStudentsView.as_view(), name='instructor_students'),
     path('', include(router.urls)),
 ]

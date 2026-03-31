@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView as BaseTokenObtainPairView
-from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer
-from .models import User, UserActivityLog, UserOTP
+from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer, SuspensionRequestSerializer
+from .models import User, UserActivityLog, UserOTP, SuspensionRequest
 from .permissions import IsSuperAdmin
 from .communication import (
     send_registration_email,
@@ -196,3 +196,72 @@ class VerifyOTPView(generics.GenericAPIView):
             return Response({'status': 'Email verified successfully'})
 
         return Response({'status': 'OTP verified successfully'})
+
+# ── Instructor Students and Suspension Requests Endpoint ──────────────────
+
+from courses.models import CourseEnrollment
+
+class InstructorStudentsView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role != 'instructor':
+            return Response([])
+        
+        # Get all enrollments for courses taught by this instructor
+        enrollments = CourseEnrollment.objects.filter(
+            course__instructor=request.user
+        ).select_related('student', 'course')
+        
+        data = []
+        for e in enrollments:
+            data.append({
+                'enrollment_id': e.id,
+                'student_id': e.student.id,
+                'student_name': f"{e.student.first_name} {e.student.last_name}".strip() or e.student.username,
+                'student_username': e.student.username,
+                'student_email': e.student.email,
+                'course_title': e.course.title,
+                'course_id': e.course.id,
+                'progress': e.progress_percentage,
+                'enrolled_at': e.enrolled_at,
+                'account_status': e.student.account_status,
+            })
+        return Response(data)
+
+class SuspensionRequestViewSet(viewsets.ModelViewSet):
+    serializer_class = SuspensionRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return SuspensionRequest.objects.none()
+        if self.request.user.role == 'admin':
+            return SuspensionRequest.objects.all().order_by('-created_at')
+        return SuspensionRequest.objects.filter(instructor=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(instructor=self.request.user)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def approve(self, request, pk=None):
+        req = self.get_object()
+        req.status = 'approved'
+        req.resolved_at = timezone.now()
+        req.save()
+        
+        # Automatically suspend student account
+        student = req.student
+        student.account_status = 'suspended'
+        student.save()
+        
+        return Response({'status': 'Approved and User Suspended'})
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def reject(self, request, pk=None):
+        req = self.get_object()
+        req.status = 'rejected'
+        req.resolved_at = timezone.now()
+        req.save()
+        
+        return Response({'status': 'Rejected'})

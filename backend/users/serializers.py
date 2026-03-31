@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserActivityLog
+from .models import User, UserActivityLog, SuspensionRequest
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,3 +31,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             role='student' # Default role
         )
         return user
+
+class SuspensionRequestSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.get_full_name', read_only=True)
+    student_username = serializers.CharField(source='student.username', read_only=True)
+    instructor_name = serializers.CharField(source='instructor.get_full_name', read_only=True)
+
+    class Meta:
+        model = SuspensionRequest
+        fields = '__all__'
+        read_only_fields = ('instructor', 'status', 'created_at', 'resolved_at')

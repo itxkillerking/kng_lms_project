@@ -15,6 +15,7 @@ import { AssignmentCreator } from './Assessments/AssignmentCreator';
 import { SubmissionInbox } from './Grading/SubmissionInbox';
 import { ManualGrader } from './Grading/ManualGrader';
 import { AnnouncementManager } from './Announcements/AnnouncementManager';
+import { StudentManager } from './Students/StudentManager';
 
 const TeacherDashboard = () => {
   const { user, logout } = useAuth();
@@ -51,6 +52,7 @@ const TeacherDashboard = () => {
 
   const navItems = [
     { label: 'Overview', path: '/teacher', icon: Layout },
+    { label: 'My Students', path: '/teacher/students', icon: Users },
     { label: 'My Courses', path: '/teacher/courses', icon: BookOpen },
     { label: 'Quizzes & Assignments', path: '/teacher/assessments', icon: FileText },
     { label: 'Grading', path: '/teacher/grading', icon: CheckSquare },
@@ -181,6 +183,7 @@ const TeacherDashboard = () => {
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <Routes>
             <Route path="/" element={<TeacherOverview />} />
+            <Route path="/students" element={<StudentManager />} />
             <Route path="/courses" element={<CourseManager />} />
             <Route path="/courses/create" element={<CourseCreator />} />
             <Route path="/courses/:courseId/content" element={<ContentBuilder />} />

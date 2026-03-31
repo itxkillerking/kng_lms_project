@@ -27,6 +27,7 @@ import { GlassSelect } from '../../../components/common/GlassSelect';
 export const UserControlPanel = () => {
     const [users, setUsers] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
+    const [suspensionRequests, setSuspensionRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('all');
@@ -36,12 +37,14 @@ export const UserControlPanel = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [usersRes, logsRes] = await Promise.all([
+            const [usersRes, logsRes, suspensionRes] = await Promise.all([
                 api.get('users/admin/'),
-                api.get('users/admin/activity_logs/')
+                api.get('users/admin/activity_logs/'),
+                api.get('users/suspension-requests/')
             ]);
             setUsers(Array.isArray(usersRes.data) ? usersRes.data : usersRes.data.results || []);
             setActivityLogs(Array.isArray(logsRes.data) ? logsRes.data : []);
+            setSuspensionRequests(Array.isArray(suspensionRes.data) ? suspensionRes.data : suspensionRes.data.results || []);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -60,6 +63,17 @@ export const UserControlPanel = () => {
         } catch (error) {
             console.error(`Error performing ${action}:`, error);
             alert(`Failed to ${action} user`);
+        }
+    };
+
+    const handleSuspensionAction = async (id, action) => {
+        if (!window.confirm(`Are you sure you want to ${action} this request?`)) return;
+        try {
+            await api.post(`users/suspension-requests/${id}/${action}/`);
+            fetchData();
+        } catch (error) {
+            console.error(`Error performing ${action}:`, error);
+            alert(`Failed to ${action} request`);
         }
     };
 
@@ -139,6 +153,21 @@ export const UserControlPanel = () => {
                         }}
                     >
                         Activity Log
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('suspension')}
+                        style={{ 
+                            padding: '10px 24px', 
+                            borderRadius: '12px', 
+                            border: 'none', 
+                            background: activeTab === 'suspension' ? 'var(--accent-blue)' : 'transparent',
+                            color: 'white',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        Suspension Requests {suspensionRequests.filter(r => r.status === 'pending').length > 0 && `(${suspensionRequests.filter(r => r.status === 'pending').length})`}
                     </button>
                 </div>
             </div>
@@ -381,7 +410,7 @@ export const UserControlPanel = () => {
                         </div>
                     </GlassCard>
                 </>
-            ) : (
+            ) : activeTab === 'logs' ? (
                 <div className="animate-fade-in">
                     <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
                         <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -437,6 +466,93 @@ export const UserControlPanel = () => {
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
                                                     <span style={{ fontSize: '0.75rem', padding: '4px 8px', borderRadius: '6px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>Success</span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </GlassCard>
+                </div>
+            ) : (
+                <div className="animate-fade-in">
+                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <ShieldAlert size={20} color="#ff453a" /> Instructor Suspension Requests
+                            </h3>
+                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)' }}>
+                                Review and moderate student access
+                            </div>
+                        </div>
+                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                    <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Student Profile</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Details & Proof</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Status</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {suspensionRequests.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="4" style={{ padding: '60px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>
+                                                No suspension requests to review.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        suspensionRequests.map((req) => (
+                                            <tr key={req.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <div style={{ color: 'white', fontWeight: 600, marginBottom: '4px' }}>{req.student_name}</div>
+                                                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Requested by: {req.instructor_name}</div>
+                                                    <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', marginTop: '4px' }}>
+                                                        {new Date(req.created_at).toLocaleString()}
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: '20px 24px', maxWidth: '300px' }}>
+                                                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', marginBottom: '8px', lineHeight: 1.4 }}>
+                                                        {req.reason}
+                                                    </p>
+                                                    {req.proof && (
+                                                        <a href={req.proof} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#0A84FF', textDecoration: 'none', background: 'rgba(10, 132, 255, 0.1)', padding: '6px 12px', borderRadius: '8px', fontWeight: 600 }}>
+                                                            View Evidence
+                                                        </a>
+                                                    )}
+                                                </td>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <span style={{ 
+                                                        fontSize: '0.75rem', 
+                                                        padding: '6px 10px', 
+                                                        borderRadius: '8px', 
+                                                        background: req.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : req.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 69, 58, 0.1)', 
+                                                        color: req.status === 'pending' ? '#f59e0b' : req.status === 'approved' ? '#10b981' : '#ff453a',
+                                                        fontWeight: 700,
+                                                        textTransform: 'uppercase'
+                                                    }}>
+                                                        {req.status}
+                                                    </span>
+                                                </td>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    {req.status === 'pending' && (
+                                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                                            <button 
+                                                                onClick={() => handleSuspensionAction(req.id, 'approve')}
+                                                                style={{ background: '#ff453a', border: 'none', color: 'white', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}
+                                                            >
+                                                                Approve Extrusion
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleSuspensionAction(req.id, 'reject')}
+                                                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600 }}
+                                                            >
+                                                                Reject
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))

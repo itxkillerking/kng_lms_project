@@ -93,3 +93,22 @@ class UserActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.action} at {self.timestamp}"
+
+class SuspensionRequest(models.Model):
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submitted_suspension_requests')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='suspension_requests')
+    reason = models.TextField()
+    proof = models.FileField(upload_to='suspension_proofs/', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Suspension Request: {self.student.username} by {self.instructor.username} ({self.status})"
