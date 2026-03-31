@@ -84,6 +84,8 @@ class CourseSerializer(serializers.ModelSerializer):
     instructor_bio = serializers.CharField(source='instructor.bio', read_only=True)
     instructor_experience = serializers.CharField(source='instructor.experience', read_only=True)
     instructor_picture = serializers.SerializerMethodField()
+    instructor_website = serializers.URLField(source='instructor.website_url', read_only=True)
+    instructor_linkedin = serializers.URLField(source='instructor.linkedin_url', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
     average_rating = serializers.SerializerMethodField()
     review_count = serializers.SerializerMethodField()
@@ -130,6 +132,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'moderation_status', 'created_at', 'updated_at', 'category', 'instructor',
             'modules', 'announcements', 'reviews', 'instructor_name', 
             'instructor_title', 'instructor_bio', 'instructor_experience', 'instructor_picture', 
+            'instructor_website', 'instructor_linkedin',
             'category_name', 'average_rating', 'review_count', 'student_count', 'progress',
             'total_lessons', 'total_quizzes', 'total_assignments', 'total_duration_mins'
         ]

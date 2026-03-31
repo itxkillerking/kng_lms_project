@@ -4,7 +4,7 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
-import { PlayCircle, HelpCircle, FileText, Menu, X, ArrowLeft, Loader, CheckCircle, Clock, Download, ChevronRight, Award } from 'lucide-react';
+import { PlayCircle, HelpCircle, FileText, Menu, X, ArrowLeft, Loader, CheckCircle, Clock, Download, ChevronRight, Award, Globe, Linkedin, MessageSquare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { QuizView } from './QuizView';
 import { AssignmentView } from './AssignmentView';
@@ -267,10 +267,34 @@ const CourseView = () => {
                                 <GlassCard style={{ padding: '24px', borderRadius: '24px' }}>
                                     <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', marginBottom: '16px' }}>Course Instructor</h4>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                        <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'rgba(10, 132, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 800, color: '#0A84FF' }}>K</div>
-                                        <div>
-                                            <p style={{ fontWeight: 700, fontSize: '0.95rem' }}>KNG Expert</p>
-                                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Senior Software Architect</p>
+                                        <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'rgba(10, 132, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                                            {course.instructor_picture ? (
+                                                <img src={course.instructor_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0A84FF' }}>
+                                                    {course.instructor_name?.[0] || 'K'}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'white' }}>{course.instructor_name}</p>
+                                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>{course.instructor_title || 'Expert Instructor'}</p>
+                                            
+                                            <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                                {course.instructor_website && (
+                                                    <a href={course.instructor_website} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                        <Globe size={14} />
+                                                    </a>
+                                                )}
+                                                {course.instructor_linkedin && (
+                                                    <a href={course.instructor_linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                        <Linkedin size={14} />
+                                                    </a>
+                                                )}
+                                                <Link to="/chat" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#30D158'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                    <MessageSquare size={14} />
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 </GlassCard>
