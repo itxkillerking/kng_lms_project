@@ -6,7 +6,7 @@ export const FloatingBackButton = () => {
   const navigate = useNavigate();
   const buttonRef = useRef(null);
 
-  // Retrieve saved position or set default (bottom-left)
+  // Retrieve saved position or set default
   const [position, setPosition] = useState(() => {
     const saved = localStorage.getItem('kng_backBtnPos');
     if (saved) return JSON.parse(saved);
@@ -15,93 +15,114 @@ export const FloatingBackButton = () => {
 
   const isDragging = useRef(false);
   const dragStartPos = useRef({ x: 0, y: 0 });
+  const blockClickRef = useRef(false);
 
+  // Native touch and mouse event listeners attached with { passive: false }
   useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    // Handle initial touch / click
+    const handleStart = (e) => {
+      isDragging.current = false;
+      blockClickRef.current = false;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      dragStartPos.current = { x: clientX, y: clientY };
+    };
+
+    // Handle moving the button AND preventing Android pull-to-refresh
+    const handleMove = (e) => {
+      // 1. Force the browser to stop its default swipe-down behavior (fixes android bug)
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      // 2. Perform the drag logic
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      const dx = clientX - dragStartPos.current.x;
+      const dy = clientY - dragStartPos.current.y;
+
+      // Only drag if moved slightly to prevent accidental drags
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        isDragging.current = true;
+        blockClickRef.current = true; // prevent the next click
+        
+        setPosition(prev => {
+          let newX = prev.x + dx;
+          let newY = prev.y + dy;
+          // Keep within window bounds
+          newX = Math.max(10, Math.min(newX, window.innerWidth - 60));
+          newY = Math.max(10, Math.min(newY, window.innerHeight - 60));
+          return { x: newX, y: newY };
+        });
+        
+        dragStartPos.current = { x: clientX, y: clientY };
+      }
+    };
+
+    const handleEnd = (e) => {
+      if (isDragging.current) {
+        // Save new position
+        setPosition(currentPos => {
+           localStorage.setItem('kng_backBtnPos', JSON.stringify(currentPos));
+           return currentPos;
+        });
+      }
+      isDragging.current = false;
+    };
+
+    // Attach ALL events natively using passive: false
+    // Mouse events
+    button.addEventListener('mousedown', handleStart, { passive: false });
+    window.addEventListener('mousemove', handleMove, { passive: false });
+    window.addEventListener('mouseup', handleEnd);
+    
+    // Touch events (Where the real Android bug happens!)
+    button.addEventListener('touchstart', handleStart, { passive: false });
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend', handleEnd);
+    window.addEventListener('touchcancel', handleEnd);
+
+    // Keep it inside screen bounds on resize
     const handleResize = () => {
-      // Snap inside bounds when window resizes
       setPosition(prev => ({
         x: Math.min(prev.x, window.innerWidth - 60),
         y: Math.min(prev.y, window.innerHeight - 60)
       }));
     };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
-  // Force disable native touch scrolling/refreshing exclusively on the button
-  useEffect(() => {
-    const btn = buttonRef.current;
-    const preventNativeScroll = (e) => {
-        e.preventDefault();
-    };
-    if (btn) {
-        // Must use passive: false to allow preventDefault() on touch events
-        btn.addEventListener('touchmove', preventNativeScroll, { passive: false });
-    }
     return () => {
-        if (btn) btn.removeEventListener('touchmove', preventNativeScroll);
+      button.removeEventListener('mousedown', handleStart);
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleEnd);
+      
+      button.removeEventListener('touchstart', handleStart);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchend', handleEnd);
+      window.removeEventListener('touchcancel', handleEnd);
+      
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  const handlePointerDown = (e) => {
-    isDragging.current = false;
-    dragStartPos.current = { x: e.clientX, y: e.clientY };
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e) => {
-    if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
-    
-    const dx = e.clientX - dragStartPos.current.x;
-    const dy = e.clientY - dragStartPos.current.y;
-
-    // Only consider it a drag if moved more than 3px (prevents accidental drag on click)
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-      isDragging.current = true;
-      
-      setPosition(prev => {
-        let newX = prev.x + dx;
-        let newY = prev.y + dy;
-        
-        // Keep within window bounds (assuming button is 50x50)
-        newX = Math.max(10, Math.min(newX, window.innerWidth - 60));
-        newY = Math.max(10, Math.min(newY, window.innerHeight - 60));
-        
-        return { x: newX, y: newY };
-      });
-      
-      dragStartPos.current = { x: e.clientX, y: e.clientY };
-    }
-  };
-
-  const handlePointerUp = (e) => {
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-      // Save new position
-      localStorage.setItem('kng_backBtnPos', JSON.stringify(position));
-    }
-  };
 
   const handleClick = (e) => {
-    // Prevent navigate if the user just finished dragging
-    if (isDragging.current) {
+    // Stop navigation if the user was just dragging the button
+    if (blockClickRef.current) {
         e.preventDefault();
         e.stopPropagation();
+        blockClickRef.current = false; // Reset for next tap
         return;
     }
-    
-    // Fallback: If no browser history exists somehow, send to dashboard or home, 
-    // but navigate(-1) usually handles it natively perfectly.
     navigate(-1);
   };
 
   return (
     <button
       ref={buttonRef}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
       onClick={handleClick}
       style={{
         position: 'fixed',
@@ -120,19 +141,10 @@ export const FloatingBackButton = () => {
         justifyContent: 'center',
         color: 'white',
         cursor: 'grab',
-        touchAction: 'none', // Prevents scrolling while dragging on mobile touch
+        touchAction: 'none', // Secondary shield against scrolling
         userSelect: 'none',
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease', // Only transition color/shadow, NOT position/transform to avoid drag lag
-      }}
-      onMouseEnter={(e) => {
-        if(!isDragging.current) {
-            e.currentTarget.style.boxShadow = '0 12px 40px rgba(10, 132, 255, 0.3)';
-            e.currentTarget.style.borderColor = 'var(--accent-blue)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4)';
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        WebkitUserSelect: 'none',
+        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
       }}
       aria-label="Go Back (Draggable)"
     >
