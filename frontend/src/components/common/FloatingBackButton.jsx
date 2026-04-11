@@ -28,6 +28,21 @@ export const FloatingBackButton = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Force disable native touch scrolling/refreshing exclusively on the button
+  useEffect(() => {
+    const btn = buttonRef.current;
+    const preventNativeScroll = (e) => {
+        e.preventDefault();
+    };
+    if (btn) {
+        // Must use passive: false to allow preventDefault() on touch events
+        btn.addEventListener('touchmove', preventNativeScroll, { passive: false });
+    }
+    return () => {
+        if (btn) btn.removeEventListener('touchmove', preventNativeScroll);
+    };
+  }, []);
+
   const handlePointerDown = (e) => {
     isDragging.current = false;
     dragStartPos.current = { x: e.clientX, y: e.clientY };
