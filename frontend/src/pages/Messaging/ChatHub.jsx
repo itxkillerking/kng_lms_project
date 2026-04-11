@@ -21,6 +21,7 @@ export const ChatHub = () => {
     const [file, setFile] = useState(null);
     const [studentProfile, setStudentProfile] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
+    const [showMobileSidebar, setShowMobileSidebar] = useState(true);
     const chatEndRef = useRef(null);
     const fileInputRef = useRef(null);
     const menuRef = useRef(null);
@@ -104,10 +105,10 @@ export const ChatHub = () => {
     const isInstructor = user?.role === 'instructor';
 
     return (
-        <div style={{ height: 'calc(100vh - 80px)', background: '#0a0a0f', color: 'white', display: 'flex', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 40px 100px rgba(0,0,0,0.6)' }}>
+        <div className="chat-container">
             
             {/* Sidebar: Conversations List */}
-            <div style={{ width: '400px', borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', background: 'rgba(10,10,15,0.4)', backdropFilter: 'blur(30px)' }}>
+            <div className={`chat-sidebar ${!showMobileSidebar ? 'mobile-hidden' : ''}`}>
                 <div style={{ padding: '32px 24px' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '24px' }}>Chats</h2>
                     <div style={{ position: 'relative' }}>
@@ -123,7 +124,12 @@ export const ChatHub = () => {
                     {conversations.map(conv => (
                         <div 
                             key={conv.other_user_id}
-                            onClick={() => setActiveChat(conv)}
+                            onClick={() => {
+                                setActiveChat(conv);
+                                if (window.innerWidth <= 850) {
+                                    setShowMobileSidebar(false);
+                                }
+                            }}
                             style={{ 
                                 padding: '16px 20px', borderRadius: '20px', cursor: 'pointer', transition: 'all 0.2s',
                                 background: activeChat?.other_user_id === conv.other_user_id ? 'rgba(10, 132, 255, 0.1)' : 'transparent',
@@ -164,20 +170,29 @@ export const ChatHub = () => {
             </div>
 
             {/* Chat Area */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(5,5,10,0.4)' }}>
+            <div className="chat-main">
                 {activeChat ? (
                     <>
                         {/* Header */}
                         <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)', position: 'relative', zIndex: 1001 }}>
-                            <div 
-                                style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
-                                onClick={() => {
-                                    const role = activeChat.other_user_role;
-                                    const path = role === 'instructor' ? `/instructor/${activeChat.other_user_id}` : `/profile/${activeChat.other_user_id}`;
-                                    navigate(path);
-                                }}
-                            >
-                                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                {/* Mobile Back Button */}
+                                <button 
+                                    className="mobile-back-btn"
+                                    onClick={() => setShowMobileSidebar(true)}
+                                    style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: window.innerWidth <= 850 ? 'block' : 'none' }}
+                                >
+                                    <ArrowLeft size={24} />
+                                </button>
+                                <div 
+                                    style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
+                                    onClick={() => {
+                                        const role = activeChat.other_user_role;
+                                        const path = role === 'instructor' ? `/instructor/${activeChat.other_user_id}` : `/profile/${activeChat.other_user_id}`;
+                                        navigate(path);
+                                    }}
+                                >
+                                    <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', overflow: 'hidden' }}>
                                     {activeChat.other_user_picture ? <img src={activeChat.other_user_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>{activeChat.other_user_name[0]}</div>}
                                 </div>
                                 <div>
@@ -185,6 +200,7 @@ export const ChatHub = () => {
                                     <p style={{ fontSize: '0.750rem', color: '#30D158', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Online Session</p>
                                 </div>
                             </div>
+                        </div>
                             
                             <div style={{ position: 'relative' }} ref={menuRef}>
                                 <button 
@@ -295,7 +311,7 @@ export const ChatHub = () => {
 
             {/* Instructor Side: Student Info Profile Card */}
             {isInstructor && activeChat && (
-                <div style={{ width: '320px', borderLeft: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10,10,15,0.4)', padding: '40px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div className="chat-instructor">
                     <div style={{ width: '120px', height: '120px', borderRadius: '32px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', overflow: 'hidden', marginBottom: '24px', position: 'relative' }}>
                          {activeChat.other_user_picture ? <img src={activeChat.other_user_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '2rem' }}>{activeChat.other_user_name[0]}</div>}
                     </div>

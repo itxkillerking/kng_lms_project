@@ -33,6 +33,7 @@ const PageLoader = () => (
 );
 
 import { EmailFloat } from './components/common/EmailFloat';
+import { FloatingBackButton } from './components/common/FloatingBackButton';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -52,6 +53,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <EmailFloat />
+          <FloatingBackButton />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
