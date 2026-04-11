@@ -1,10 +1,10 @@
 :root {
   --bg-main: #0a0a0f;
   --bg-elevated: #1a1a24;
-  
+
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  
+
   --accent-blue: #0A84FF;
   --accent-blue-transparent: rgba(10, 132, 255, 0.15);
   --accent-purple: #BF5AF2;
@@ -23,16 +23,13 @@
   padding: 0;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   overscroll-behavior-y: none;
   overscroll-behavior: none;
-  touch-action: pan-x pan-y; 
-}
-
-.draggable-back-btn {
-  touch-action: none !important;
-  user-select: none;
-  -webkit-user-select: none;
+  /* Next line is a highly effective safeguard for mobile WebViews */
+  touch-action: pan-x pan-y;
 }
 
 body {
@@ -42,19 +39,31 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: clamp(0.9rem, 0.45vw + 0.8rem, 1.1rem); /* Fluid body font */
+  font-size: clamp(0.9rem, 0.45vw + 0.8rem, 1.1rem);
+  /* Fluid body font */
 }
 
 /* Global Responsive Guards */
-img, video {
+img,
+video {
   max-width: 100%;
   height: auto;
   object-fit: cover;
 }
 
-h1 { font-size: clamp(1.75rem, 5vw + 1rem, 3.5rem); line-height: 1.1; }
-h2 { font-size: clamp(1.5rem, 4vw + 1rem, 2.75rem); line-height: 1.2; }
-h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
+h1 {
+  font-size: clamp(1.75rem, 5vw + 1rem, 3.5rem);
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw + 1rem, 2.75rem);
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem);
+}
 
 /* Glass panel global styles used in App.jsx */
 .glass-panel {
@@ -147,13 +156,27 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .animate-scale-in {
@@ -175,6 +198,7 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -218,6 +242,7 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
+
 /* --- Responsive Utilities --- */
 @media (max-width: 1024px) {
   :root {
@@ -226,14 +251,21 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
 }
 
 @media (max-width: 768px) {
-  .glass-panel, .glass-panel-heavy {
+
+  .glass-panel,
+  .glass-panel-heavy {
     padding: 20px !important;
     border-radius: 16px;
   }
-  
-  h1 { font-size: 1.75rem !important; }
-  h2 { font-size: 1.5rem !important; }
-  
+
+  h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
   .glass-button {
     padding: 10px 20px;
     font-size: 0.9rem;
@@ -241,7 +273,9 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
 }
 
 @media (max-width: 480px) {
-  .glass-panel, .glass-panel-heavy {
+
+  .glass-panel,
+  .glass-panel-heavy {
     padding: 16px !important;
   }
 }
@@ -266,17 +300,17 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
   display: flex;
   border-radius: 32px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
   position: relative;
 }
 
 .chat-sidebar {
   width: 400px;
-  border-right: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  background: rgba(10,10,15,0.4);
+  background: rgba(10, 10, 15, 0.4);
   backdrop-filter: blur(30px);
   transition: all 0.3s ease;
   height: 100%;
@@ -286,14 +320,14 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(5,5,10,0.4);
+  background: rgba(5, 5, 10, 0.4);
   height: 100%;
 }
 
 .chat-instructor {
   width: 320px;
-  border-left: 1px solid rgba(255,255,255,0.05);
-  background: rgba(10,10,15,0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 15, 0.4);
   padding: 40px 24px;
   display: flex;
   flex-direction: column;
@@ -308,6 +342,7 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
   .chat-sidebar {
     width: 320px;
   }
+
   .chat-instructor {
     width: 250px;
     padding: 24px 16px;
@@ -323,16 +358,18 @@ h3 { font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem); }
     width: 100%;
     z-index: 100;
   }
+
   /* When sidebar is hidden on mobile */
   .chat-sidebar.mobile-hidden {
     transform: translateX(-100%);
   }
-  
+
   .chat-main {
     width: 100%;
   }
-  
+
   .chat-instructor {
-    display: none; /* Hide instructor profile securely on mobile chat view by default, or make it a modal */
+    display: none;
+    /* Hide instructor profile securely on mobile chat view by default, or make it a modal */
   }
 }
