@@ -373,3 +373,23 @@ h3 {
     /* Hide instructor profile securely on mobile chat view by default, or make it a modal */
   }
 }
+
+.draggable-back-btn {
+  touch-action: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), 0 8px 32px rgba(0,0,0,0.4) !important;
+}
+
+.draggable-back-btn:hover {
+  box-shadow: 0 0 30px rgba(10, 132, 255, 0.8), 0 12px 40px rgba(0,0,0,0.5) !important;
+  border-color: #0A84FF !important;
+  transform: scale(1.05);
+}
+
+.draggable-back-btn:active {
+  box-shadow: 0 0 45px rgba(191, 90, 242, 1), 0 8px 20px rgba(0,0,0,0.6) !important;
+  border-color: #BF5AF2 !important;
+  transform: scale(0.92) !important;
+}

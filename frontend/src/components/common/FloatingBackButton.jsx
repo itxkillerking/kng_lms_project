@@ -88,6 +88,7 @@ export const FloatingBackButton = () => {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       onClick={handleClick}
+      className="draggable-back-btn" 
       style={{
         position: 'fixed',
         top: `${position.y}px`,
@@ -99,25 +100,11 @@ export const FloatingBackButton = () => {
         background: 'rgba(10, 10, 15, 0.6)',
         backdropFilter: 'blur(12px)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color: 'white',
         cursor: 'grab',
-        touchAction: 'none', // Prevents scrolling while dragging on mobile touch
-        userSelect: 'none',
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease', // Only transition color/shadow, NOT position/transform to avoid drag lag
-      }}
-      onMouseEnter={(e) => {
-        if (!isDragging.current) {
-          e.currentTarget.style.boxShadow = '0 12px 40px rgba(10, 132, 255, 0.3)';
-          e.currentTarget.style.borderColor = 'var(--accent-blue)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4)';
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
       }}
       aria-label="Go Back (Draggable)"
     >
