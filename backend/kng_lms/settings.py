@@ -241,3 +241,7 @@ CELERY_TASK_LOG_FORMAT = '%(asctime)s: %(levelname)s/%(processName)s [%(task_nam
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
+# VAPID Configuration for Web Push
+VAPID_PRIVATE_KEY = os.path.join(BASE_DIR, 'private_key.pem')
+VAPID_ADMIN_EMAIL = 'mailto:admin@klstechcampus.com'
+

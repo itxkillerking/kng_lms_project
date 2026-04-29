@@ -1,10 +1,15 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django.db.models import Q, Max, Count
-from .models import Message
-from .serializers import MessageSerializer, ConversationSerializer
+from .models import Message, PushSubscription
+from .serializers import MessageSerializer, ConversationSerializer, PushSubscriptionSerializer
 from django.contrib.auth import get_user_model
+from django.conf import settings
+from .push_utils import send_push_notification
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -18,7 +23,12 @@ class MessagingViewSet(viewsets.ModelViewSet):
         ).order_by('timestamp')
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        message = serializer.save(sender=self.request.user)
+        
+        try:
+            send_push_notification(message.recipient, message)
+        except Exception as e:
+            logger.error(f"Push failed for user {message.recipient.id}: {e}")
 
     @action(detail=False, methods=['get'])
     def conversations(self, request):
@@ -108,3 +118,21 @@ class MessagingViewSet(viewsets.ModelViewSet):
         """Global unread count for notifications."""
         count = Message.objects.filter(recipient=request.user, is_read=False).count()
         return Response({"unread_count": count})
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def push_subscribe(request):
+    serializer = PushSubscriptionSerializer(data=request.data)
+    if serializer.is_valid():
+        endpoint = serializer.validated_data.get('endpoint')
+        sub, created = PushSubscription.objects.update_or_create(
+            endpoint=endpoint,
+            defaults={
+                'user': request.user,
+                'p256dh': serializer.validated_data.get('p256dh'),
+                'auth': serializer.validated_data.get('auth')
+            }
+        )
+        return Response({"status": "subscribed", "created": created})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

@@ -1,7 +1,7 @@
 {
-  "name": "KNG Logics LMS",
-  "short_name": "KNG LMS",
-  "description": "KNG Logics Learning Management System",
+  "name": "KLS Tech Campus",
+  "short_name": "KTC",
+  "description": "KLS Tech Campus Learning Management System",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

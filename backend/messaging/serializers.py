@@ -22,3 +22,9 @@ class ConversationSerializer(serializers.Serializer):
     last_message = serializers.CharField()
     last_timestamp = serializers.DateTimeField()
     unread_count = serializers.IntegerField()
+
+class PushSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import PushSubscription
+        model = PushSubscription
+        fields = ['endpoint', 'p256dh', 'auth']
