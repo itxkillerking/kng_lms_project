@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ScrollToTop from './components/common/ScrollToTop';
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
+import api from './services/api';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PrivateRoute } from './components/common/PrivateRoute';
@@ -46,7 +47,58 @@ const queryClient = new QueryClient({
   },
 });
 
+function urlB64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
 function App() {
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  }, []);
+
+  useEffect(() => {
+    async function enablePush() {
+      if (!localStorage.getItem('access_token')) return;
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") return;
+
+      const registration = await navigator.serviceWorker.ready;
+
+      const existing = await registration.pushManager.getSubscription();
+      if (existing) return existing;
+
+      const VAPID_PUBLIC_KEY = urlB64ToUint8Array('BClYLJkYNMyR0KX6M_BkYLn8TItE4L2xOHplvjpRyTrnWeCb-Oc5FzfjjKCIwuB_n5fIwuXd8IaxWhMgOV0FddQ');
+      
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: VAPID_PUBLIC_KEY
+      });
+
+      const subJSON = subscription.toJSON();
+      await api.post('chat/push/subscribe/', {
+          endpoint: subJSON.endpoint,
+          p256dh: subJSON.keys.p256dh,
+          auth: subJSON.keys.auth
+      });
+    }
+
+    enablePush();
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

@@ -3,21 +3,6 @@ import api from '../services/api';
 
 const AuthContext = createContext();
 
-function urlB64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,50 +23,6 @@ export const AuthProvider = ({ children }) => {
     };
     checkUser();
   }, []);
-
-  // Web Push Subscription Logic (OPTIONAL feature)
-  useEffect(() => {
-    if (user && 'serviceWorker' in navigator && 'PushManager' in window) {
-      const subscribeUser = async () => {
-        try {
-            const registration = await navigator.serviceWorker.register('/sw.js');
-            
-            const permission = await Notification.requestPermission();
-            if (permission !== 'granted') return;
-
-            const existingSubscription = await registration.pushManager.getSubscription();
-            if (existingSubscription) {
-                return existingSubscription;
-            }
-
-            const applicationServerKey = urlB64ToUint8Array('BClYLJkYNMyR0KX6M_BkYLn8TItE4L2xOHplvjpRyTrnWeCb-Oc5FzfjjKCIwuB_n5fIwuXd8IaxWhMgOV0FddQ');
-            const subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: applicationServerKey
-            });
-            
-            await sendSubscriptionToBackend(subscription);
-        } catch (error) {
-            console.warn('Push subscription failed (non-critical):', error);
-        }
-      };
-
-      const sendSubscriptionToBackend = async (subscription) => {
-        try {
-            const subJSON = subscription.toJSON();
-            await api.post('chat/push/subscribe/', {
-                endpoint: subJSON.endpoint,
-                p256dh: subJSON.keys.p256dh,
-                auth: subJSON.keys.auth
-            });
-        } catch (error) {
-            console.warn('Backend push sub failed (non-critical):', error);
-        }
-      };
-
-      subscribeUser();
-    }
-  }, [user]);
 
   const login = async (username, password) => {
     const response = await api.post('users/login/', { username, password });
