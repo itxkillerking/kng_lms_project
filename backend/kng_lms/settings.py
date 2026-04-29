@@ -165,9 +165,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
 
 # CORS
-CORS_ALLOW_ALL_ORIGINS = DEBUG # Only allow all during dev
-if not DEBUG:
-    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(' ')
+CORS_ALLOW_ALL_ORIGINS = True # Allow Vercel to connect
+CORS_ALLOW_CREDENTIALS = True
 
 # REST Framework
 REST_FRAMEWORK = {
