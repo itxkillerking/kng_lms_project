@@ -18,3 +18,4 @@ whitenoise==6.9.0
 dj-database-url==2.3.0
 cloudinary==1.50.0
 django-cloudinary-storage==0.3.0
+pywebpush==2.3.0
