@@ -104,7 +104,7 @@ export const AssignmentCreator = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Target Course</label>
                                     <select 
                                         className="glass-select glass-input" 
-                                        style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                        style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', color: '#1a1a2e' }}
                                         value={courseId || ''}
                                         onChange={e => navigate(`/teacher/assessments/assignment/create?course=${e.target.value}`)}
                                         required={!editId}
@@ -120,7 +120,7 @@ export const AssignmentCreator = () => {
                                     {modules.length > 0 ? (
                                         <select 
                                             className="glass-select glass-input" 
-                                            style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                            style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', color: '#1a1a2e' }}
                                             value={formData.module}
                                             onChange={e => setFormData({...formData, module: e.target.value})}
                                             required
@@ -139,7 +139,7 @@ export const AssignmentCreator = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Assignment Title</label>
                                     <input 
                                         className="glass-input" 
-                                        style={{ width: '100%', color: 'white' }}
+                                        style={{ width: '100%', color: '#1a1a2e' }}
                                         value={formData.title}
                                         onChange={e => setFormData({...formData, title: e.target.value})}
                                         placeholder="e.g. Project Phase 1: Market Research"
@@ -151,7 +151,7 @@ export const AssignmentCreator = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Instructions</label>
                                     <textarea 
                                         className="glass-input" 
-                                        style={{ width: '100%', minHeight: '300px', color: 'white', lineHeight: '1.6' }}
+                                        style={{ width: '100%', minHeight: '300px', color: '#1a1a2e', lineHeight: '1.6' }}
                                         value={formData.instructions_text}
                                         onChange={e => setFormData({...formData, instructions_text: e.target.value})}
                                         placeholder="Provide detailed instructions for your students..."
@@ -171,7 +171,7 @@ export const AssignmentCreator = () => {
                             <div style={{ position: 'relative' }}>
                                 <input 
                                     className="glass-input" 
-                                    style={{ width: '100%', paddingLeft: '48px', color: 'white' }}
+                                    style={{ width: '100%', paddingLeft: '48px', color: '#1a1a2e' }}
                                     placeholder="Paste Google Drive sharing link for resources..."
                                     value={formData.resource_url}
                                     onChange={e => setFormData({...formData, resource_url: e.target.value})}
@@ -197,7 +197,7 @@ export const AssignmentCreator = () => {
                             <input 
                                 type="datetime-local"
                                 className="glass-input"
-                                style={{ width: '100%', color: 'white', marginBottom: '12px' }}
+                                style={{ width: '100%', color: '#1a1a2e', marginBottom: '12px' }}
                                 value={formData.deadline}
                                 onChange={e => setFormData({...formData, deadline: e.target.value})}
                                 required
@@ -218,7 +218,7 @@ export const AssignmentCreator = () => {
                                     <input 
                                         type="number"
                                         className="glass-input"
-                                        style={{ width: '100%', color: 'white' }}
+                                        style={{ width: '100%', color: '#1a1a2e' }}
                                         value={formData.max_score}
                                         onChange={e => setFormData({...formData, max_score: e.target.value})}
                                         required
@@ -228,7 +228,7 @@ export const AssignmentCreator = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Allowed Extensions</label>
                                     <input 
                                         className="glass-input"
-                                        style={{ width: '100%', color: 'white', fontSize: '0.8rem' }}
+                                        style={{ width: '100%', color: '#1a1a2e', fontSize: '0.8rem' }}
                                         value={formData.allowed_file_types}
                                         onChange={e => setFormData({...formData, allowed_file_types: e.target.value})}
                                         placeholder=".pdf,.zip..."

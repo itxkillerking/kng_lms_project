@@ -94,7 +94,7 @@ export const AnnouncementManager = () => {
         <div className="animate-fade-in" style={{ padding: '0 20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '56px', flexWrap: 'wrap', gap: '24px' }}>
                 <div>
-                    <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', color: 'white', letterSpacing: '-0.02em' }}>Announcements</h1>
+                    <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 3.5rem)', fontWeight: 800, marginBottom: '16px', color: '#1a1a2e', letterSpacing: '-0.02em' }}>Announcements</h1>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', maxWidth: '600px', lineHeight: '1.6' }}>Broadcast important updates, bulletins, and news to your students instantly.</p>
                 </div>
                 <GlassButton className="primary" onClick={() => setShowModal(true)} style={{ gap: '12px', padding: '14px 28px', fontSize: '1rem' }}>
@@ -104,7 +104,7 @@ export const AnnouncementManager = () => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {announcements.length === 0 ? (
-                    <GlassCard style={{ padding: '80px 40px', textAlign: 'center', background: 'rgba(255,255,255,0.01)' }}>
+                    <GlassCard style={{ padding: '80px 40px', textAlign: 'center', background: 'rgba(0, 0, 0, 0.01)' }}>
                         <div style={{ opacity: 0.2, marginBottom: '24px' }}><Megaphone size={64} /></div>
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '12px' }}>No Announcements Yet</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>Keep your students engaged by sharing the latest updates.</p>
@@ -122,10 +122,10 @@ export const AnnouncementManager = () => {
                                         <Clock size={14} /> {new Date(ann.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                     </span>
                                 </div>
-                                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'white', letterSpacing: '-0.01em' }}>{ann.title}</h3>
+                                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1a1a2e', letterSpacing: '-0.01em' }}>{ann.title}</h3>
                             </div>
                             <div style={{ display: 'flex', gap: '12px' }}>
-                                <button onClick={() => handleEdit(ann)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'rgba(255,255,255,0.6)', padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'white'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; }}><Edit2 size={18} /></button>
+                                <button onClick={() => handleEdit(ann)} style={{ background: 'rgba(0, 0, 0, 0.03)', border: 'none', color: '#475569', padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'white'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; }}><Edit2 size={18} /></button>
                                 <button onClick={() => handleDelete(ann.id)} style={{ background: 'rgba(255,69,58,0.05)', border: 'none', color: 'rgba(255,69,58,0.6)', padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s', display: 'flex' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,69,58,0.15)'; e.currentTarget.style.color = '#ff453a'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,69,58,0.05)'; e.currentTarget.style.color = 'rgba(255,69,58,0.6)'; }}><Trash2 size={18} /></button>
                             </div>
                         </div>
@@ -136,14 +136,14 @@ export const AnnouncementManager = () => {
 
             {/* Announcement Modal */}
             {showModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(5, 5, 10, 0.95)', backdropFilter: 'blur(32px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '20px' }}>
+                <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(32px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '20px' }}>
                     <GlassCard heavy className="animate-fade-in" style={{ width: '100%', maxWidth: '600px', padding: '48px', position: 'relative', overflow: 'visible', border: '1px solid rgba(255,255,255,0.15)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '44px' }}>
                             <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(10, 132, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(10, 132, 255, 0.2)' }}>
                                 <Megaphone size={32} color="var(--accent-blue)" />
                             </div>
                             <div>
-                                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', marginBottom: '4px' }}>{editingId ? 'Edit Broadcast' : 'New Broadcast'}</h2>
+                                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#1a1a2e', letterSpacing: '-0.02em', marginBottom: '4px' }}>{editingId ? 'Edit Broadcast' : 'New Broadcast'}</h2>
                                 <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Instantly notify all enrolled students.</p>
                             </div>
                         </div>
@@ -152,7 +152,7 @@ export const AnnouncementManager = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
                                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Target Course</label>
-                                    <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>{loading ? 'Searching...' : `${courses.length} Available`}</span>
+                                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 500 }}>{loading ? 'Searching...' : `${courses.length} Available`}</span>
                                 </div>
                                 <div 
                                     className="glass-input" 
@@ -161,7 +161,7 @@ export const AnnouncementManager = () => {
                                         display: 'flex', 
                                         justifyContent: 'space-between', 
                                         alignItems: 'center',
-                                        background: 'rgba(255,255,255,0.08)',
+                                        background: 'rgba(0, 0, 0, 0.04)',
                                         border: showCourseDropdown ? '1px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.1)'
                                     }}
                                     onClick={() => setShowCourseDropdown(!showCourseDropdown)}
@@ -186,7 +186,7 @@ export const AnnouncementManager = () => {
                                             right: 0, 
                                             marginTop: '12px',
                                             background: '#1a1a24', 
-                                            border: '1px solid rgba(255,255,255,0.2)',
+                                            border: '1px solid rgba(0, 0, 0, 0.1)',
                                             borderRadius: '16px',
                                             zIndex: 999999, // Extreme z-index
                                             minHeight: '80px', // Ensure it has visible height

@@ -101,7 +101,7 @@ const SplashScreen = ({ onComplete }) => {
                         animation: 'growLine 1s ease-out 0.8s forwards'
                     }} />
                     <p style={{
-                        color: 'rgba(255,255,255,0.4)',
+                        color: '#64748b',
                         fontSize: '0.9rem',
                         marginTop: '20px',
                         letterSpacing: '4px',

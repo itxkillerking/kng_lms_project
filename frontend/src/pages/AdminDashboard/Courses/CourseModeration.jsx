@@ -73,14 +73,14 @@ export const CourseModeration = () => {
     return (
         <div className="animate-fade-in" style={{ maxWidth: '1400px', margin: '0 auto' }}>
             <div style={{ marginBottom: '32px' }}>
-                <h1 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '6px', color: 'white' }}>Course Moderation</h1>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem' }}>Review and approve course submissions to maintain platform quality.</p>
+                <h1 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '6px', color: '#1a1a2e' }}>Course Moderation</h1>
+                <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Review and approve course submissions to maintain platform quality.</p>
             </div>
 
             {/* Filters Bar */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                 <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
-                    <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                    <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                     <input 
                         className="glass-input" 
                         placeholder="Quick search..." 
@@ -105,16 +105,16 @@ export const CourseModeration = () => {
                 {loading ? (
                     <div style={{ gridColumn: '1/-1', padding: '60px', textAlign: 'center' }}>
                         <div className="spinner" style={{ margin: '0 auto 16px' }}></div>
-                        <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.9rem' }}>Scanning submission queue...</p>
+                        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Scanning submission queue...</p>
                     </div>
                 ) : filteredCourses.length === 0 ? (
-                    <div style={{ gridColumn: '1/-1', padding: '60px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>
+                    <div style={{ gridColumn: '1/-1', padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
                         <BookOpen size={40} style={{ marginBottom: '12px', opacity: 0.1 }} />
                         <p style={{ fontSize: '0.9rem' }}>No courses found in the {filterStatus} queue.</p>
                     </div>
                 ) : (
                     filteredCourses.map((course) => (
-                        <GlassCard key={course.id} heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <GlassCard key={course.id} heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
                                 <img 
                                     src={course.thumbnail || 'https://via.placeholder.com/400x200?text=Course+Thumbnail'} 
@@ -127,7 +127,7 @@ export const CourseModeration = () => {
                                         borderRadius: '12px', 
                                         background: 'rgba(0,0,0,0.7)', 
                                         backdropFilter: 'blur(8px)',
-                                        color: 'white',
+                                        color: '#1a1a2e',
                                         fontSize: '0.7rem',
                                         fontWeight: 700,
                                         border: '1px solid rgba(255,255,255,0.15)'
@@ -137,13 +137,13 @@ export const CourseModeration = () => {
                                 </div>
                             </div>
                             <div style={{ padding: '16px' }}>
-                                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'white', marginBottom: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{course.title}</h3>
+                                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{course.title}</h3>
                                 
                                 <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8', fontSize: '0.75rem' }}>
                                         <User size={12} /> {course.instructor_name}
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8', fontSize: '0.75rem' }}>
                                         <Clock size={12} /> {new Date(course.created_at).toLocaleDateString()}
                                     </div>
                                 </div>
@@ -155,9 +155,9 @@ export const CourseModeration = () => {
                                             flex: 1,
                                             padding: '8px', 
                                             borderRadius: '10px', 
-                                            background: 'rgba(255,255,255,0.04)', 
-                                            color: 'white', 
-                                            border: '1px solid rgba(255,255,255,0.08)',
+                                            background: 'rgba(255, 255, 255, 0.65)', 
+                                            color: '#1a1a2e', 
+                                            border: '1px solid rgba(0, 0, 0, 0.06)',
                                             fontWeight: 600,
                                             fontSize: '0.85rem',
                                             cursor: 'pointer',
@@ -234,18 +234,18 @@ export const CourseModeration = () => {
                         maxHeight: '85vh', 
                         overflowY: 'auto', 
                         padding: 0,
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: '1px solid rgba(0, 0, 0, 0.08)',
                         borderRadius: '24px'
                     }} onClick={e => e.stopPropagation()}>
                         <div style={{ position: 'relative', height: '220px' }}>
                             <img src={selectedCourse.thumbnail || 'https://via.placeholder.com/1000x400'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px', background: 'linear-gradient(transparent, rgba(0,0,0,0.95))' }}>
-                                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '4px' }}>{selectedCourse.title}</h2>
-                                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>by {selectedCourse.instructor_name}</p>
+                                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '4px' }}>{selectedCourse.title}</h2>
+                                <p style={{ color: '#64748b', fontSize: '0.9rem' }}>by {selectedCourse.instructor_name}</p>
                             </div>
                             <button 
                                 onClick={() => setShowPreview(false)}
-                                style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', color: '#1a1a2e', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
                                 <XCircle size={20} />
                             </button>
@@ -253,19 +253,19 @@ export const CourseModeration = () => {
                         
                         <div style={{ padding: '24px' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '32px' }}>
-                                <div style={{ borderRight: '1px solid rgba(255,255,255,0.05)', paddingRight: '16px' }}>
+                                <div style={{ borderRight: '1px solid rgba(0, 0, 0, 0.06)', paddingRight: '16px' }}>
                                     <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <FileText size={18} color="var(--accent-blue)" /> Syllabus Preview
                                     </h3>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {selectedCourse.modules?.map((module, idx) => (
-                                            <div key={module.id} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.8)' }}>
+                                            <div key={module.id} style={{ background: 'rgba(0, 0, 0, 0.02)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(0, 0, 0, 0.05)' }}>
+                                                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: '#334155' }}>
                                                     <Layers size={14} opacity={0.4} /> M{idx + 1}: {module.title}
                                                 </h4>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                     {module.lessons?.map((lesson) => (
-                                                        <div key={lesson.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
+                                                        <div key={lesson.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: 'rgba(0, 0, 0, 0.01)', borderRadius: '8px', fontSize: '0.8rem', color: '#475569' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                                 <PlayCircle size={14} opacity={0.3} />
                                                                 {lesson.title}
@@ -284,7 +284,7 @@ export const CourseModeration = () => {
                                         <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <AlertCircle size={16} color="var(--accent-blue)" /> Verification
                                         </h4>
-                                        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>
+                                        <p style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.5 }}>
                                             Check course content, video quality, and ensure the price matches platform standards.
                                         </p>
                                     </div>
@@ -297,7 +297,7 @@ export const CourseModeration = () => {
                                                 padding: '14px', 
                                                 borderRadius: '12px', 
                                                 background: 'linear-gradient(135deg, #10b981, #059669)', 
-                                                color: 'white', 
+                                                color: '#1a1a2e', 
                                                 border: 'none', 
                                                 fontWeight: 700, 
                                                 fontSize: '0.95rem',

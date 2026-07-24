@@ -90,20 +90,20 @@ export const SystemSettings = () => {
     return (
         <div className="animate-fade-in" style={{ maxWidth: '1400px', margin: '0 auto' }}>
             <div style={{ marginBottom: '40px' }}>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: 'white' }}>System Control</h1>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem' }}>Manage platform identity, communication rules, and categories.</p>
+                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: '#1a1a2e' }}>System Control</h1>
+                <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Manage platform identity, communication rules, and categories.</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', alignItems: 'flex-start' }}>
                 
                 {/* Branding & Identity */}
                 <GlassCard heavy style={{ padding: '32px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <ImageIcon size={22} color="var(--accent-blue)" /> Platform Branding
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>Logo URL</label>
+                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#475569', marginBottom: '8px' }}>Logo URL</label>
                             <input 
                                 className="glass-input" 
                                 value={getSettingValue('logo_url')}
@@ -112,7 +112,7 @@ export const SystemSettings = () => {
                             />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>Primary Accent Color</label>
+                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#475569', marginBottom: '8px' }}>Primary Accent Color</label>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <input 
                                     className="glass-input" 
@@ -134,14 +134,14 @@ export const SystemSettings = () => {
 
                 {/* Notifications & Security */}
                 <GlassCard heavy style={{ padding: '32px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <Bell size={22} color="var(--accent-purple)" /> Communication & Security
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <h4 style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Registration Emails</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Send welcome email to new users.</p>
+                                <h4 style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '0.95rem' }}>Registration Emails</h4>
+                                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Send welcome email to new users.</p>
                             </div>
                             <Toggle 
                                 active={getSettingValue('email_on_register', true)} 
@@ -150,8 +150,8 @@ export const SystemSettings = () => {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <h4 style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Enrollment Emails</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Notify students on course enrollment.</p>
+                                <h4 style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '0.95rem' }}>Enrollment Emails</h4>
+                                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Notify students on course enrollment.</p>
                             </div>
                             <Toggle 
                                 active={getSettingValue('email_on_enroll', true)} 
@@ -160,8 +160,8 @@ export const SystemSettings = () => {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <h4 style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>OTP Verification</h4>
-                                <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Require OTP for password resets.</p>
+                                <h4 style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '0.95rem' }}>OTP Verification</h4>
+                                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Require OTP for password resets.</p>
                             </div>
                             <Toggle 
                                 active={getSettingValue('otp_enabled', true)} 
@@ -173,7 +173,7 @@ export const SystemSettings = () => {
 
                 {/* Categories */}
                 <GlassCard heavy style={{ padding: '32px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <Layers size={22} color="#10b981" /> Course Categories
                     </h3>
                     <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
@@ -193,13 +193,13 @@ export const SystemSettings = () => {
                             <div key={cat.id} style={{ 
                                 padding: '10px 14px', 
                                 borderRadius: '12px', 
-                                background: 'rgba(255,255,255,0.03)', 
-                                border: '1px solid rgba(255,255,255,0.05)',
+                                background: 'rgba(0, 0, 0, 0.03)', 
+                                border: '1px solid rgba(0, 0, 0, 0.06)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between'
                             }}>
-                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white' }}>{cat.name}</span>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1a1a2e' }}>{cat.name}</span>
                                 <button 
                                     onClick={() => handleDeleteCategory(cat.id)}
                                     style={{ background: 'transparent', border: 'none', color: 'rgba(255, 69, 58, 0.4)', cursor: 'pointer' }}
@@ -218,8 +218,8 @@ export const SystemSettings = () => {
                     </h3>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                            <h4 style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem' }}>Maintenance Mode</h4>
-                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Block all students from content.</p>
+                            <h4 style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '0.95rem' }}>Maintenance Mode</h4>
+                            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Block all students from content.</p>
                         </div>
                         <Toggle 
                             active={getSettingValue('maintenance_mode', false)} 

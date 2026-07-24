@@ -1,20 +1,20 @@
 :root {
-  --bg-main: #0a0a0f;
-  --bg-elevated: #1a1a24;
+  --bg-main: #f5f7fa;
+  --bg-elevated: #ffffff;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --text-primary: #1a1a2e;
+  --text-secondary: #64748b;
 
   --accent-blue: #0A84FF;
-  --accent-blue-transparent: rgba(10, 132, 255, 0.15);
+  --accent-blue-transparent: rgba(10, 132, 255, 0.12);
   --accent-purple: #BF5AF2;
-  --accent-purple-transparent: rgba(191, 90, 242, 0.15);
+  --accent-purple-transparent: rgba(191, 90, 242, 0.12);
 
   --success-color: #10b981;
   --error-color: #ef4444;
 
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(0, 0, 0, 0.08);
 }
 
 * {
@@ -54,15 +54,18 @@ video {
 h1 {
   font-size: clamp(1.75rem, 5vw + 1rem, 3.5rem);
   line-height: 1.1;
+  color: #1a1a2e;
 }
 
 h2 {
   font-size: clamp(1.5rem, 4vw + 1rem, 2.75rem);
   line-height: 1.2;
+  color: #1a1a2e;
 }
 
 h3 {
   font-size: clamp(1.2rem, 3vw + 1rem, 1.75rem);
+  color: #1a1a2e;
 }
 
 /* Glass panel global styles used in App.jsx */
@@ -72,22 +75,22 @@ h3 {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
 .glass-panel-heavy {
-  background: rgba(15, 15, 25, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 28px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
 
 .glass-input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 12px 16px;
   color: var(--text-primary);
@@ -100,13 +103,13 @@ h3 {
 
 .glass-input:focus {
   border-color: var(--accent-blue);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.2);
 }
 
 .glass-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 18px;
@@ -114,7 +117,7 @@ h3 {
 }
 
 .glass-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.35);
 }
 
 /* Glass button global styles used in App.jsx */
@@ -123,9 +126,9 @@ h3 {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   color: var(--text-primary);
   padding: 12px 24px;
@@ -136,7 +139,7 @@ h3 {
 }
 
 .glass-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
@@ -185,7 +188,7 @@ h3 {
 
 .glass-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 18px;
@@ -208,19 +211,19 @@ h3 {
   animation: spin 1s linear infinite;
 }
 
-/* --- Global Glassmorphic Scrollbar --- */
+/* --- Global Scrollbar (Light Theme) --- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: content-box;
@@ -228,7 +231,7 @@ h3 {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -240,7 +243,7 @@ h3 {
 /* Firefox Support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
 }
 
 /* --- Responsive Utilities --- */
@@ -292,25 +295,25 @@ h3 {
   }
 }
 
-/* --- Chat Responsive Classes --- */
+/* --- Chat Responsive Classes (Light Theme) --- */
 .chat-container {
   height: calc(100vh - 80px);
-  background: #0a0a0f;
-  color: white;
+  background: #f5f7fa;
+  color: #1a1a2e;
   display: flex;
   border-radius: 32px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
 .chat-sidebar {
   width: 400px;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  background: rgba(10, 10, 15, 0.4);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(30px);
   transition: all 0.3s ease;
   height: 100%;
@@ -320,14 +323,14 @@ h3 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(5, 5, 10, 0.4);
+  background: rgba(245, 247, 250, 0.6);
   height: 100%;
 }
 
 .chat-instructor {
   width: 320px;
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(10, 10, 15, 0.4);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.7);
   padding: 40px 24px;
   display: flex;
   flex-direction: column;
@@ -379,17 +382,17 @@ h3 {
   user-select: none;
   -webkit-user-select: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), 0 8px 32px rgba(0,0,0,0.4) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0,0,0,0.06) !important;
 }
 
 .draggable-back-btn:hover {
-  box-shadow: 0 0 30px rgba(10, 132, 255, 0.8), 0 12px 40px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 4px 20px rgba(10, 132, 255, 0.25), 0 8px 24px rgba(0,0,0,0.1) !important;
   border-color: #0A84FF !important;
   transform: scale(1.05);
 }
 
 .draggable-back-btn:active {
-  box-shadow: 0 0 45px rgba(191, 90, 242, 1), 0 8px 20px rgba(0,0,0,0.6) !important;
+  box-shadow: 0 2px 16px rgba(191, 90, 242, 0.3), 0 4px 12px rgba(0,0,0,0.1) !important;
   border-color: #BF5AF2 !important;
   transform: scale(0.92) !important;
 }

@@ -77,7 +77,7 @@ export const SubmissionInbox = () => {
                                 gap: '20px'
                             }}>
                                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0, 0, 0, 0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                         <FileText size={24} color="var(--accent-blue)" />
                                     </div>
                                     <div style={{ flex: 1, minWidth: 0 }}>

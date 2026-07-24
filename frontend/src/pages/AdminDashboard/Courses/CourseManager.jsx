@@ -126,10 +126,10 @@ export const CourseManager = () => {
                 marginBottom: '32px' 
             }}>
                 <div>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 850, color: 'white', letterSpacing: '-0.02em' }}>
+                    <h1 style={{ fontSize: '2rem', fontWeight: 850, color: '#1a1a2e', letterSpacing: '-0.02em' }}>
                         Course Management
                     </h1>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
+                    <p style={{ color: '#64748b', marginTop: '4px' }}>
                         Create, assign, and manage courses across the platform.
                     </p>
                 </div>
@@ -157,7 +157,7 @@ export const CourseManager = () => {
             )}
 
             {showForm && (
-                <GlassCard heavy style={{ padding: '32px', marginBottom: '40px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <GlassCard heavy style={{ padding: '32px', marginBottom: '40px', border: '1px solid rgba(0, 0, 0, 0.08)' }}>
                     <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                         <div style={{ gridColumn: '1 / -1' }}>
                             <label className="glass-label">Course Title</label>
@@ -255,7 +255,7 @@ export const CourseManager = () => {
                                 borderRadius: '12px',
                                 background: 'rgba(0,0,0,0.6)',
                                 backdropFilter: 'blur(10px)',
-                                color: 'white',
+                                color: '#1a1a2e',
                                 fontSize: '0.8rem',
                                 fontWeight: 700
                             }}>
@@ -263,20 +263,20 @@ export const CourseManager = () => {
                             </div>
                         </div>
                         <div style={{ padding: '24px' }}>
-                            <h3 style={{ fontSize: '1.2rem', fontWeight: 750, color: 'white', marginBottom: '12px' }}>
+                            <h3 style={{ fontSize: '1.2rem', fontWeight: 750, color: '#1a1a2e', marginBottom: '12px' }}>
                                 {course.title}
                             </h3>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '0.9rem' }}>
                                     <User size={16} color="var(--accent-blue)" />
-                                    <span>Instructor: <span style={{ color: 'white', fontWeight: 600 }}>{course.instructor_name}</span></span>
+                                    <span>Instructor: <span style={{ color: '#1a1a2e', fontWeight: 600 }}>{course.instructor_name}</span></span>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '0.9rem' }}>
                                     <Tag size={16} color="var(--accent-purple)" />
-                                    <span>Category: <span style={{ color: 'white', fontWeight: 600 }}>{course.category_name}</span></span>
+                                    <span>Category: <span style={{ color: '#1a1a2e', fontWeight: 600 }}>{course.category_name}</span></span>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '0.9rem' }}>
                                     <Layers size={16} color="#0A84FF" />
                                     <span>Status: <span style={{ 
                                         color: course.moderation_status === 'approved' ? '#30D158' : '#FFD60A',

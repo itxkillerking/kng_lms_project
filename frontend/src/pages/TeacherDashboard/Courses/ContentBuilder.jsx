@@ -167,13 +167,13 @@ export const ContentBuilder = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {modules.map((module) => (
                     <GlassCard key={module.id} style={{ padding: '0', overflow: 'hidden' }}>
-                        <div style={{ padding: '20px 24px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ padding: '20px 24px', background: 'rgba(0, 0, 0, 0.03)', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 <GripVertical size={20} style={{ opacity: 0.3 }} />
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'white' }}>{module.title}</h3>
+                                <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1a1a2e' }}>{module.title}</h3>
                             </div>
                             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: '8px', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '12px', marginRight: '4px' }}>
+                                <div style={{ display: 'flex', gap: '8px', borderRight: '1px solid rgba(0, 0, 0, 0.08)', paddingRight: '12px', marginRight: '4px' }}>
                                     <Link to={`/teacher/assessments/quiz/create?course=${courseId}&module=${module.id}`} style={{ textDecoration: 'none' }}>
                                         <GlassButton style={{ padding: '6px 12px', fontSize: '0.75rem', gap: '6px', background: 'rgba(191, 90, 242, 0.05)', color: 'rgba(191, 90, 242, 0.8)', borderColor: 'rgba(191, 90, 242, 0.2)' }}>
                                             <FileText size={14} /> + Quiz
@@ -198,12 +198,12 @@ export const ContentBuilder = () => {
                             {module.lessons?.length > 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {module.lessons.map(lesson => (
-                                        <div key={lesson.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid transparent', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--glass-border)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}>
+                                        <div key={lesson.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderRadius: '12px', background: 'rgba(0, 0, 0, 0.02)', border: '1px solid transparent', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--glass-border)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                                 {lesson.video_type === 'youtube' ? <Youtube size={18} color="#FF0000" /> : lesson.video_type === 'drive' ? <Cloud size={18} color="#4285F4" /> : <Play size={18} color="var(--accent-blue)" />}
                                                 <div>
-                                                    <p style={{ fontWeight: 600, color: 'white', marginBottom: '2px' }}>{lesson.title}</p>
-                                                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
+                                                    <p style={{ fontWeight: 600, color: '#1a1a2e', marginBottom: '2px' }}>{lesson.title}</p>
+                                                    <p style={{ fontSize: '0.8rem', color: '#475569' }}>
                                                         {lesson.video_type?.toUpperCase()} • {Math.floor(lesson.duration / 60)}m {lesson.duration % 60}s
                                                     </p>
                                                 </div>
@@ -229,7 +229,7 @@ export const ContentBuilder = () => {
             {showLessonModal && (
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
                     <GlassCard style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', padding: '0', overflow: 'hidden' }} className="animate-scale-in">
-                        <div style={{ padding: '32px 40px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ padding: '32px 40px 20px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '8px' }}>{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
                             <p style={{ color: 'var(--text-secondary)' }}>Configure your video content and metadata.</p>
                         </div>
@@ -240,7 +240,7 @@ export const ContentBuilder = () => {
                                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem' }}>Lesson Title</label>
                                 <input 
                                     className="glass-input" 
-                                    style={{ width: '100%', color: 'white', background: 'rgba(255,255,255,0.05)' }}
+                                    style={{ width: '100%', color: '#1a1a2e', background: 'rgba(0, 0, 0, 0.03)' }}
                                     value={lessonForm.title} 
                                     onChange={e => setLessonForm({...lessonForm, title: e.target.value})} 
                                     placeholder="Enter lesson title..."
@@ -253,12 +253,12 @@ export const ContentBuilder = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Video Type</label>
                                     <select 
                                         className="glass-select glass-input" 
-                                        style={{ width: '100%', background: 'rgba(255,255,255,0.08)', color: 'white', cursor: 'pointer' }}
+                                        style={{ width: '100%', background: 'rgba(0, 0, 0, 0.04)', color: '#1a1a2e', cursor: 'pointer' }}
                                         value={lessonForm.video_type}
                                         onChange={e => setLessonForm({...lessonForm, video_type: e.target.value})}
                                     >
-                                        <option value="drive" style={{ background: '#1a1a1a', color: 'white' }}>Google Drive</option>
-                                        <option value="youtube" style={{ background: '#1a1a1a', color: 'white' }}>YouTube</option>
+                                        <option value="drive" style={{ background: '#1a1a1a', color: '#1a1a2e' }}>Google Drive</option>
+                                        <option value="youtube" style={{ background: '#1a1a1a', color: '#1a1a2e' }}>YouTube</option>
                                     </select>
                                 </div>
                                 <div>
@@ -266,7 +266,7 @@ export const ContentBuilder = () => {
                                     <input 
                                         type="number" 
                                         className="glass-input" 
-                                        style={{ width: '100%', color: 'white' }}
+                                        style={{ width: '100%', color: '#1a1a2e' }}
                                         value={lessonForm.duration} 
                                         onChange={e => setLessonForm({...lessonForm, duration: parseInt(e.target.value) || 0})} 
                                     />
@@ -281,7 +281,7 @@ export const ContentBuilder = () => {
                                     </div>
                                     <input 
                                         className="glass-input" 
-                                        style={{ width: '100%', paddingLeft: '48px', color: 'white' }}
+                                        style={{ width: '100%', paddingLeft: '48px', color: '#1a1a2e' }}
                                         placeholder={lessonForm.video_type === 'drive' ? 'Paste Google Drive Sharing link...' : 'Paste YouTube Video URL...'}
                                         value={lessonForm.video_url}
                                         onChange={e => setLessonForm({...lessonForm, video_url: e.target.value})}
@@ -303,7 +303,7 @@ export const ContentBuilder = () => {
                                         alignItems: 'center', 
                                         gap: '12px', 
                                         padding: '12px 16px', 
-                                        background: 'rgba(255,255,255,0.05)', 
+                                        background: 'rgba(0, 0, 0, 0.03)', 
                                         borderRadius: '12px', 
                                         border: '1px solid var(--glass-border)',
                                         cursor: 'pointer'
@@ -326,7 +326,7 @@ export const ContentBuilder = () => {
                                             {uploadProgress < 100 ? `Uploading Video: ${uploadProgress}%` : 'Finalizing & Processing...'}
                                         </span>
                                     </div>
-                                    <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                                    <div style={{ width: '100%', height: '6px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '10px', overflow: 'hidden' }}>
                                         <div style={{ width: `${uploadProgress}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-blue), var(--accent-purple))', transition: 'width 0.3s ease' }}></div>
                                     </div>
                                 </div>
@@ -334,7 +334,7 @@ export const ContentBuilder = () => {
                         </form>
                     </div>
 
-                        <div style={{ padding: '20px 40px 32px', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px' }}>
+                        <div style={{ padding: '20px 40px 32px', background: 'rgba(0, 0, 0, 0.02)', borderTop: '1px solid rgba(0, 0, 0, 0.05)', display: 'flex', gap: '16px' }}>
                             <GlassButton type="button" onClick={() => setShowLessonModal(false)} style={{ flex: 1 }}>Cancel</GlassButton>
                             <GlassButton 
                                 type="submit" 

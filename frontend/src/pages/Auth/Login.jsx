@@ -131,7 +131,7 @@ const Login = () => {
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(255, 69, 58, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', border: '1px solid rgba(255, 69, 58, 0.3)' }}>
               <Lock size={36} color="#ff453a" />
             </div>
-            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '16px', color: 'white', letterSpacing: '-0.02em' }}>Account Suspended</h3>
+            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a2e', letterSpacing: '-0.02em' }}>Account Suspended</h3>
             <p style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '32px', lineHeight: 1.6, fontSize: '1.05rem' }}>
               Your account is suspended cannot login. Please contact support.
             </p>

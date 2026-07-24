@@ -71,7 +71,7 @@ const TeacherDashboard = () => {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#050508', color: 'white', position: 'relative' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f7fa', color: '#1a1a2e', position: 'relative' }}>
       
       {/* Mobile Sidebar Backdrop */}
       {isMobile && sidebarOpen && (
@@ -83,8 +83,8 @@ const TeacherDashboard = () => {
 
       {/* Mobile Header Toggle */}
       {(!sidebarOpen || !isMobile) && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'rgba(5,5,10,0.8)', backdropFilter: 'blur(20px)', zIndex: 90, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <button onClick={() => setSidebarOpen(true)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '64px', background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(20px)', zIndex: 90, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+          <button onClick={() => setSidebarOpen(true)} style={{ background: 'transparent', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}>
             <Menu size={24} />
           </button>
           <span style={{ marginLeft: '16px', fontWeight: 800, fontSize: '1rem', background: 'linear-gradient(to right, #0A84FF, #BF5AF2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KLS Instructor</span>
@@ -96,8 +96,8 @@ const TeacherDashboard = () => {
         width: '300px', 
         minWidth: '300px',
         height: '100vh',
-        borderRight: '1px solid rgba(255,255,255,0.1)',
-        background: 'rgba(10,10,15,0.95)',
+        borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+        background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(40px)',
         padding: '40px 24px',
         display: 'flex',
@@ -109,16 +109,16 @@ const TeacherDashboard = () => {
         transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         visibility: sidebarOpen || !isMobile ? 'visible' : 'hidden',
-        boxShadow: isMobile && sidebarOpen ? '20px 0 60px rgba(0,0,0,0.8)' : 'none',
+        boxShadow: isMobile && sidebarOpen ? '20px 0 60px rgba(0,0,0,0.1)' : 'none',
         overflowY: 'auto'
       }}>
         <div style={{ marginBottom: '48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 900, background: 'linear-gradient(to right, #0A84FF, #BF5AF2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KLS Tech Campus</h2>
-            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 800 }}>Instructor Panel</p>
+            <p style={{ fontSize: '0.7rem', color: '#64748b', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 800 }}>Instructor Panel</p>
           </div>
           {isMobile && (
-            <button onClick={() => setSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>
+            <button onClick={() => setSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}>
               <X size={24} />
             </button>
           )}
@@ -135,7 +135,7 @@ const TeacherDashboard = () => {
                 onClick={() => isMobile && setSidebarOpen(false)}
                 style={{ 
                   textDecoration: 'none', 
-                  color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
+                  color: isActive ? '#1a1a2e' : '#64748b',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
@@ -164,7 +164,7 @@ const TeacherDashboard = () => {
                 </div>
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <p style={{ fontWeight: 700, fontSize: '0.9rem', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{user?.first_name || user?.username}</p>
-                  <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Verified Pro</p>
+                  <p style={{ fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase' }}>Verified Pro</p>
                 </div>
               </div>
             </GlassCard>

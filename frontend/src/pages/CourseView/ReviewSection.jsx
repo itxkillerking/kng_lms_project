@@ -57,7 +57,7 @@ export const ReviewSection = ({ courseId }) => {
             </h3>
 
             {/* Review Form */}
-            <GlassCard style={{ padding: '24px', marginBottom: '32px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <GlassCard style={{ padding: '24px', marginBottom: '32px', border: '1px solid rgba(0, 0, 0, 0.08)' }}>
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '20px' }}>
                         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>Your Rating</p>
@@ -90,11 +90,11 @@ export const ReviewSection = ({ courseId }) => {
                             style={{ 
                                 width: '100%', 
                                 minHeight: '100px', 
-                                background: 'rgba(255,255,255,0.05)', 
-                                border: '1px solid rgba(255,255,255,0.1)', 
+                                background: 'rgba(0, 0, 0, 0.03)', 
+                                border: '1px solid rgba(0, 0, 0, 0.08)', 
                                 borderRadius: '12px', 
                                 padding: '16px', 
-                                color: 'white', 
+                                color: '#1a1a2e', 
                                 fontSize: '1rem',
                                 outline: 'none',
                                 resize: 'vertical'
@@ -124,7 +124,7 @@ export const ReviewSection = ({ courseId }) => {
                         <GlassCard key={rev.id} style={{ padding: '20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <User size={20} color="var(--text-secondary)" />
                                     </div>
                                     <div>

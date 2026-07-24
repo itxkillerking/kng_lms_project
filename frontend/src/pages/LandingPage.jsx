@@ -48,8 +48,8 @@ const LandingPage = () => {
     return (
         <div style={{
             minHeight: '100vh',
-            background: '#040407',
-            color: 'white',
+            background: '#f5f7fa',
+            color: '#1a1a2e',
             fontFamily: "'Inter', sans-serif",
             overflowX: 'hidden',
             position: 'relative'
@@ -70,8 +70,8 @@ const LandingPage = () => {
                         width: '110%', // Oversized for parallax
                         height: '110%', 
                         objectFit: 'cover', 
-                        opacity: 0.12,
-                        filter: 'contrast(1.2) brightness(0.6) saturate(0.8)',
+                        opacity: 0.06,
+                        filter: 'contrast(1.0) brightness(1.2) saturate(0.5)',
                         transform: `translate(-5%, calc(-5% + ${scrollY * 0.15}px))`, // Dynamic Parallax
                         position: 'absolute'
                     }} 
@@ -95,7 +95,7 @@ const LandingPage = () => {
                 <div style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(to bottom, transparent 0%, rgba(4, 4, 7, 0.98) 95%)'
+                    background: 'linear-gradient(to bottom, transparent 0%, rgba(245, 247, 250, 0.95) 95%)'
                 }} />
             </div>
 
@@ -138,10 +138,10 @@ const LandingPage = () => {
                 left: 0,
                 right: 0,
                 zIndex: 1000,
-                background: 'rgba(5, 5, 10, 0.45)',
+                background: 'rgba(255, 255, 255, 0.75)',
                 backdropFilter: 'blur(40px) saturate(200%)',
                 WebkitBackdropFilter: 'blur(40px) saturate(200%)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
@@ -152,13 +152,17 @@ const LandingPage = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                        background: 'transparent'
                     }}>
                         <img
                             src="/logo.png"
                             alt=""
-                            style={{ width: '90%', height: '90%', objectFit: 'contain' }}
+                            style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                objectFit: 'contain',
+                                mixBlendMode: 'screen'
+                            }}
                             onError={(e) => {
                                 e.target.style.display = 'none';
                                 e.target.parentElement.innerHTML = '⚡';
@@ -179,7 +183,7 @@ const LandingPage = () => {
                 {isMobile ? (
                     <button 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}
+                        style={{ background: 'transparent', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}
                     >
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -190,7 +194,7 @@ const LandingPage = () => {
                                 key={item}
                                 to={`/${item.toLowerCase() === 'courses' ? 'catalog' : item.toLowerCase()}`}
                                 style={({ isActive }) => ({
-                                    color: isActive ? 'white' : 'rgba(255,255,255,0.6)',
+                                    color: isActive ? '#1a1a2e' : '#64748b',
                                     textDecoration: 'none',
                                     fontWeight: 700,
                                     fontSize: '0.8rem',
@@ -202,9 +206,9 @@ const LandingPage = () => {
                                 {item}
                             </NavLink>
                         ))}
-                        <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }}></div>
+                        <div style={{ width: '1px', height: '20px', background: 'rgba(0, 0, 0, 0.06)' }}></div>
                         <NavLink to="/login" style={{ textDecoration: 'none' }}>
-                            <span style={{ color: 'white', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase' }}>Login</span>
+                            <span style={{ color: '#1a1a2e', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase' }}>Login</span>
                         </NavLink>
                         <NavLink to="/register" style={{ textDecoration: 'none' }}>
                             <GlassButton primary style={{ padding: '8px 20px', borderRadius: '12px', fontSize: '0.8rem' }}>
@@ -221,13 +225,13 @@ const LandingPage = () => {
                         top: '58px',
                         left: 0,
                         right: 0,
-                        background: 'rgba(5, 5, 10, 0.95)',
+                        background: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(40px)',
                         padding: '30px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '24px',
-                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                        borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
                         zIndex: 999
                     }}>
                          {['Courses', 'About', 'Login'].map(item => (
@@ -235,7 +239,7 @@ const LandingPage = () => {
                                 key={item} 
                                 to={`/${item.toLowerCase() === 'courses' ? 'catalog' : item.toLowerCase()}`}
                                 onClick={() => setMobileMenuOpen(false)}
-                                style={{ color: 'white', textDecoration: 'none', fontWeight: 700, fontSize: '1.2rem' }}
+                                style={{ color: '#1a1a2e', textDecoration: 'none', fontWeight: 700, fontSize: '1.2rem' }}
                             >
                                 {item}
                             </NavLink>
@@ -289,11 +293,11 @@ const LandingPage = () => {
                         lineHeight: 1.05,
                         letterSpacing: '-0.05em',
                         marginBottom: '24px',
-                        color: 'white',
+                        color: '#1a1a2e',
                     }}>
                         Your Partner in AI & <br />
                         <span style={{
-                            background: 'linear-gradient(to bottom, #fff, rgba(255,255,255,0.7))',
+                            background: 'linear-gradient(to right, #0A84FF, #BF5AF2)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent'
                         }}>Software Innovation</span>
@@ -301,7 +305,7 @@ const LandingPage = () => {
 
                     <p style={{
                         fontSize: isMobile ? '1rem' : '1.2rem',
-                        color: 'rgba(255,255,255,0.5)',
+                        color: '#64748b',
                         maxWidth: '800px',
                         margin: '0 auto 40px auto',
                         lineHeight: 1.7,
@@ -331,14 +335,14 @@ const LandingPage = () => {
                     padding: isMobile ? '40px 24px' : '80px 60px',
                     textAlign: 'center',
                     borderRadius: isMobile ? '32px' : '52px',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    background: 'rgba(10, 10, 15, 0.8)'
+                    border: '1px solid rgba(0, 0, 0, 0.06)',
+                    background: 'rgba(255, 255, 255, 0.85)'
                 }}>
                     <p style={{
                         fontSize: isMobile ? '1.4rem' : '2.4rem',
                         fontStyle: 'italic',
                         fontWeight: 600,
-                        color: 'white',
+                        color: '#1a1a2e',
                         marginBottom: '32px',
                         lineHeight: 1.35,
                     }}>
@@ -354,24 +358,24 @@ const LandingPage = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: 'white',
+                            color: '#1a1a2e',
                             fontWeight: 900,
                             fontSize: '1.5rem',
                         }}>J</div>
                         <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
-                            <p style={{ fontWeight: 800, fontSize: '1.1rem', color: 'white' }}>Jawad Ahmed</p>
-                            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Founder & CEO, KLS Tech Campus</p>
+                            <p style={{ fontWeight: 800, fontSize: '1.1rem', color: '#1a1a2e' }}>Jawad Ahmed</p>
+                            <p style={{ fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Founder & CEO, KLS Tech Campus</p>
                         </div>
                     </div>
                 </GlassCard>
             </section>
 
             {/* Teaching & Mentoring Section */}
-            <section style={{ padding: isMobile ? '60px 20px' : '120px 60px', background: 'rgba(255,255,255,0.01)' }}>
+            <section style={{ padding: isMobile ? '60px 20px' : '120px 60px', background: 'rgba(0, 0, 0, 0.01)' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: isMobile ? '40px' : '80px' }}>
                         <h2 style={{ fontSize: isMobile ? '2rem' : '3.2rem', fontWeight: 900, marginBottom: '16px' }}>Teaching & Mentoring</h2>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
+                        <p style={{ color: '#64748b', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
                             Professional skill development and AI tools training for modern innovators.
                         </p>
                     </div>
@@ -401,7 +405,7 @@ const LandingPage = () => {
                                     <service.icon color="#0A84FF" size={20} />
                                 </div>
                                 <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '8px' }}>{service.title}</h3>
-                                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', lineHeight: 1.6 }}>{service.desc}</p>
+                                <p style={{ color: '#64748b', fontSize: '0.85rem', lineHeight: 1.6 }}>{service.desc}</p>
                             </GlassCard>
                         ))}
                     </div>
@@ -412,7 +416,7 @@ const LandingPage = () => {
             <section style={{ padding: isMobile ? '60px 20px' : '100px 60px', maxWidth: '1200px', margin: '0 auto' }}>
                 <div style={{ textAlign: 'center', marginBottom: isMobile ? '40px' : '60px' }}>
                     <h2 style={{ fontSize: isMobile ? '2rem' : '3rem', fontWeight: 900, marginBottom: '16px' }}>Master the Matrix</h2>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '1rem' }}>Career-defining tracks for the architects of tomorrow.</p>
+                    <p style={{ color: '#64748b', fontSize: '1rem' }}>Career-defining tracks for the architects of tomorrow.</p>
                 </div>
 
                 <div style={{ 
@@ -447,7 +451,7 @@ const LandingPage = () => {
                             </div>
                             <div>
                                 <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '8px' }}>{course.title}</h3>
-                                <p style={{ color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, marginBottom: '16px', fontSize: '0.9rem' }}>{course.desc}</p>
+                                <p style={{ color: '#64748b', lineHeight: 1.6, marginBottom: '16px', fontSize: '0.9rem' }}>{course.desc}</p>
                                 <div style={{ color: '#0A84FF', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, fontSize: '0.85rem' }}>
                                     View Syllabus <ChevronRight size={14} />
                                 </div>
@@ -486,7 +490,7 @@ const LandingPage = () => {
                     background: transparent;
                 }
                 ::-webkit-scrollbar-thumb {
-                    background: rgba(255, 255, 255, 0.1);
+                    background: rgba(0, 0, 0, 0.1);
                     border-radius: 20px;
                 }
             `}} />

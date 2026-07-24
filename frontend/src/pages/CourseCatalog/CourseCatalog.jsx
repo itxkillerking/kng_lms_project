@@ -119,15 +119,15 @@ const CourseCatalog = () => {
 
     if (isLoading && page === 1) {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f5f7fa', gap: '20px' }}>
                 <Loader className="animate-spin" size={48} color="#0A84FF" />
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', letterSpacing: '0.05em' }}>Loading curated tracks...</p>
+                <p style={{ color: '#64748b', fontSize: '0.9rem', letterSpacing: '0.05em' }}>Loading curated tracks...</p>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: '100vh', padding: isMobile ? '100px 20px 40px' : '60px 40px', maxWidth: '1400px', margin: '0 auto', color: 'white' }}>
+        <div style={{ minHeight: '100vh', padding: isMobile ? '100px 20px 40px' : '60px 40px', maxWidth: '1400px', margin: '0 auto', color: '#1a1a2e' }}>
             
             {/* Header Area */}
             <div style={{ marginBottom: '80px', textAlign: isMobile ? 'left' : 'center' }}>
@@ -137,7 +137,7 @@ const CourseCatalog = () => {
                 <h1 style={{ fontSize: isMobile ? '2.2rem' : '3.8rem', fontWeight: 900, marginBottom: '20px', letterSpacing: '-0.04em' }}>
                     Master the <span style={{ color: '#0A84FF' }}>Modern Stack</span>
                 </h1>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: isSmallMobile ? '0.95rem' : '1.15rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
+                <p style={{ color: '#64748b', fontSize: isSmallMobile ? '0.95rem' : '1.15rem', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
                     Specialized career tracks designed for scaling real-world systems. 
                     From Python Fundamentals to Enterprise AI.
                 </p>
@@ -159,9 +159,10 @@ const CourseCatalog = () => {
                     style={{ 
                         borderRadius: '100px', 
                         whiteSpace: 'nowrap', 
-                        background: selectedCategory === null ? 'rgba(10, 132, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)', 
-                        color: selectedCategory === null ? '#0A84FF' : 'rgba(255, 255, 255, 0.6)', 
-                        borderColor: selectedCategory === null ? 'rgba(10, 132, 255, 0.3)' : 'rgba(255, 255, 255, 0.05)'
+                        background: selectedCategory === null ? 'rgba(10, 132, 255, 0.15)' : 'rgba(255, 255, 255, 0.8)', 
+                        color: selectedCategory === null ? '#0A84FF' : '#475569', 
+                        borderColor: selectedCategory === null ? 'rgba(10, 132, 255, 0.3)' : 'rgba(0, 0, 0, 0.08)',
+                        fontWeight: selectedCategory === null ? 700 : 500
                     }}
                 >
                     All Tracks
@@ -173,9 +174,10 @@ const CourseCatalog = () => {
                         style={{ 
                             borderRadius: '100px', 
                             whiteSpace: 'nowrap',
-                            background: selectedCategory === cat.id ? 'rgba(10, 132, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)', 
-                            color: selectedCategory === cat.id ? '#0A84FF' : 'rgba(255, 255, 255, 0.6)', 
-                            borderColor: selectedCategory === cat.id ? 'rgba(10, 132, 255, 0.3)' : 'rgba(255, 255, 255, 0.05)'
+                            background: selectedCategory === cat.id ? 'rgba(10, 132, 255, 0.15)' : 'rgba(255, 255, 255, 0.8)', 
+                            color: selectedCategory === cat.id ? '#0A84FF' : '#475569', 
+                            borderColor: selectedCategory === cat.id ? 'rgba(10, 132, 255, 0.3)' : 'rgba(0, 0, 0, 0.08)',
+                            fontWeight: selectedCategory === cat.id ? 700 : 500
                         }}
                     >
                         {cat.name}
@@ -190,13 +192,13 @@ const CourseCatalog = () => {
                 gap: '20px', 
                 marginBottom: '60px',
                 alignItems: isMobile ? 'stretch' : 'center',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'rgba(255, 255, 255, 0.8)',
                 padding: '12px',
                 borderRadius: '24px',
-                border: '1px solid rgba(255,255,255,0.05)'
+                border: '1px solid rgba(0, 0, 0, 0.06)'
             }}>
                 <div style={{ flex: 1, position: 'relative' }}>
-                    <Search size={22} color="rgba(255,255,255,0.2)" style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <Search size={22} color="#94a3b8" style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)' }} />
                     <input 
                         type="text" 
                         placeholder="Search by topic, skill, or instructor..."
@@ -208,7 +210,7 @@ const CourseCatalog = () => {
                             border: 'none',
                             borderRadius: '16px',
                             padding: '18px 20px 18px 60px',
-                            color: 'white',
+                            color: '#1a1a2e',
                             fontSize: '1.05rem',
                             outline: 'none',
                         }}
@@ -219,13 +221,14 @@ const CourseCatalog = () => {
                         onClick={() => setShowSortMenu(!showSortMenu)}
                         style={{ 
                             borderRadius: '14px', 
-                            background: showSortMenu ? 'rgba(10, 132, 255, 0.1)' : 'rgba(255,255,255,0.03)', 
-                            border: showSortMenu ? '1px solid #0A84FF' : '1px solid rgba(255,255,255,0.08)',
-                            color: showSortMenu ? '#0A84FF' : 'white',
-                            minWidth: '130px'
+                            background: showSortMenu ? 'rgba(10, 132, 255, 0.1)' : 'rgba(255, 255, 255, 0.9)', 
+                            border: showSortMenu ? '1px solid #0A84FF' : '1px solid rgba(0, 0, 0, 0.08)',
+                            color: showSortMenu ? '#0A84FF' : '#1a1a2e',
+                            minWidth: '130px',
+                            fontWeight: 600
                         }}
                     >
-                        <Filter size={18} /> 
+                        <Filter size={18} color={showSortMenu ? '#0A84FF' : '#1a1a2e'} /> 
                         <span style={{ marginLeft: '8px', marginRight: '4px' }}>
                             {sortBy === 'newest' ? 'Newest' : sortBy === 'price_low' ? 'Price Low' : sortBy === 'price_high' ? 'Price High' : 'Top Rated'}
                         </span>
@@ -239,13 +242,13 @@ const CourseCatalog = () => {
                             top: 'calc(100% + 10px)',
                             right: 0,
                             width: '200px',
-                            background: 'rgba(15, 15, 25, 0.95)',
+                            background: 'rgba(255, 255, 255, 0.98)',
                             backdropFilter: 'blur(30px)',
-                            border: '1px solid rgba(255, 255, 255, 0.12)',
+                            border: '1px solid rgba(0, 0, 0, 0.08)',
                             borderRadius: '18px',
                             padding: '8px',
                             zIndex: 2000,
-                            boxShadow: '0 20px 40px rgba(0,0,0,0.6)'
+                            boxShadow: '0 12px 32px rgba(0,0,0,0.08)'
                         }}>
                             {[
                                 { id: 'newest', label: 'Newest Arrivals' },
@@ -264,13 +267,13 @@ const CourseCatalog = () => {
                                         borderRadius: '12px',
                                         cursor: 'pointer',
                                         background: sortBy === option.id ? 'rgba(10, 132, 255, 0.1)' : 'transparent',
-                                        color: sortBy === option.id ? '#0A84FF' : 'rgba(255,255,255,0.7)',
+                                        color: sortBy === option.id ? '#0A84FF' : '#475569',
                                         fontSize: '0.9rem',
                                         fontWeight: 600,
                                         transition: 'all 0.2s'
                                     }}
                                     onMouseEnter={e => {
-                                        if(sortBy !== option.id) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                        if(sortBy !== option.id) e.currentTarget.style.background = 'rgba(0, 0, 0, 0.04)';
                                     }}
                                     onMouseLeave={e => {
                                         if(sortBy !== option.id) e.currentTarget.style.background = 'transparent';
@@ -295,7 +298,7 @@ const CourseCatalog = () => {
                         borderRadius: '32px', 
                         overflow: 'hidden',
                         transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                        border: '1px solid rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(0, 0, 0, 0.06)',
                         display: 'flex',
                         flexDirection: 'column'
                     }}
@@ -332,7 +335,7 @@ const CourseCatalog = () => {
                             
                             {/* Badges Overlay */}
                             <div style={{ position: 'absolute', top: '20px', left: '20px', display: 'flex', gap: '8px' }}>
-                                <div style={{ padding: '6px 14px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 900, color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{ padding: '6px 14px', background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(10px)', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 800, color: '#0A84FF', border: '1px solid rgba(0, 0, 0, 0.08)' }}>
                                     {course.category_name || 'TECHNOLOGY'}
                                 </div>
                                 <div style={{ padding: '6px 14px', background: 'rgba(10, 132, 255, 0.9)', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 900, color: 'white' }}>
@@ -344,15 +347,15 @@ const CourseCatalog = () => {
                         {/* Content Body */}
                         <div style={{ padding: '28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'white', lineHeight: 1.3 }}>{course.title}</h3>
+                                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1a1a2e', lineHeight: 1.3 }}>{course.title}</h3>
                             </div>
                             
-                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem', marginBottom: '24px', lineHeight: 1.6, height: '3.2rem', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                            <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '24px', lineHeight: 1.6, height: '3.2rem', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                                 {course.description || "In-depth technical training focused on production-ready systems and scalable architecture."}
                             </p>
 
                             <div style={{ marginTop: 'auto' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', color: '#64748b', fontSize: '0.85rem' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Clock size={16} /> {Math.floor(course.total_duration_mins / 60)} Hours</div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={16} /> {course.student_count || 0} Enrolled</div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#FFD60A' }}>
@@ -378,8 +381,8 @@ const CourseCatalog = () => {
                         style={{ 
                             padding: '16px 40px', 
                             borderRadius: '16px', 
-                            background: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'rgba(0, 0, 0, 0.03)',
+                            border: '1px solid rgba(0, 0, 0, 0.08)',
                             gap: '12px'
                         }}
                     >
@@ -404,18 +407,18 @@ const CourseCatalog = () => {
                         <RefreshCw size={32} color="#ef4444" />
                     </div>
                     <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>Unable to load catalog</h3>
-                    <p style={{ color: 'rgba(255,255,255,0.3)', marginBottom: '32px' }}>Check your internet connection or try again later.</p>
+                    <p style={{ color: '#94a3b8', marginBottom: '32px' }}>Check your internet connection or try again later.</p>
                     <GlassButton primary onClick={() => window.location.reload()}>Retry Connection</GlassButton>
                 </div>
             )}
 
             {filteredCourses.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '120px 20px' }}>
-                    <div style={{ width: '80px', height: '80px', background: 'rgba(255,255,255,0.02)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                    <div style={{ width: '80px', height: '80px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                         <Search size={32} color="rgba(255,255,255,0.1)" />
                     </div>
                     <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>No matches found</h3>
-                    <p style={{ color: 'rgba(255,255,255,0.3)' }}>Try adjusting your keywords to find related courses.</p>
+                    <p style={{ color: '#94a3b8' }}>Try adjusting your keywords to find related courses.</p>
                 </div>
             )}
         </div>

@@ -41,12 +41,12 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
                     top: '20px',
                     left: '20px',
                     zIndex: 1000,
-                    background: 'rgba(255,255,255,0.05)',
+                    background: 'rgba(0, 0, 0, 0.03)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(0, 0, 0, 0.08)',
                     borderRadius: '12px',
                     padding: '10px',
-                    color: 'white',
+                    color: '#1a1a2e',
                     cursor: 'pointer'
                 }}
             >
@@ -71,9 +71,9 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
         <div style={{ 
             width: isMobile ? '280px' : '300px', 
             height: '100vh', 
-            background: isMobile ? 'rgba(10, 10, 15, 0.95)' : 'rgba(5, 5, 10, 0.4)', 
+            background: isMobile ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.7)', 
             backdropFilter: 'blur(30px)',
-            borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRight: '1px solid rgba(0, 0, 0, 0.06)',
             padding: '40px 20px',
             display: 'flex',
             flexDirection: 'column',
@@ -95,7 +95,7 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
                 }}>
                     KNG ADMIN
                 </h1>
-                <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: '4px' }}>
+                <p style={{ fontSize: '0.7rem', color: '#94a3b8', letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: '4px' }}>
                     Control Center
                 </p>
             </div>
@@ -124,7 +124,7 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
                                 gap: '14px',
                                 padding: '14px 20px',
                                 borderRadius: '14px',
-                                color: isActive ? 'white' : 'rgba(255,255,255,0.5)',
+                                color: isActive ? '#1a1a2e' : '#64748b',
                                 background: isActive ? 'rgba(10, 132, 255, 0.12)' : 'transparent',
                                 border: isActive ? '1px solid rgba(10, 132, 255, 0.2)' : '1px solid transparent',
                                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -140,13 +140,13 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
             </nav>
 
             <div style={{ marginTop: 'auto', paddingTop: '20px' }}>
-                <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', margin: '0 -20px 24px -20px' }}></div>
+                <div style={{ height: '1px', background: 'rgba(0, 0, 0, 0.03)', margin: '0 -20px 24px -20px' }}></div>
                 <GlassCard 
                     style={{ 
                         padding: '16px', 
                         marginBottom: '16px', 
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.05)'
+                        background: 'rgba(0, 0, 0, 0.02)',
+                        border: '1px solid rgba(0, 0, 0, 0.06)'
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -165,10 +165,10 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
                             {user?.username?.[0].toUpperCase()}
                         </div>
                         <div style={{ overflow: 'hidden' }}>
-                            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'white', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1a1a2e', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                                 {user?.first_name || user?.username}
                             </p>
-                            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>Super Admin</p>
+                            <p style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Super Admin</p>
                         </div>
                     </div>
                 </GlassCard>

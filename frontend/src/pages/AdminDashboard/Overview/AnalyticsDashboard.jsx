@@ -74,13 +74,13 @@ export const AnalyticsDashboard = () => {
         },
     ];
 
-    if (loading) return <div style={{ color: 'rgba(255,255,255,0.4)', padding: '40px' }}>Analyzing platform data...</div>;
+    if (loading) return <div style={{ color: '#64748b', padding: '40px' }}>Analyzing platform data...</div>;
 
     return (
         <div className="animate-fade-in">
             <div style={{ marginBottom: '48px' }}>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '12px', color: 'white' }}>Platform Overview</h1>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem' }}>Real-time growth metrics and system-wide performance analytics.</p>
+                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '12px', color: '#1a1a2e' }}>Platform Overview</h1>
+                <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Real-time growth metrics and system-wide performance analytics.</p>
             </div>
 
             {/* Metrics Grid */}
@@ -91,8 +91,8 @@ export const AnalyticsDashboard = () => {
                         heavy 
                         style={{ 
                             padding: '32px', 
-                            border: '1px solid rgba(255,255,255,0.08)',
-                            background: 'rgba(255,255,255,0.01)',
+                            border: '1px solid rgba(0, 0, 0, 0.06)',
+                            background: 'rgba(0, 0, 0, 0.01)',
                             position: 'relative',
                             overflow: 'hidden'
                         }}
@@ -123,7 +123,7 @@ export const AnalyticsDashboard = () => {
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     gap: '6px', 
-                                    color: 'white', 
+                                    color: '#1a1a2e', 
                                     fontSize: '0.75rem', 
                                     fontWeight: 700,
                                     background: m.isUp ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 69, 58, 0.2)',
@@ -135,8 +135,8 @@ export const AnalyticsDashboard = () => {
                                     <span style={{ color: m.isUp ? '#10b981' : '#ff453a' }}>{m.trend}</span>
                                 </div>
                             </div>
-                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.95rem', fontWeight: 500, marginBottom: '8px' }}>{m.label}</p>
-                            <h3 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', letterSpacing: '-0.02em' }}>{m.value}</h3>
+                            <p style={{ color: '#64748b', fontSize: '0.95rem', fontWeight: 500, marginBottom: '8px' }}>{m.label}</p>
+                            <h3 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a2e', letterSpacing: '-0.02em' }}>{m.value}</h3>
                         </div>
                     </GlassCard>
                 ))}
@@ -147,22 +147,22 @@ export const AnalyticsDashboard = () => {
                 <GlassCard heavy style={{ padding: '32px' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '24px' }}>System Criticals</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                                 <div style={{ color: '#f59e0b' }}><TrendingUp size={24} /></div>
                                 <div>
                                     <p style={{ fontSize: '0.95rem', fontWeight: 600 }}>Courses Awaiting Review</p>
-                                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>New submissions from instructors</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#64748b' }}>New submissions from instructors</p>
                                 </div>
                             </div>
                             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{stats.courses.pending_courses}</div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                                 <div style={{ color: 'var(--accent-blue)' }}><CheckCircle2 size={24} /></div>
                                 <div>
                                     <p style={{ fontSize: '0.95rem', fontWeight: 600 }}>Suspended Users</p>
-                                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>Accounts flagged for review</p>
+                                    <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Accounts flagged for review</p>
                                 </div>
                             </div>
                             <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-blue)' }}>{stats.users.suspended_users}</div>
@@ -175,19 +175,19 @@ export const AnalyticsDashboard = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '8px' }}>
-                                <span style={{ color: 'rgba(255,255,255,0.6)' }}>Students</span>
+                                <span style={{ color: '#475569' }}>Students</span>
                                 <span style={{ fontWeight: 600 }}>{stats.users.total_students}</span>
                             </div>
-                            <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ height: '8px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '4px', overflow: 'hidden' }}>
                                 <div style={{ width: stats.users.total_users ? `${(stats.users.total_students/stats.users.total_users)*100}%` : '0%', height: '100%', background: 'var(--accent-blue)' }}></div>
                             </div>
                         </div>
                         <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '8px' }}>
-                                <span style={{ color: 'rgba(255,255,255,0.6)' }}>Instructors</span>
+                                <span style={{ color: '#475569' }}>Instructors</span>
                                 <span style={{ fontWeight: 600 }}>{stats.users.total_instructors}</span>
                             </div>
-                            <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ height: '8px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '4px', overflow: 'hidden' }}>
                                 <div style={{ width: stats.users.total_users ? `${(stats.users.total_instructors/stats.users.total_users)*100}%` : '0%', height: '100%', background: 'var(--accent-purple)' }}></div>
                             </div>
                         </div>

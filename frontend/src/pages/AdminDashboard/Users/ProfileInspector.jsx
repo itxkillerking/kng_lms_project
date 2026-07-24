@@ -53,7 +53,7 @@ export const ProfileInspector = ({ user, onClose }) => {
                 overflow: 'hidden',
                 position: 'relative',
                 padding: '0',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
                 boxShadow: '0 60px 120px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)',
                 borderRadius: '48px',
                 background: 'rgba(10, 11, 20, 0.6)'
@@ -63,7 +63,7 @@ export const ProfileInspector = ({ user, onClose }) => {
                 <div style={{ 
                     flex: '0 0 380px', 
                     background: 'linear-gradient(165deg, rgba(10, 132, 255, 0.15) 0%, rgba(191, 90, 242, 0.15) 100%)',
-                    borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRight: '1px solid rgba(0, 0, 0, 0.08)',
                     padding: '60px 20px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -85,7 +85,7 @@ export const ProfileInspector = ({ user, onClose }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'white',
+                        color: '#1a1a2e',
                         fontSize: '4.5rem',
                         fontWeight: 900,
                         boxShadow: '0 30px 60px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2)',
@@ -114,10 +114,10 @@ export const ProfileInspector = ({ user, onClose }) => {
                         }}>
                             <BadgeCheck size={14} /> System Administrator
                         </div>
-                        <h2 style={{ fontSize: '2.4rem', fontWeight: 900, color: 'white', marginBottom: '8px', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
+                        <h2 style={{ fontSize: '2.4rem', fontWeight: 900, color: '#1a1a2e', marginBottom: '8px', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
                             {user.first_name || user.username}
                         </h2>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: 'rgba(255, 255, 255, 0.4)', fontSize: '1.1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#64748b', fontSize: '1.1rem' }}>
                             <AtSign size={16} /> {user.username}
                         </div>
                     </div>
@@ -141,15 +141,15 @@ export const ProfileInspector = ({ user, onClose }) => {
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
                         <div>
-                            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '6px' }}>Master Profile</h3>
-                            <p style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: '0.95rem' }}>Global administrative credentials and platform status.</p>
+                            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '6px' }}>Master Profile</h3>
+                            <p style={{ color: '#94a3b8', fontSize: '0.95rem' }}>Global administrative credentials and platform status.</p>
                         </div>
                         <button 
                             onClick={onClose}
                             style={{ 
-                                background: 'rgba(255, 255, 255, 0.04)', 
-                                border: '1px solid rgba(255, 255, 255, 0.08)', 
-                                color: 'white', 
+                                background: 'rgba(255, 255, 255, 0.65)', 
+                                border: '1px solid rgba(0, 0, 0, 0.06)', 
+                                color: '#1a1a2e', 
                                 cursor: 'pointer', 
                                 width: '48px', 
                                 height: '48px', 
@@ -170,35 +170,35 @@ export const ProfileInspector = ({ user, onClose }) => {
                         
                         {/* Security Row */}
                         <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '10px' }}>
-                            <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                            <div style={{ background: 'rgba(0, 0, 0, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                                 <Shield size={20} color="#0A84FF" style={{ marginBottom: '12px' }} />
-                                <p style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.3)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>Level</p>
-                                <p style={{ color: 'white', fontWeight: 700, fontSize: '1rem' }}>Super Root</p>
+                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>Level</p>
+                                <p style={{ color: '#1a1a2e', fontWeight: 700, fontSize: '1rem' }}>Super Root</p>
                             </div>
-                            <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                            <div style={{ background: 'rgba(0, 0, 0, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                                 <Activity size={20} color="#10b981" style={{ marginBottom: '12px' }} />
-                                <p style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.3)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>Status</p>
+                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>Status</p>
                                 <p style={{ color: '#10b981', fontWeight: 700, fontSize: '1.1rem' }}>Operational</p>
                             </div>
-                            <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                            <div style={{ background: 'rgba(0, 0, 0, 0.03)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                                 <Hash size={20} color="#BF5AF2" style={{ marginBottom: '12px' }} />
-                                <p style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.3)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>System ID</p>
-                                <p style={{ color: 'white', fontWeight: 700, fontSize: '1rem' }}>#{user.id}</p>
+                                <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', marginBottom: '4px' }}>System ID</p>
+                                <p style={{ color: '#1a1a2e', fontWeight: 700, fontSize: '1rem' }}>#{user.id}</p>
                             </div>
                         </div>
 
                         {/* Details Sections */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                             <div>
-                                <h4 style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>Network Identity</h4>
+                                <h4 style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>Network Identity</h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                         <Mail size={18} color="rgba(255, 255, 255, 0.3)" />
-                                        <div style={{ color: 'white', fontWeight: 600, fontSize: '1rem', wordBreak: 'break-all' }}>{user.email}</div>
+                                        <div style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '1rem', wordBreak: 'break-all' }}>{user.email}</div>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                         <Phone size={18} color="rgba(255, 255, 255, 0.3)" />
-                                        <div style={{ color: 'white', fontWeight: 600, fontSize: '1rem' }}>{user.phone_number || 'Mobile Unverified'}</div>
+                                        <div style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '1rem' }}>{user.phone_number || 'Mobile Unverified'}</div>
                                     </div>
                                 </div>
                             </div>
@@ -206,13 +206,13 @@ export const ProfileInspector = ({ user, onClose }) => {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                             <div>
-                                <h4 style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>System Tenure</h4>
+                                <h4 style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>System Tenure</h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                         <Calendar size={18} color="rgba(255, 255, 255, 0.3)" />
                                         <div>
-                                            <p style={{ color: 'white', fontWeight: 600, fontSize: '1rem' }}>{new Date(user.joined_at || user.date_joined).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                                            <p style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.3)' }}>Established Admin Registry</p>
+                                            <p style={{ color: '#1a1a2e', fontWeight: 600, fontSize: '1rem' }}>{new Date(user.joined_at || user.date_joined).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                            <p style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Established Admin Registry</p>
                                         </div>
                                     </div>
                                 </div>
@@ -220,12 +220,12 @@ export const ProfileInspector = ({ user, onClose }) => {
                         </div>
 
                         {user.bio && (
-                            <div style={{ gridColumn: 'span 2', background: 'rgba(255, 255, 255, 0.02)', padding: '30px', borderRadius: '32px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', color: 'rgba(255, 255, 255, 0.2)' }}>
+                            <div style={{ gridColumn: 'span 2', background: 'rgba(0, 0, 0, 0.02)', padding: '30px', borderRadius: '32px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', color: '#94a3b8' }}>
                                     <Info size={18} />
                                     <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Registry Bio-Data</span>
                                 </div>
-                                <p style={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.8, fontSize: '1.05rem', fontStyle: 'italic' }}>"{user.bio}"</p>
+                                <p style={{ color: '#334155', lineHeight: 1.8, fontSize: '1.05rem', fontStyle: 'italic' }}>"{user.bio}"</p>
                             </div>
                         )}
                     </div>
@@ -234,7 +234,7 @@ export const ProfileInspector = ({ user, onClose }) => {
                         <GlassButton wide style={{ py: '20px', borderRadius: '24px', fontSize: '1.05rem', boxShadow: '0 20px 40px rgba(10, 132, 255, 0.2)' }}>
                             <Edit size={22} style={{ marginRight: '12px' }} /> Update Control Data
                         </GlassButton>
-                        <GlassButton onClick={onClose} style={{ background: 'rgba(255, 255, 255, 0.04)', color: 'white', border: '1px solid rgba(255, 255, 255, 0.1)', py: '20px', borderRadius: '24px', px: '40px' }}>
+                        <GlassButton onClick={onClose} style={{ background: 'rgba(255, 255, 255, 0.65)', color: '#1a1a2e', border: '1px solid rgba(0, 0, 0, 0.08)', py: '20px', borderRadius: '24px', px: '40px' }}>
                             Dismiss
                         </GlassButton>
                     </div>

@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   This file overrides all hardcoded dark inline styles with 
+   light theme equivalents using high-specificity selectors.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Page-level background overrides ────────────────────── */
+/* Override all dark page backgrounds */
+div[style*="background: #040407"],
+div[style*="background: '#040407'"],
+div[style*="background: #0a0a0f"],
+div[style*="background: '#0a0a0f'"],
+div[style*="background: #05050a"],
+div[style*="background: '#05050a'"],
+div[style*="background: #050508"],
+div[style*="background: '#050508'"],
+div[style*="background: '#05050A'"],
+div[style*="background:#0a0a0f"],
+section[style*="background: #040407"],
+section[style*="background: '#040407'"],
+footer[style*="background"] {
+  background: #f5f7fa !important;
+  color: #1a1a2e !important;
+}
+
+/* ── Text color overrides ─────────────────────────────── */
+/* Override all "color: white" to dark */
+div[style*="color: white"],
+div[style*="color: 'white'"],
+section[style*="color: white"],
+span[style*="color: white"],
+p[style*="color: white"],
+h1[style*="color: white"],
+h2[style*="color: white"],
+h3[style*="color: white"],
+h4[style*="color: white"],
+a[style*="color: white"],
+button[style*="color: white"],
+label[style*="color: white"] {
+  color: #1a1a2e !important;
+}
+
+/* Override semi-transparent white text used for muted content */
+*[style*="color: rgba(255,255,255,0.4)"],
+*[style*="color: rgba(255, 255, 255, 0.4)"],
+*[style*="color: 'rgba(255,255,255,0.4)'"] {
+  color: #64748b !important;
+}
+
+*[style*="color: rgba(255,255,255,0.5)"],
+*[style*="color: rgba(255, 255, 255, 0.5)"],
+*[style*="color: 'rgba(255,255,255,0.5)'"] {
+  color: #64748b !important;
+}
+
+*[style*="color: rgba(255,255,255,0.6)"],
+*[style*="color: rgba(255, 255, 255, 0.6)"],
+*[style*="color: 'rgba(255,255,255,0.6)'"] {
+  color: #475569 !important;
+}
+
+*[style*="color: rgba(255,255,255,0.8)"],
+*[style*="color: rgba(255, 255, 255, 0.8)"] {
+  color: #334155 !important;
+}
+
+*[style*="color: rgba(255,255,255,0.3)"],
+*[style*="color: rgba(255, 255, 255, 0.3)"] {
+  color: #94a3b8 !important;
+}
+
+*[style*="color: rgba(255,255,255,0.2)"],
+*[style*="color: rgba(255, 255, 255, 0.2)"] {
+  color: #94a3b8 !important;
+}
+
+/* ── Glass morphism overrides ────────────────────────── */
+/* Override dark glass backgrounds with light glass */
+*[style*="background: rgba(255, 255, 255, 0.04)"],
+*[style*="background: rgba(255,255,255,0.04)"],
+*[style*="background: rgba(255, 255, 255, 0.03)"],
+*[style*="background: rgba(255,255,255,0.03)"],
+*[style*="background: rgba(255, 255, 255, 0.05)"],
+*[style*="background: rgba(255,255,255,0.05)"] {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+*[style*="background: rgba(255, 255, 255, 0.06)"],
+*[style*="background: rgba(255,255,255,0.06)"] {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+*[style*="background: rgba(255, 255, 255, 0.08)"],
+*[style*="background: rgba(255,255,255,0.08)"] {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+*[style*="background: rgba(255, 255, 255, 0.1)"],
+*[style*="background: rgba(255,255,255,0.1)"] {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Override dark card/panel backgrounds */
+*[style*="background: rgba(15, 15, 25"],
+*[style*="background: rgba(10, 10, 15"],
+*[style*="background: rgba(5, 5, 10"] {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Override dark solid backgrounds in sub-panels */
+*[style*="background: #000"] {
+  background: #e2e8f0 !important;
+}
+
+/* ── Border overrides ──────────────────────────────────── */
+*[style*="border: 1px solid rgba(255, 255, 255, 0.1)"],
+*[style*="border: 1px solid rgba(255,255,255,0.1)"] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+*[style*="border: 1px solid rgba(255, 255, 255, 0.05)"],
+*[style*="border: 1px solid rgba(255,255,255,0.05)"] {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+*[style*="border: 1px solid rgba(255, 255, 255, 0.06)"],
+*[style*="border: 1px solid rgba(255,255,255,0.06)"] {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+*[style*="borderBottom: '1px solid rgba(255,255,255,0.1)'"],
+*[style*="border-bottom: 1px solid rgba(255,255,255,0.1)"],
+*[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.1)"] {
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+*[style*="borderTop: '1px solid rgba(255,255,255"] {
+  border-top-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── Divider lines ──────────────────────────────────── */
+div[style*="background: rgba(255,255,255,0.1)"][style*="height: '1px'"],
+div[style*="background: rgba(255,255,255,0.1)"][style*="width: '1px'"],
+div[style*="background: rgba(255, 255, 255, 0.1)"][style*="height"],
+div[style*="background: rgba(255,255,255,0.1)"][style*="height: 1"] {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── Navbar/Header overrides ───────────────────────────── */
+nav[style*="background: rgba(5, 5, 10"] {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Mobile menu overlay */
+div[style*="background: rgba(5, 5, 10, 0.95)"] {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ── Footer overrides ──────────────────────────────────── */
+footer {
+  background: linear-gradient(to bottom, #eef1f6, #e2e8f0) !important;
+  border-top-color: rgba(0, 0, 0, 0.06) !important;
+  color: #1a1a2e !important;
+}
+
+footer h4 {
+  color: #94a3b8 !important;
+}
+
+footer a {
+  color: #475569 !important;
+}
+
+footer p {
+  color: #64748b !important;
+}
+
+footer span {
+  color: #1a1a2e !important;
+}
+
+/* ── Shadow overrides ──────────────────────────────────── */
+*[style*="boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3)'"],
+*[style*="box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3)"] {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+*[style*="boxShadow: '0 40px 100px rgba(0, 0, 0, 0.6)'"],
+*[style*="box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6)"] {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08) !important;
+}
+
+*[style*="boxShadow: '0 24px 80px rgba(0, 0, 0, 0.5)'"],
+*[style*="box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5)"] {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ── Splash Screen override ───────────────────────────── */
+div[style*="background: '#040407'"][style*="position: 'fixed'"],
+div[style*="background: #040407"][style*="position: fixed"] {
+  background: #f5f7fa !important;
+}
+
+/* ── Gradient text fix (dark gradient on light won't be visible) ── */
+/* Keep gradient text backgrounds as-is since they use WebkitTextFillColor: transparent */
+
+/* ── Admin/Teacher sidebar backgrounds ─────────────────── */
+aside[style*="background"],
+div[style*="background: rgba(10, 10, 15"],
+div[style*="background: rgba(5, 5, 10"],
+div[style*="background: 'rgba(10, 10, 15'"],
+div[style*="background: 'rgba(5, 5, 10'"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ── Input/Textarea overrides in dark glass ──────────── */
+input[style*="background: rgba(255, 255, 255, 0.05)"],
+input[style*="background: rgba(255,255,255,0.05)"],
+textarea[style*="background: rgba(255, 255, 255, 0.05)"],
+textarea[style*="background: rgba(255,255,255,0.05)"],
+select[style*="background: rgba(255, 255, 255, 0.05)"],
+select[style*="background: rgba(255,255,255,0.05)"] {
+  background: rgba(0, 0, 0, 0.03) !important;
+  color: #1a1a2e !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+input[style*="background: rgba(255, 255, 255, 0.03)"],
+input[style*="background: rgba(255,255,255,0.03)"],
+textarea[style*="background: rgba(255, 255, 255, 0.03)"],
+textarea[style*="background: rgba(255,255,255,0.03)"] {
+  background: rgba(0, 0, 0, 0.02) !important;
+  color: #1a1a2e !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── EmailFloat tooltip override ────────────────────── */
+.wa-tooltip {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #1a1a2e !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── FloatingBackButton override ────────────────────── */
+.draggable-back-btn {
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: #1a1a2e !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── Badge counter borders (e.g. notification dot border) ── */
+*[style*="border: 2px solid #0a0a0f"],
+*[style*="border: '2px solid #0a0a0f'"] {
+  border-color: #f5f7fa !important;
+}
+
+/* ── Gradient overlays that fade to dark ──────────────── */
+div[style*="background: linear-gradient(to top, #040407"],
+div[style*="background: 'linear-gradient(to top, #040407'"] {
+  background: linear-gradient(to top, #f5f7fa, transparent) !important;
+}
+
+div[style*="background: linear-gradient(to bottom, transparent 0%, rgba(4, 4, 7"] {
+  background: linear-gradient(to bottom, transparent 0%, rgba(245, 247, 250, 0.95) 95%) !important;
+}
+
+div[style*="background: linear-gradient(to bottom, rgba(4, 4, 7"] {
+  background: linear-gradient(to bottom, #eef1f6, #e2e8f0) !important;
+}
+
+/* ── Progress bar track backgrounds ────────────────────── */
+div[style*="background: rgba(255,255,255,0.05)"][style*="borderRadius: '3px'"],
+div[style*="background: rgba(255,255,255,0.05)"][style*="border-radius: 3px"] {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── Lesson dot states ─────────────────────────────────── */
+div[style*="background: rgba(255,255,255,0.05)"][style*="width: '8px'"],
+div[style*="background: rgba(255,255,255,0.05)"][style*="width: 8"] {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── Radial gradient background overlays ───────────────── */
+main[style*="background: radial-gradient(circle at top right, rgba(10, 132, 255, 0.05)"] {
+  background: radial-gradient(circle at top right, rgba(10, 132, 255, 0.06), transparent 40%), 
+              radial-gradient(circle at bottom left, rgba(191, 90, 242, 0.06), transparent 40%) !important;
+}
+
+/* Keep accent gradient buttons white text always */
+button[style*="background: '#0A84FF'"],
+button[style*="background: #0A84FF"],
+*[style*="background: linear-gradient(135deg, var(--accent-blue)"] {
+  color: white !important;
+}
+
+/* Keep avatar gradient circles with white text */
+div[style*="background: linear-gradient(135deg, #0A84FF, #BF5AF2)"],
+div[style*="background: linear-gradient(135deg, #0A84FF, #5E5CE6)"],
+div[style*="background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)'"],
+div[style*="background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)'"],
+div[style*="background: linear-gradient(45deg, #0A84FF, #BF5AF2)"],
+div[style*="background: 'linear-gradient(45deg, #0A84FF, #BF5AF2)'"] {
+  color: white !important;
+}
+
+/* ── Hover state background glows ──────────────────────── */
+*[style*="background: rgba(10, 132, 255, 0.1)"] {
+  background: rgba(10, 132, 255, 0.08) !important;
+}

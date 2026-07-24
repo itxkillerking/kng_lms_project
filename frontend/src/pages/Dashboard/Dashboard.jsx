@@ -102,12 +102,12 @@ const Dashboard = () => {
 
     if (loading || hasError) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f5f7fa', color: '#64748b', textAlign: 'center', padding: '20px' }}>
                 <div>
                     {hasError ? (
                         <>
                             <AlertCircle size={48} color="#FF453A" style={{ marginBottom: '16px' }} />
-                            <h2 style={{ color: 'white', marginBottom: '8px' }}>Connection Issue</h2>
+                            <h2 style={{ color: '#1a1a2e', marginBottom: '8px' }}>Connection Issue</h2>
                             <p style={{ marginBottom: '24px' }}>We couldn't sync your dashboard data right now.</p>
                             <GlassButton onClick={handleRetry} style={{ borderRadius: '12px', padding: '10px 24px' }}>
                                 Try to Reconnect
@@ -126,12 +126,12 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#040407' }}>
+        <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
             <div style={{ 
                 padding: isExtraSmall ? '100px 16px 40px' : isMobile ? '100px 24px 60px' : isTablet ? '60px 40px 100px' : '80px 80px 120px', 
                 maxWidth: isLargeDesktop ? '1800px' : '1450px', 
                 margin: '0 auto', 
-                color: 'white' 
+                color: '#1a1a2e' 
             }}>
 
                 {/* Top Header */}
@@ -152,7 +152,7 @@ const Dashboard = () => {
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center', 
-                            border: '1px solid rgba(255,255,255,0.1)', 
+                            border: '1px solid rgba(0, 0, 0, 0.08)', 
                             overflow: 'hidden', 
                             flexShrink: 0 
                         }}>
@@ -172,7 +172,7 @@ const Dashboard = () => {
                             }}>
                                 Hello, {user?.first_name || user?.username}
                             </h1>
-                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: isExtraSmall ? '0.95rem' : '1.1rem' }}>Welcome back to KLS Tech Campus.</p>
+                            <p style={{ color: '#64748b', fontSize: isExtraSmall ? '0.95rem' : '1.1rem' }}>Welcome back to KLS Tech Campus.</p>
                         </div>
                     </div>
                     
@@ -187,30 +187,31 @@ const Dashboard = () => {
                                 borderRadius: '16px', 
                                 border: '1px solid rgba(10, 132, 255, 0.3)', 
                                 padding: '14px 28px', 
-                                background: 'rgba(10, 132, 255, 0.15)',
-                                color: '#FFFFFF', 
+                                background: 'rgba(10, 132, 255, 0.12)',
+                                color: '#0A84FF', 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center',
                                 gap: '10px',
                                 fontWeight: 800,
-                                boxShadow: '0 4px 15px rgba(10, 132, 255, 0.2)'
+                                boxShadow: '0 4px 15px rgba(10, 132, 255, 0.1)'
                             }}>
-                                <MessageSquare size={18} /> 
-                                <span>Direct Messages</span> 
+                                <MessageSquare size={18} color="#0A84FF" /> 
+                                <span style={{ color: '#0A84FF' }}>Direct Messages</span> 
                                 <NotificationBadge />
                             </GlassButton>
                         </Link>
                         <Link to="/profile" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
-                            <GlassButton wide style={{ borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.05)', padding: '14px 28px' }}>
+                            <GlassButton primary wide style={{ borderRadius: '16px', padding: '14px 28px', fontWeight: 700 }}>
                                 Profile Settings
                             </GlassButton>
                         </Link>
                         <GlassButton onClick={handleLogout} style={{ 
                             color: '#ff453a', 
-                            background: 'rgba(255, 69, 58, 0.05)', 
+                            background: 'rgba(255, 69, 58, 0.08)', 
                             borderRadius: '16px', 
-                            border: '1px solid rgba(255, 69, 58, 0.1)',
+                            border: '1px solid rgba(255, 69, 58, 0.2)',
+                            fontWeight: 700,
                             flex: isExtraSmall ? 1 : 'none',
                             minWidth: isExtraSmall ? '100%' : 'auto'
                         }}>
@@ -234,7 +235,7 @@ const Dashboard = () => {
                             padding: isExtraSmall ? '24px' : isMobile ? '32px' : '48px', 
                             borderRadius: '32px', 
                             background: 'linear-gradient(135deg, rgba(10, 132, 255, 0.06), rgba(0,0,0,0))',
-                            border: '1px solid rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(0, 0, 0, 0.06)',
                             position: 'relative',
                             overflow: 'hidden'
                         }}>
@@ -249,16 +250,16 @@ const Dashboard = () => {
                                     gridTemplateColumns: isExtraSmall ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))', 
                                     gap: '20px' 
                                 }}>
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '8px', fontWeight: 600 }}>Enrolled Courses</p>
-                                        <h4 style={{ fontSize: '2rem', fontWeight: 900, color: 'white' }}>{enrolledCoursesCount}</h4>
+                                    <div style={{ background: 'rgba(0, 0, 0, 0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.04)' }}>
+                                        <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: 600 }}>Enrolled Courses</p>
+                                        <h4 style={{ fontSize: '2rem', fontWeight: 900, color: '#1a1a2e' }}>{enrolledCoursesCount}</h4>
                                     </div>
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '8px', fontWeight: 600 }}>Quizzes Passed</p>
-                                        <h4 style={{ fontSize: '2rem', fontWeight: 900, color: 'white' }}>{completedQuizzesCount}</h4>
+                                    <div style={{ background: 'rgba(0, 0, 0, 0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.04)' }}>
+                                        <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: 600 }}>Quizzes Passed</p>
+                                        <h4 style={{ fontSize: '2rem', fontWeight: 900, color: '#1a1a2e' }}>{completedQuizzesCount}</h4>
                                     </div>
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '8px', fontWeight: 600 }}>Platform Rank</p>
+                                    <div style={{ background: 'rgba(0, 0, 0, 0.02)', padding: '24px', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.04)' }}>
+                                        <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '8px', fontWeight: 600 }}>Platform Rank</p>
                                         <h4 style={{ fontSize: '2rem', fontWeight: 900, color: '#BF5AF2' }}>Novice</h4>
                                     </div>
                                 </div>
@@ -283,8 +284,8 @@ const Dashboard = () => {
                                                 borderRadius: '28px', 
                                                 overflow: 'hidden',
                                                 transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                                                border: '1px solid rgba(255,255,255,0.04)',
-                                                background: 'rgba(10, 10, 15, 0.4)',
+                                                border: '1px solid rgba(0, 0, 0, 0.05)',
+                                                background: 'rgba(255, 255, 255, 0.7)',
                                                 display: 'flex',
                                                 flexDirection: 'column'
                                             }}>
@@ -325,10 +326,10 @@ const Dashboard = () => {
                                                             }}>
                                                                 {isCompleted ? 'Completed' : 'In Progress'}
                                                             </span>
-                                                            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', fontWeight: 600 }}>ID: #{String(course.id).padStart(4, '0')}</span>
+                                                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>ID: #{String(course.id).padStart(4, '0')}</span>
                                                         </div>
-                                                        <h3 style={{ fontSize: isExtraSmall ? '1.2rem' : '1.4rem', fontWeight: 900, marginBottom: '6px', color: 'white', letterSpacing: '-0.01em' }}>{course.title}</h3>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', fontWeight: 600 }}>
+                                                        <h3 style={{ fontSize: isExtraSmall ? '1.2rem' : '1.4rem', fontWeight: 900, marginBottom: '6px', color: '#1a1a2e', letterSpacing: '-0.01em' }}>{course.title}</h3>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#64748b', fontSize: '0.85rem', fontWeight: 600 }}>
                                                             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Clock size={14} /> 2.5h Total</span>
                                                             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><BookOpen size={14} /> 12 Modules</span>
                                                         </div>
@@ -374,7 +375,7 @@ const Dashboard = () => {
                                                 </div>
 
                                                 {/* Glowing Progress Strip */}
-                                                <div style={{ height: '4px', width: '100%', background: 'rgba(255,255,255,0.03)', position: 'relative' }}>
+                                                <div style={{ height: '4px', width: '100%', background: 'rgba(0, 0, 0, 0.03)', position: 'relative' }}>
                                                     <div style={{ 
                                                         width: `${course.progress || 0}%`, 
                                                         height: '100%', 
@@ -403,7 +404,7 @@ const Dashboard = () => {
                                         <BookOpen size={32} color="#0A84FF" />
                                     </div>
                                     <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '12px' }}>Ready to start engineering?</h3>
-                                    <p style={{ color: 'rgba(255,255,255,0.4)', marginBottom: '40px', maxWidth: '340px', margin: '0 auto 40px', lineHeight: 1.6 }}>Your library is currently empty. Explore our professional tracks to begin your journey.</p>
+                                    <p style={{ color: '#64748b', marginBottom: '40px', maxWidth: '340px', margin: '0 auto 40px', lineHeight: 1.6 }}>Your library is currently empty. Explore our professional tracks to begin your journey.</p>
                                     <Link to="/catalog">
                                         <GlassButton primary style={{ padding: '16px 48px', borderRadius: '18px', fontWeight: 800 }}>Browse All Courses</GlassButton>
                                     </Link>
@@ -425,20 +426,20 @@ const Dashboard = () => {
                             <div style={{ background: 'rgba(10, 132, 255, 0.1)', width: '44px', height: '44px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                                 <Bell size={22} color="#0A84FF" />
                             </div>
-                            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '10px', color: 'white' }}>Platform Update</h4>
-                            <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>Cloud labs are now available for all full-stack tracks. Access your instances via the course view.</p>
+                            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '10px', color: '#1a1a2e' }}>Platform Update</h4>
+                            <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6 }}>Cloud labs are now available for all full-stack tracks. Access your instances via the course view.</p>
                         </GlassCard>
 
                         {/* Activity Tracker */}
                         <div>
-                            <h4 style={{ fontSize: '0.8rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '24px' }}>Activity Tracker</h4>
+                            <h4 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '24px' }}>Activity Tracker</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 {[
                                     { title: 'Python Backend Quiz', status: 'In Evaluation', color: '#FF9F0A' },
                                     { title: 'Modern Architecture', status: 'Pass', color: '#30D158' },
                                     { title: 'AI Automation', status: 'Continuing', color: '#0A84FF' }
                                 ].map((task, i) => (
-                                    <GlassCard key={i} style={{ padding: '18px 22px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                                    <GlassCard key={i} style={{ padding: '18px 22px', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, 0.04)' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>{task.title}</span>
                                             <div style={{ 

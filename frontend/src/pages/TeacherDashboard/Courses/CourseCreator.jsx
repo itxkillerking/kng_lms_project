@@ -107,7 +107,7 @@ export const CourseCreator = () => {
                                     value={formData.title}
                                     onChange={handleChange}
                                     required
-                                    style={{ color: 'white' }}
+                                    style={{ color: '#1a1a2e' }}
                                 />
                             </div>
 
@@ -119,7 +119,7 @@ export const CourseCreator = () => {
                                     value={formData.category}
                                     onChange={handleChange}
                                     required
-                                    style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                    style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', color: '#1a1a2e' }}
                                 >
                                     <option value="" disabled style={{ background: '#1a1a1a' }}>Select Category...</option>
                                     {categories.map(cat => (
@@ -136,7 +136,7 @@ export const CourseCreator = () => {
                                     placeholder="Tell your students what they will learn..."
                                     value={formData.description}
                                     onChange={handleChange}
-                                    style={{ width: '100%', minHeight: '150px', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'white', resize: 'vertical', outline: 'none' }}
+                                    style={{ width: '100%', minHeight: '150px', padding: '16px', borderRadius: '12px', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid var(--glass-border)', color: '#1a1a2e', resize: 'vertical', outline: 'none' }}
                                     required
                                 />
                             </div>
@@ -162,7 +162,7 @@ export const CourseCreator = () => {
                                         padding: '40px 20px', 
                                         textAlign: 'center', 
                                         cursor: 'pointer',
-                                        background: 'rgba(255,255,255,0.02)',
+                                        background: 'rgba(0, 0, 0, 0.02)',
                                         transition: 'all 0.2s',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -174,7 +174,7 @@ export const CourseCreator = () => {
                                 >
                                     <UploadCloud size={32} color="var(--accent-purple)" style={{ opacity: 0.7 }} />
                                     {thumbnailFile ? (
-                                        <div style={{ color: 'white', fontSize: '0.9rem' }}>
+                                        <div style={{ color: '#1a1a2e', fontSize: '0.9rem' }}>
                                             <p style={{ fontWeight: 600 }}>{thumbnailFile.name}</p>
                                             <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Click to change image</p>
                                         </div>
@@ -215,7 +215,7 @@ export const CourseCreator = () => {
                                     value={formData.price}
                                     onChange={handleChange}
                                     required
-                                    style={{ color: 'white' }}
+                                    style={{ color: '#1a1a2e' }}
                                 />
                             </div>
                         </GlassCard>

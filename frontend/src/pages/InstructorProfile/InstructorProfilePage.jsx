@@ -45,13 +45,13 @@ const InstructorProfilePage = () => {
     }, [id]);
 
     if (loading) return (
-        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0f' }}>
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f7fa' }}>
             <div className="animate-spin" style={{ width: '40px', height: '40px', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent-blue)', borderRadius: '50%' }}></div>
         </div>
     );
 
     if (!instructor) return (
-        <div style={{ padding: '100px', textAlign: 'center', color: 'white' }}>
+        <div style={{ padding: '100px', textAlign: 'center', color: '#1a1a2e' }}>
             <h2 style={{ fontSize: '2rem', marginBottom: '16px' }}>Instructor Not Found</h2>
             <Link to="/catalog">
                 <GlassButton>Back to Catalog</GlassButton>
@@ -60,9 +60,9 @@ const InstructorProfilePage = () => {
     );
 
     return (
-        <div style={{ minHeight: '100vh', background: '#040407', color: 'white', padding: '100px 20px' }}>
+        <div style={{ minHeight: '100vh', background: '#f5f7fa', color: '#1a1a2e', padding: '100px 20px' }}>
             <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-                <Link to="/catalog" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', marginBottom: '40px', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'white'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}>
+                <Link to="/catalog" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#64748b', textDecoration: 'none', marginBottom: '40px', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'white'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}>
                     <ArrowLeft size={16} /> Back to Course Library
                 </Link>
 
@@ -71,7 +71,7 @@ const InstructorProfilePage = () => {
                     {/* Sidebar Identity Column */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ width: '180px', height: '180px', margin: '0 auto 32px', borderRadius: '48px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+                            <div style={{ width: '180px', height: '180px', margin: '0 auto 32px', borderRadius: '48px', background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: '0 10px 24px rgba(0, 0, 0, 0.06)' }}>
                                 {instructor.picture ? (
                                     <img src={instructor.picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 ) : (
@@ -94,8 +94,8 @@ const InstructorProfilePage = () => {
                                         onClick={() => item.url && window.open(item.url, '_blank')}
                                         style={{ 
                                             width: '44px', height: '44px', borderRadius: '14px', 
-                                            background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                            border: '1px solid rgba(255,255,255,0.08)', cursor: item.url ? 'pointer' : 'default', transition: 'all 0.2s',
+                                            background: 'rgba(0, 0, 0, 0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                            border: '1px solid rgba(0, 0, 0, 0.06)', cursor: item.url ? 'pointer' : 'default', transition: 'all 0.2s',
                                             opacity: item.url ? 1 : 0.3
                                         }} 
                                         onMouseEnter={e => { if(item.url) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)'; } }} 
@@ -108,18 +108,18 @@ const InstructorProfilePage = () => {
                         </div>
 
                         {/* Credential KPIs */}
-                        <GlassCard heavy style={{ padding: '32px', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <GlassCard heavy style={{ padding: '32px', borderRadius: '32px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', fontWeight: 500 }}>Total Courses</span>
+                                    <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Total Courses</span>
                                     <span style={{ fontWeight: 900, fontSize: '1.1rem' }}>{courses.length}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', fontWeight: 500 }}>Students</span>
+                                    <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Students</span>
                                     <span style={{ fontWeight: 900, fontSize: '1.1rem' }}>12.4k+</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', fontWeight: 500 }}>Global Reviews</span>
+                                    <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>Global Reviews</span>
                                     <span style={{ fontWeight: 900, fontSize: '1.1rem' }}>1,204</span>
                                 </div>
                             </div>
@@ -130,25 +130,25 @@ const InstructorProfilePage = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
                         
                         <section>
-                            <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '28px', color: 'white', display: 'flex', alignItems: 'center', gap: '14px' }}>
+                            <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '28px', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: '14px' }}>
                                 <div style={{ background: 'rgba(10, 132, 255, 0.1)', p: '8px', borderRadius: '12px', display: 'inline-flex' }}>
                                     <UserIcon size={22} color="#0A84FF" />
                                 </div>
                                 Instructor Biography
                             </h2>
-                            <div style={{ padding: '32px', background: 'rgba(255,255,255,0.02)', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
+                            <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
                                 {instructor.bio || "Highly specialized technical expert committed to teaching the next generation of engineers."}
                             </div>
                         </section>
 
                         <section>
-                            <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '28px', color: 'white', display: 'flex', alignItems: 'center', gap: '14px' }}>
+                            <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '28px', color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: '14px' }}>
                                 <div style={{ background: 'rgba(94, 92, 230, 0.1)', p: '8px', borderRadius: '12px', display: 'inline-flex' }}>
                                     <Briefcase size={22} color="#5E5CE6" />
                                 </div>
                                 Professional Expertise
                             </h2>
-                            <div style={{ padding: '32px', background: 'rgba(255,255,255,0.02)', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '1.05rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
+                            <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.05rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
                                 {instructor.experience || "Technical mastery across multiple complex domains, focused on industrial scalability and architecture."}
                             </div>
                         </section>
@@ -164,10 +164,10 @@ const InstructorProfilePage = () => {
                                 {courses.map(course => (
                                     <GlassCard key={course.id} style={{ padding: '0', overflow: 'hidden', borderRadius: '24px', transition: 'all 0.3s ease' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-8px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
                                         <div style={{ height: '160px', background: course.thumbnail ? `url(${course.thumbnail}) center/cover` : 'rgba(255,255,255,0.05)', position: 'relative' }}>
-                                             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #040407, transparent)' }} />
+                                             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #f5f7fa, transparent)' }} />
                                         </div>
                                         <div style={{ padding: '24px', position: 'relative', marginTop: '-40px' }}>
-                                            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '16px', color: 'white', lineHeight: 1.4 }}>{course.title}</h4>
+                                            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '16px', color: '#1a1a2e', lineHeight: 1.4 }}>{course.title}</h4>
                                             <Link to={`/course/${course.id}`} style={{ textDecoration: 'none' }}>
                                                 <GlassButton variant="primary" style={{ width: '100%', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 700 }}>
                                                     Experience Course

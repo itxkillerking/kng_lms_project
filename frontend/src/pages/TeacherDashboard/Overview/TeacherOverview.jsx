@@ -115,7 +115,7 @@ export const TeacherOverview = () => {
             <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '20px' }}>Upcoming Schedule</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'rgba(0, 0, 0, 0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Calendar size={18} color="var(--accent-blue)" />
                 </div>
                 <div>
@@ -133,7 +133,7 @@ export const TeacherOverview = () => {
                         <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(10, 132, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Megaphone size={20} color="var(--accent-blue)" />
                         </div>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>Announcements</h3>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a2e' }}>Announcements</h3>
                     </div>
                     <ChevronRight size={20} color="var(--accent-blue)" />
                 </div>

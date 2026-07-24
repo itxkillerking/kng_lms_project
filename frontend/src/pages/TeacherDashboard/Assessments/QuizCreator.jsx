@@ -165,7 +165,7 @@ export const QuizCreator = () => {
                                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Target Course</label>
                                 <select 
                                     className="glass-select glass-input" 
-                                    style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                    style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', color: '#1a1a2e' }}
                                     value={courseId || ''}
                                     onChange={e => navigate(`/teacher/assessments/quiz/create?course=${e.target.value}`)}
                                     required={!editId}
@@ -181,7 +181,7 @@ export const QuizCreator = () => {
                                 {modules.length > 0 ? (
                                     <select 
                                         className="glass-select glass-input" 
-                                        style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                                        style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', color: '#1a1a2e' }}
                                         value={quizData.module}
                                         onChange={e => setQuizData({...quizData, module: e.target.value})}
                                         required
@@ -199,7 +199,7 @@ export const QuizCreator = () => {
                                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Quiz Title</label>
                                 <input 
                                     className="glass-input" 
-                                    style={{ width: '100%', color: 'white' }}
+                                    style={{ width: '100%', color: '#1a1a2e' }}
                                     value={quizData.title}
                                     onChange={e => setQuizData({...quizData, title: e.target.value})}
                                     placeholder="e.g. Final Knowledge Check"
@@ -215,15 +215,15 @@ export const QuizCreator = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px' }}>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Duration (Mins)</label>
-                                    <input type="number" className="glass-input" style={{ width: '100%', color: 'white' }} value={quizData.time_limit_mins} onChange={e => setQuizData({...quizData, time_limit_mins: e.target.value})} />
+                                    <input type="number" className="glass-input" style={{ width: '100%', color: '#1a1a2e' }} value={quizData.time_limit_mins} onChange={e => setQuizData({...quizData, time_limit_mins: e.target.value})} />
                                 </div>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Max Retakes</label>
-                                    <input type="number" className="glass-input" style={{ width: '100%', color: 'white' }} value={quizData.max_retakes} onChange={e => setQuizData({...quizData, max_retakes: e.target.value})} />
+                                    <input type="number" className="glass-input" style={{ width: '100%', color: '#1a1a2e' }} value={quizData.max_retakes} onChange={e => setQuizData({...quizData, max_retakes: e.target.value})} />
                                 </div>
                                 <div style={{ gridColumn: 'span 1' }}>
                                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Pass Score (%)</label>
-                                    <input type="number" className="glass-input" style={{ width: '100%', color: 'white' }} value={quizData.passing_score} onChange={e => setQuizData({...quizData, passing_score: e.target.value})} />
+                                    <input type="number" className="glass-input" style={{ width: '100%', color: '#1a1a2e' }} value={quizData.passing_score} onChange={e => setQuizData({...quizData, passing_score: e.target.value})} />
                                 </div>
                             </div>
                         </GlassCard>
@@ -242,10 +242,10 @@ export const QuizCreator = () => {
                             <GlassCard key={index} style={{ padding: 'clamp(20px, 4vw, 32px)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.9rem', color: 'white' }}>
+                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.9rem', color: '#1a1a2e' }}>
                                             {index + 1}
                                         </div>
-                                        <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>Question Content</h4>
+                                        <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a2e' }}>Question Content</h4>
                                     </div>
                                     <button type="button" onClick={() => removeQuestion(index)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <Trash2 size={18} /> <span style={{ fontSize: '0.8rem' }}>Delete</span>
@@ -254,7 +254,7 @@ export const QuizCreator = () => {
 
                                 <textarea 
                                     className="glass-input" 
-                                    style={{ width: '100%', minHeight: '100px', marginBottom: '24px', color: 'white', fontSize: '1rem', lineHeight: '1.5' }}
+                                    style={{ width: '100%', minHeight: '100px', marginBottom: '24px', color: '#1a1a2e', fontSize: '1rem', lineHeight: '1.5' }}
                                     placeholder="Enter your question here..."
                                     value={q.text}
                                     onChange={e => updateQuestion(index, 'text', e.target.value)}
@@ -269,7 +269,7 @@ export const QuizCreator = () => {
                                                 style={{ 
                                                     width: '100%', 
                                                     paddingLeft: '48px', 
-                                                    color: 'white', 
+                                                    color: '#1a1a2e', 
                                                     borderColor: q.correct_answer === opt && opt !== '' ? 'var(--success)' : 'var(--glass-border)',
                                                     background: q.correct_answer === opt && opt !== '' ? 'rgba(52, 199, 89, 0.05)' : 'rgba(255,255,255,0.03)'
                                                 }}

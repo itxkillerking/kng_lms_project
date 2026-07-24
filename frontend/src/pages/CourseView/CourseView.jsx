@@ -77,11 +77,11 @@ const CourseView = () => {
     const hasError = courseError || progressError;
 
     if (loading || hasError) return (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#040407', color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f5f7fa', color: '#64748b', textAlign: 'center', padding: '40px' }}>
             {hasError ? (
                 <>
                     <HelpCircle size={48} color="#FF453A" style={{ marginBottom: '16px' }} />
-                    <h2 style={{ color: 'white', marginBottom: '8px' }}>Classroom Access Error</h2>
+                    <h2 style={{ color: '#1a1a2e', marginBottom: '8px' }}>Classroom Access Error</h2>
                     <p style={{ marginBottom: '24px' }}>We couldn't load the course materials. Please check your connection.</p>
                     <div style={{ display: 'flex', gap: '16px' }}>
                         <GlassButton onClick={() => navigate('/dashboard')} style={{ borderRadius: '12px' }}>
@@ -101,7 +101,7 @@ const CourseView = () => {
         </div>
     );
     
-    if (!course) return <div style={{ padding: '40px', textAlign: 'center', color: 'white' }}>Course not found.</div>;
+    if (!course) return <div style={{ padding: '40px', textAlign: 'center', color: '#1a1a2e' }}>Course not found.</div>;
 
     const selectItem = (item, type) => {
         setActiveItem({ ...item, type });
@@ -142,11 +142,11 @@ const CourseView = () => {
                     {/* Video Container */}
                     <div style={{ 
                         width: '100%', 
-                        background: '#000', 
+                        background: '#e2e8f0', 
                         aspectRatio: isMobile ? '16/9' : '21/9',
                         display: 'flex',
                         position: 'relative',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                        borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
                     }}>
                         {activeItem.video_url ? (
                             <StrictVideoPlayer 
@@ -169,7 +169,7 @@ const CourseView = () => {
                                 <Clock size={16} /> Technical Session
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', flexDirection: isMobile ? 'column' : 'row' }}>
-                                <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.8rem', fontWeight: 900, color: 'white', lineHeight: 1.1, letterSpacing: '-0.02em', flex: 1 }}>{activeItem.title}</h2>
+                                <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.8rem', fontWeight: 900, color: '#1a1a2e', lineHeight: 1.1, letterSpacing: '-0.02em', flex: 1 }}>{activeItem.title}</h2>
                                 <GlassButton 
                                     onClick={() => handleToggleComplete(activeItem.id)}
                                     disabled={progressUpdating}
@@ -206,7 +206,7 @@ const CourseView = () => {
                                 }}>
                                     <div>
                                         <h3 style={{ color: '#D4AF37', fontWeight: 800, marginBottom: '4px' }}>Course Mastery Achieved</h3>
-                                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>You have successfully graduated from this track.</p>
+                                        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>You have successfully graduated from this track.</p>
                                     </div>
                                     <div style={{
                                         display: 'flex',
@@ -231,8 +231,8 @@ const CourseView = () => {
                             {/* Description & Resources */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                                 <GlassCard style={{ padding: '32px', borderRadius: '28px' }}>
-                                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'white', marginBottom: '20px' }}>Learning Objectives</h3>
-                                    <div style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, fontSize: '1rem' }}>
+                                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '20px' }}>Learning Objectives</h3>
+                                    <div style={{ color: '#64748b', lineHeight: 1.8, fontSize: '1rem' }}>
                                         {activeItem.description || "Master the core concepts presented in this module with production-focused examples and architectures."}
                                     </div>
                                 </GlassCard>
@@ -245,16 +245,16 @@ const CourseView = () => {
                             {/* Sidebar / Resources */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <GlassCard style={{ padding: '24px', borderRadius: '24px', border: '1px solid rgba(10, 132, 255, 0.1)' }}>
-                                    <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', marginBottom: '20px', textTransform: 'uppercase' }}>Resources</h4>
+                                    <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '20px', textTransform: 'uppercase' }}>Resources</h4>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                                        <div style={{ padding: '12px 16px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <FileText size={18} color="rgba(255,255,255,0.4)" />
                                                 <span style={{ fontSize: '0.9rem' }}>Project_Spec.pdf</span>
                                             </div>
                                             <Download size={16} color="#0A84FF" />
                                         </div>
-                                        <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                                        <div style={{ padding: '12px 16px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <FileText size={18} color="rgba(255,255,255,0.4)" />
                                                 <span style={{ fontSize: '0.9rem' }}>Source_Code.zip</span>
@@ -265,7 +265,7 @@ const CourseView = () => {
                                 </GlassCard>
                                 
                                 <GlassCard style={{ padding: '24px', borderRadius: '24px' }}>
-                                    <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', marginBottom: '16px' }}>Course Instructor</h4>
+                                    <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '16px' }}>Course Instructor</h4>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                         <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'rgba(10, 132, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                             {course.instructor_picture ? (
@@ -277,21 +277,21 @@ const CourseView = () => {
                                             )}
                                         </div>
                                         <div style={{ flex: 1 }}>
-                                            <p style={{ fontWeight: 700, fontSize: '0.95rem', color: 'white' }}>{course.instructor_name}</p>
-                                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>{course.instructor_title || 'Expert Instructor'}</p>
+                                            <p style={{ fontWeight: 700, fontSize: '0.95rem', color: '#1a1a2e' }}>{course.instructor_name}</p>
+                                            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '4px' }}>{course.instructor_title || 'Expert Instructor'}</p>
                                             
                                             <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                                                 {course.instructor_website && (
-                                                    <a href={course.instructor_website} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                    <a href={course.instructor_website} target="_blank" rel="noopener noreferrer" style={{ color: '#94a3b8', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
                                                         <Globe size={14} />
                                                     </a>
                                                 )}
                                                 {course.instructor_linkedin && (
-                                                    <a href={course.instructor_linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                    <a href={course.instructor_linkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#94a3b8', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#0A84FF'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
                                                         <Linkedin size={14} />
                                                     </a>
                                                 )}
-                                                <Link to="/chat" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#30D158'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
+                                                <Link to="/chat" style={{ color: '#94a3b8', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#30D158'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}>
                                                     <MessageSquare size={14} />
                                                 </Link>
                                             </div>
@@ -310,16 +310,16 @@ const CourseView = () => {
     };
 
     return (
-        <div style={{ display: 'flex', height: '100vh', background: '#040407', color: 'white', overflow: 'hidden', position: 'relative' }}>
+        <div style={{ display: 'flex', height: '100vh', background: '#f5f7fa', color: '#1a1a2e', overflow: 'hidden', position: 'relative' }}>
             
             {/* Mobile Navigation Header */}
             {!sidebarOpen && (
                 <div style={{ 
                     position: 'absolute', top: 0, left: 0, right: 0, height: '64px', 
-                    background: 'rgba(5,5,10,0.85)', backdropFilter: 'blur(30px)', zIndex: 40,
-                    display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid rgba(255,255,255,0.05)'
+                    background: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(30px)', zIndex: 40,
+                    display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
                 }}>
-                    <button onClick={() => setSidebarOpen(true)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>
+                    <button onClick={() => setSidebarOpen(true)} style={{ background: 'transparent', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}>
                         <Menu size={24} />
                     </button>
                     <span style={{ marginLeft: '16px', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{course.title}</span>
@@ -333,19 +333,19 @@ const CourseView = () => {
                 height: '100%',
                 background: 'rgba(10,10,15,0.95)',
                 backdropFilter: 'blur(40px)',
-                borderRight: '1px solid rgba(255,255,255,0.05)',
+                borderRight: '1px solid rgba(0, 0, 0, 0.06)',
                 display: sidebarOpen ? 'flex' : 'none',
                 flexDirection: 'column',
                 position: isMobile ? 'fixed' : 'relative',
                 zIndex: 100, inset: 0
             }}>
-                <div style={{ padding: '32px 24px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ padding: '32px 24px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ overflow: 'hidden' }}>
                         <h4 style={{ fontSize: '0.75rem', fontWeight: 900, color: '#0A84FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Academy Player</h4>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 800, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{course.title}</h3>
                     </div>
                     {(isMobile || !isMobile) && (
-                        <button onClick={() => setSidebarOpen(false)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'rgba(255,255,255,0.4)', padding: '8px', borderRadius: '10px', cursor: 'pointer' }}>
+                        <button onClick={() => setSidebarOpen(false)} style={{ background: 'rgba(0, 0, 0, 0.03)', border: 'none', color: '#64748b', padding: '8px', borderRadius: '10px', cursor: 'pointer' }}>
                             <X size={20} />
                         </button>
                     )}
@@ -389,10 +389,10 @@ const CourseView = () => {
                     ))}
                 </div>
 
-                <div style={{ padding: '24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ padding: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.05)' }}>
                     <button 
                         onClick={() => navigate('/dashboard')}
-                        style={{ width: '100%', padding: '14px', borderRadius: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.3s' }}
+                        style={{ width: '100%', padding: '14px', borderRadius: '14px', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.06)', color: '#1a1a2e', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.3s' }}
                     >
                         <ArrowLeft size={18} /> Exit Classroom
                     </button>

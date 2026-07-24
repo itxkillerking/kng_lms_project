@@ -97,13 +97,13 @@ export const FloatingBackButton = () => {
         width: '50px',
         height: '50px',
         borderRadius: '50%',
-        background: 'rgba(10, 10, 15, 0.6)',
+        background: 'rgba(255, 255, 255, 0.75)',
         backdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        border: '1px solid rgba(0, 0, 0, 0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white',
+        color: '#1a1a2e',
         cursor: 'grab',
       }}
       aria-label="Go Back (Draggable)"

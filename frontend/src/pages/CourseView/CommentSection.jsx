@@ -18,7 +18,7 @@ const Comment = ({ comment, onReply, isInstructor }) => {
                         {comment.user_role === 'instructor' && (
                             <span style={{ background: 'rgba(10, 132, 255, 0.1)', color: '#0A84FF', padding: '2px 8px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase' }}>Instructor</span>
                         )}
-                        <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem' }}>{new Date(comment.created_at).toLocaleDateString()}</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{new Date(comment.created_at).toLocaleDateString()}</span>
                     </div>
                     <p style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, fontSize: '0.9rem', marginBottom: '12px' }}>{comment.content}</p>
                     
@@ -31,7 +31,7 @@ const Comment = ({ comment, onReply, isInstructor }) => {
 
                     {/* Nested Replies */}
                     {comment.replies && comment.replies.length > 0 && (
-                        <div style={{ marginTop: '20px', paddingLeft: '24px', borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ marginTop: '20px', paddingLeft: '24px', borderLeft: '1px solid rgba(0, 0, 0, 0.06)' }}>
                             {comment.replies.map(reply => (
                                 <Comment key={reply.id} comment={reply} onReply={onReply} isInstructor={isInstructor} />
                             ))}
@@ -98,7 +98,7 @@ export const CommentSection = ({ lessonId }) => {
                 {replyingTo && (
                     <div style={{ background: 'rgba(10, 132, 255, 0.1)', padding: '12px 18px', borderRadius: '12px', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '0.85rem', color: '#0A84FF' }}>Replying to <strong>{replyingTo.user_name}</strong></span>
-                        <button onClick={() => setReplyingTo(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>Cancel</button>
+                        <button onClick={() => setReplyingTo(null)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>Cancel</button>
                     </div>
                 )}
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
@@ -107,7 +107,7 @@ export const CommentSection = ({ lessonId }) => {
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             placeholder={replyingTo ? "Write your reply..." : "Ask a technical question..."}
-                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '16px', color: 'white', fontSize: '0.95rem', minHeight: '100px', resize: 'vertical', outline: 'none', transition: 'border-color 0.3s' }}
+                            style={{ width: '100%', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.08)', borderRadius: '16px', padding: '16px', color: '#1a1a2e', fontSize: '0.95rem', minHeight: '100px', resize: 'vertical', outline: 'none', transition: 'border-color 0.3s' }}
                             onFocus={e => e.target.style.borderColor = '#0A84FF'}
                             onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
                         />
@@ -120,11 +120,11 @@ export const CommentSection = ({ lessonId }) => {
 
             {/* Comments List */}
             {loading ? (
-                <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>Loading discussion...</p>
+                <p style={{ color: '#64748b', textAlign: 'center' }}>Loading discussion...</p>
             ) : comments.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px' }}>
+                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '24px' }}>
                     <MessageSquare size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                    <p style={{ color: 'rgba(255,255,255,0.3)' }}>No technical questions yet. Be the first to start the discussion!</p>
+                    <p style={{ color: '#94a3b8' }}>No technical questions yet. Be the first to start the discussion!</p>
                 </div>
             ) : (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -120,10 +120,10 @@ export const UserControlPanel = () => {
         <div className="animate-fade-in">
             <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: 'white' }}>User Management</h1>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem' }}>Control platform access, permissions, and security auditing.</p>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: '#1a1a2e' }}>User Management</h1>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Control platform access, permissions, and security auditing.</p>
                 </div>
-                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '16px', gap: '4px' }}>
+                <div style={{ display: 'flex', background: 'rgba(0, 0, 0, 0.03)', padding: '6px', borderRadius: '16px', gap: '4px' }}>
                     <button 
                         onClick={() => setActiveTab('users')}
                         style={{ 
@@ -131,7 +131,7 @@ export const UserControlPanel = () => {
                             borderRadius: '12px', 
                             border: 'none', 
                             background: activeTab === 'users' ? 'var(--accent-blue)' : 'transparent',
-                            color: 'white',
+                            color: '#1a1a2e',
                             fontWeight: 600,
                             cursor: 'pointer',
                             transition: 'all 0.2s'
@@ -146,7 +146,7 @@ export const UserControlPanel = () => {
                             borderRadius: '12px', 
                             border: 'none', 
                             background: activeTab === 'logs' ? 'var(--accent-blue)' : 'transparent',
-                            color: 'white',
+                            color: '#1a1a2e',
                             fontWeight: 600,
                             cursor: 'pointer',
                             transition: 'all 0.2s'
@@ -161,7 +161,7 @@ export const UserControlPanel = () => {
                             borderRadius: '12px', 
                             border: 'none', 
                             background: activeTab === 'suspension' ? 'var(--accent-blue)' : 'transparent',
-                            color: 'white',
+                            color: '#1a1a2e',
                             fontWeight: 600,
                             cursor: 'pointer',
                             transition: 'all 0.2s'
@@ -177,7 +177,7 @@ export const UserControlPanel = () => {
                     {/* Filters Bar */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px', alignItems: 'center' }}>
                          <div style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
-                            <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                            <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                             <input 
                                 className="glass-input" 
                                 placeholder="Search by name, email, or username..." 
@@ -213,16 +213,16 @@ export const UserControlPanel = () => {
                         </GlassButton>
                     </div>
 
-                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                         <div style={{ overflowX: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>User Profile</th>
-                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Assign Role</th>
-                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Security Status</th>
-                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Verification</th>
-                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Actions</th>
+                                    <tr style={{ background: 'rgba(0, 0, 0, 0.03)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>User Profile</th>
+                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>Assign Role</th>
+                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>Security Status</th>
+                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>Verification</th>
+                                        <th style={{ padding: '20px 24px', fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase' }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -230,29 +230,29 @@ export const UserControlPanel = () => {
                                         <tr>
                                             <td colSpan="5" style={{ padding: '80px', textAlign: 'center' }}>
                                                 <div className="spinner" style={{ margin: '0 auto 20px' }}></div>
-                                                <p style={{ color: 'rgba(255,255,255,0.3)' }}>Securing platform data...</p>
+                                                <p style={{ color: '#94a3b8' }}>Securing platform data...</p>
                                             </td>
                                         </tr>
                                     ) : filteredUsers.length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" style={{ padding: '80px', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>
+                                            <td colSpan="5" style={{ padding: '80px', textAlign: 'center', color: '#94a3b8' }}>
                                                 No matches found for "{searchTerm}"
                                             </td>
                                         </tr>
                                     ) : (
                                         filteredUsers.map((user) => (
-                                            <tr key={user.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                            <tr key={user.id} style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.06)', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '20px 24px' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                        <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'white', fontSize: '1.1rem', boxShadow: '0 4px 12px rgba(10, 132, 255, 0.3)' }}>
+                                                        <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#1a1a2e', fontSize: '1.1rem', boxShadow: '0 4px 12px rgba(10, 132, 255, 0.3)' }}>
                                                             {user.username[0].toUpperCase()}
                                                         </div>
                                                         <div>
-                                                            <p style={{ fontWeight: 600, color: 'white', marginBottom: '2px' }}>{user.first_name} {user.last_name}</p>
+                                                            <p style={{ fontWeight: 600, color: '#1a1a2e', marginBottom: '2px' }}>{user.first_name} {user.last_name}</p>
                                                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                                                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)' }}>@{user.username}</span>
+                                                                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>@{user.username}</span>
                                                                 <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }}></span>
-                                                                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)' }}>{user.email}</span>
+                                                                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{user.email}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -273,7 +273,7 @@ export const UserControlPanel = () => {
                                                 <td style={{ padding: '20px 24px' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                         <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: getStatusColor(user.account_status), boxShadow: `0 0 10px ${getStatusColor(user.account_status)}80` }}></div>
-                                                        <span style={{ fontSize: '0.9rem', color: 'white', textTransform: 'capitalize', fontWeight: 600 }}>{user.account_status?.replace('_', ' ')}</span>
+                                                        <span style={{ fontSize: '0.9rem', color: '#1a1a2e', textTransform: 'capitalize', fontWeight: 600 }}>{user.account_status?.replace('_', ' ')}</span>
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '20px 24px' }}>
@@ -318,7 +318,7 @@ export const UserControlPanel = () => {
                                                                     style={{ 
                                                                         background: 'linear-gradient(135deg, #10b981, #059669)',
                                                                         border: 'none', 
-                                                                        color: 'white', 
+                                                                        color: '#1a1a2e', 
                                                                         cursor: 'pointer', 
                                                                         fontSize: '0.8rem', 
                                                                         padding: '8px 16px', 
@@ -338,7 +338,7 @@ export const UserControlPanel = () => {
                                                             )}
                                                         </div>
                                                     ) : (
-                                                        <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.2)', fontStyle: 'italic' }}>Not Instructor</span>
+                                                        <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontStyle: 'italic' }}>Not Instructor</span>
                                                     )}
                                                 </td>
                                                 <td style={{ padding: '20px 24px' }}>
@@ -348,7 +348,7 @@ export const UserControlPanel = () => {
                                                                 title="Suspend Access"
                                                                 onClick={() => handleAction(user.id, 'suspend')}
                                                                 style={{ 
-                                                                    background: 'rgba(255, 255, 255, 0.05)', 
+                                                                    background: 'rgba(0, 0, 0, 0.03)', 
                                                                     border: '1px solid rgba(255, 69, 58, 0.2)', 
                                                                     padding: '12px', 
                                                                     borderRadius: '12px', 
@@ -381,11 +381,11 @@ export const UserControlPanel = () => {
                                                             title="Permanently Delete"
                                                             onClick={() => handleDelete(user.id)}
                                                             style={{ 
-                                                                background: 'rgba(255, 255, 255, 0.05)', 
-                                                                border: '1px solid rgba(255, 255, 255, 0.05)', 
+                                                                background: 'rgba(0, 0, 0, 0.03)', 
+                                                                border: '1px solid rgba(0, 0, 0, 0.06)', 
                                                                 padding: '12px', 
                                                                 borderRadius: '12px', 
-                                                                color: 'rgba(255,255,255,0.4)', 
+                                                                color: '#64748b', 
                                                                 cursor: 'pointer',
                                                                 transition: 'all 0.2s'
                                                             }}
@@ -412,37 +412,37 @@ export const UserControlPanel = () => {
                 </>
             ) : activeTab === 'logs' ? (
                 <div className="animate-fade-in">
-                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
-                        <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                        <div style={{ padding: '24px', background: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <History size={20} color="var(--accent-blue)" /> Security & Session Audit
                             </h3>
-                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)' }}>
+                            <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                                 Showing latest 200 authentication events
                             </div>
                         </div>
                         <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>USER</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>ACTION</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>TIMESTAMP</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>STATUS</th>
+                                    <tr style={{ background: 'rgba(0, 0, 0, 0.01)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8' }}>USER</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8' }}>ACTION</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8' }}>TIMESTAMP</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8' }}>STATUS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {activityLogs.length === 0 ? (
                                         <tr>
-                                            <td colSpan="4" style={{ padding: '60px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>
+                                            <td colSpan="4" style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
                                                 No security logs found.
                                             </td>
                                         </tr>
                                     ) : (
                                         activityLogs.map((log) => (
-                                            <tr key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                                            <tr key={log.id} style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.04)' }}>
                                                 <td style={{ padding: '16px 24px' }}>
-                                                    <div style={{ color: 'white', fontWeight: 600 }}>{log.username}</div>
+                                                    <div style={{ color: '#1a1a2e', fontWeight: 600 }}>{log.username}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
                                                     <div style={{ 
@@ -459,7 +459,7 @@ export const UserControlPanel = () => {
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
-                                                    <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <div style={{ color: '#475569', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                         <Clock size={14} opacity={0.5} />
                                                         {new Date(log.timestamp).toLocaleString()}
                                                     </div>
@@ -477,44 +477,44 @@ export const UserControlPanel = () => {
                 </div>
             ) : (
                 <div className="animate-fade-in">
-                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
-                        <div style={{ padding: '24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                        <div style={{ padding: '24px', background: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <ShieldAlert size={20} color="#ff453a" /> Instructor Suspension Requests
                             </h3>
-                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)' }}>
+                            <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                                 Review and moderate student access
                             </div>
                         </div>
                         <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Student Profile</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Details & Proof</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Status</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Actions</th>
+                                    <tr style={{ background: 'rgba(0, 0, 0, 0.01)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Student Profile</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Details & Proof</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Status</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {suspensionRequests.length === 0 ? (
                                         <tr>
-                                            <td colSpan="4" style={{ padding: '60px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>
+                                            <td colSpan="4" style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
                                                 No suspension requests to review.
                                             </td>
                                         </tr>
                                     ) : (
                                         suspensionRequests.map((req) => (
-                                            <tr key={req.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                                            <tr key={req.id} style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.04)' }}>
                                                 <td style={{ padding: '20px 24px' }}>
-                                                    <div style={{ color: 'white', fontWeight: 600, marginBottom: '4px' }}>{req.student_name}</div>
-                                                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>Requested by: {req.instructor_name}</div>
-                                                    <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', marginTop: '4px' }}>
+                                                    <div style={{ color: '#1a1a2e', fontWeight: 600, marginBottom: '4px' }}>{req.student_name}</div>
+                                                    <div style={{ color: '#64748b', fontSize: '0.8rem' }}>Requested by: {req.instructor_name}</div>
+                                                    <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '4px' }}>
                                                         {new Date(req.created_at).toLocaleString()}
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '20px 24px', maxWidth: '300px' }}>
-                                                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', marginBottom: '8px', lineHeight: 1.4 }}>
+                                                    <p style={{ fontSize: '0.85rem', color: '#334155', marginBottom: '8px', lineHeight: 1.4 }}>
                                                         {req.reason}
                                                     </p>
                                                     {req.proof && (
@@ -541,13 +541,13 @@ export const UserControlPanel = () => {
                                                         <div style={{ display: 'flex', gap: '8px' }}>
                                                             <button 
                                                                 onClick={() => handleSuspensionAction(req.id, 'approve')}
-                                                                style={{ background: '#ff453a', border: 'none', color: 'white', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}
+                                                                style={{ background: '#ff453a', border: 'none', color: '#1a1a2e', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}
                                                             >
                                                                 Approve Extrusion
                                                             </button>
                                                             <button 
                                                                 onClick={() => handleSuspensionAction(req.id, 'reject')}
-                                                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600 }}
+                                                                style={{ background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.08)', color: '#1a1a2e', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600 }}
                                                             >
                                                                 Reject
                                                             </button>

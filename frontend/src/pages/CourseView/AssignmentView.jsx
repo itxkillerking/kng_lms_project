@@ -179,7 +179,7 @@ export const AssignmentView = ({ assignment }) => {
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '28px' }}>Development Submission</h3>
                 
                 {/* Custom Tabs */}
-                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '14px', padding: '8px', marginBottom: '32px' }}>
+                <div style={{ display: 'flex', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '14px', padding: '8px', marginBottom: '32px' }}>
                     {[
                         { id: 'url', label: 'External Repo/URL', icon: LinkIcon },
                         { id: 'text', label: 'Brief / Raw Text', icon: Edit3 },
@@ -227,9 +227,9 @@ export const AssignmentView = ({ assignment }) => {
                                 value={submissionText}
                                 onChange={(e) => setSubmissionText(e.target.value)}
                                 style={{ 
-                                    width: '100%', minHeight: '180px', background: 'rgba(255,255,255,0.03)', 
+                                    width: '100%', minHeight: '180px', background: 'rgba(0, 0, 0, 0.03)', 
                                     border: '1px solid var(--glass-border)', borderRadius: '14px', 
-                                    padding: '20px', color: 'white', fontSize: '1.05rem', outline: 'none',
+                                    padding: '20px', color: '#1a1a2e', fontSize: '1.05rem', outline: 'none',
                                     resize: 'vertical', transition: 'all 0.3s'
                                 }}
                                 onFocus={(e) => e.target.style.borderColor = 'var(--accent-blue)'}

@@ -36,7 +36,7 @@ const CircularProgress = ({ total, answered }) => {
                     strokeLinecap="round"
                 />
             </svg>
-            <div style={{ position: 'absolute', fontSize: '0.75rem', fontWeight: 800, color: 'white' }}>
+            <div style={{ position: 'absolute', fontSize: '0.75rem', fontWeight: 800, color: '#1a1a2e' }}>
                 {Math.round(percentage)}%
             </div>
         </div>
@@ -166,7 +166,7 @@ export const QuizView = ({ quiz }) => {
                         </div>
                     </div>
 
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '32px', borderRadius: '24px', border: '1px solid var(--glass-border)', marginBottom: '40px' }}>
+                    <div style={{ background: 'rgba(0, 0, 0, 0.02)', padding: '32px', borderRadius: '24px', border: '1px solid var(--glass-border)', marginBottom: '40px' }}>
                         <p style={{ color: 'var(--text-primary)', marginBottom: '24px', fontSize: '1.1rem', lineHeight: 1.7 }}>
                             {quiz.description || "This assessment tests your knowledge of the core concepts covered in the previous lessons. Please read each question carefully."}
                         </p>
@@ -208,7 +208,7 @@ export const QuizView = ({ quiz }) => {
                 </div>
                 <div style={{ 
                     padding: '10px 20px', 
-                    background: 'rgba(255,255,255,0.05)', 
+                    background: 'rgba(0, 0, 0, 0.03)', 
                     borderRadius: '16px', 
                     fontSize: '0.85rem', 
                     fontWeight: 700,

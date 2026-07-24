@@ -30,7 +30,7 @@ const AdminDashboard = () => {
         <div style={{ 
             display: 'flex', 
             minHeight: '100vh', 
-            background: '#05050a',
+            background: '#f5f7fa',
             flexDirection: window.innerWidth <= 768 ? 'column' : 'row'
         }}>
             <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />

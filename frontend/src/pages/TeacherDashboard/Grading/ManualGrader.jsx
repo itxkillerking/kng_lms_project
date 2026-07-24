@@ -71,7 +71,7 @@ export const ManualGrader = () => {
                         <BookOpen size={16} /> {submission.assignment_title}
                     </p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255,255,255,0.05)', padding: '10px 16px', borderRadius: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(0, 0, 0, 0.03)', padding: '10px 16px', borderRadius: '12px' }}>
                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent-blue), var(--accent-purple))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 'bold' }}>
                         {submission.student_name?.charAt(0).toUpperCase()}
                     </div>
@@ -147,11 +147,11 @@ export const ManualGrader = () => {
                                 required
                                 style={{
                                     width: '100%',
-                                    background: 'rgba(255,255,255,0.05)',
+                                    background: 'rgba(0, 0, 0, 0.03)',
                                     border: '1px solid var(--glass-border)',
                                     borderRadius: '12px',
                                     padding: '12px 16px',
-                                    color: 'white',
+                                    color: '#1a1a2e',
                                     fontSize: '1.2rem',
                                     fontWeight: 600,
                                     outline: 'none',
@@ -171,11 +171,11 @@ export const ManualGrader = () => {
                                 rows={6}
                                 style={{
                                     width: '100%',
-                                    background: 'rgba(255,255,255,0.05)',
+                                    background: 'rgba(0, 0, 0, 0.03)',
                                     border: '1px solid var(--glass-border)',
                                     borderRadius: '12px',
                                     padding: '12px 16px',
-                                    color: 'white',
+                                    color: '#1a1a2e',
                                     fontSize: '0.95rem',
                                     lineHeight: 1.5,
                                     outline: 'none',

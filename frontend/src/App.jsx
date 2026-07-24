@@ -28,8 +28,8 @@ const ChatHub = lazy(() => import('./pages/Messaging/ChatHub').then(module => ({
 
 // Simple loading fallback
 const PageLoader = () => (
-  <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0a0f' }}>
-    <div className="animate-spin" style={{ width: '40px', height: '40px', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent-blue)', borderRadius: '50%' }}></div>
+  <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f7fa' }}>
+    <div className="animate-spin" style={{ width: '40px', height: '40px', border: '3px solid rgba(0,0,0,0.08)', borderTopColor: 'var(--accent-blue)', borderRadius: '50%' }}></div>
   </div>
 );
 

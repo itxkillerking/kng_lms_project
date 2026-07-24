@@ -112,10 +112,10 @@ export const ChatHub = () => {
                 <div style={{ padding: '32px 24px' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '24px' }}>Chats</h2>
                     <div style={{ position: 'relative' }}>
-                        <SearchIcon size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                        <SearchIcon size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                         <input 
                             placeholder="Search discussions..." 
-                            style={{ width: '100%', padding: '14px 14px 14px 48px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: 'white', fontSize: '0.9rem', outline: 'none' }}
+                            style={{ width: '100%', padding: '14px 14px 14px 48px', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '14px', color: '#1a1a2e', fontSize: '0.9rem', outline: 'none' }}
                         />
                     </div>
                 </div>
@@ -141,14 +141,14 @@ export const ChatHub = () => {
                                     {conv.other_user_picture ? <img src={conv.other_user_picture} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>{conv.other_user_name[0]}</div>}
                                 </div>
                                 {conv.unread_count > 0 && (
-                                    <div style={{ position: 'absolute', top: -5, right: -5, width: '20px', height: '20px', borderRadius: '50%', background: '#30D158', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, border: '2px solid #0a0a0f' }}>{conv.unread_count}</div>
+                                    <div style={{ position: 'absolute', top: -5, right: -5, width: '20px', height: '20px', borderRadius: '50%', background: '#30D158', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, border: '2px solid #f5f7fa' }}>{conv.unread_count}</div>
                                 )}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                     <span style={{ fontWeight: 800, fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{conv.other_user_name}</span>
                                     {conv.last_timestamp && (
-                                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>
+                                        <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
                                             {new Date(conv.last_timestamp).getHours()}:{new Date(conv.last_timestamp).getMinutes().toString().padStart(2, '0')}
                                         </span>
                                     )}
@@ -174,13 +174,13 @@ export const ChatHub = () => {
                 {activeChat ? (
                     <>
                         {/* Header */}
-                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(10,10,15,0.4)', position: 'relative', zIndex: 1001 }}>
+                        <div style={{ padding: '24px 32px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255, 255, 255, 0.7)', position: 'relative', zIndex: 1001 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 {/* Mobile Back Button */}
                                 <button 
                                     className="mobile-back-btn"
                                     onClick={() => setShowMobileSidebar(true)}
-                                    style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: window.innerWidth <= 850 ? 'block' : 'none' }}
+                                    style={{ background: 'none', border: 'none', color: '#1a1a2e', cursor: 'pointer', display: window.innerWidth <= 850 ? 'block' : 'none' }}
                                 >
                                     <ArrowLeft size={24} />
                                 </button>
@@ -205,7 +205,7 @@ export const ChatHub = () => {
                             <div style={{ position: 'relative' }} ref={menuRef}>
                                 <button 
                                     onClick={() => setShowMenu(!showMenu)}
-                                    style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: '8px', borderRadius: '10px' }}
+                                    style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '8px', borderRadius: '10px' }}
                                 >
                                     <MoreVertical size={20} />
                                 </button>
@@ -213,7 +213,7 @@ export const ChatHub = () => {
                                         {showMenu && (
                                             <div style={{ 
                                                 position: 'absolute', top: '100%', right: 0, marginTop: '12px', width: '220px', 
-                                                background: 'rgba(25,25,35,0.98)', backdropFilter: 'blur(40px)', border: '1px solid rgba(255,255,255,0.12)',
+                                                background: 'rgba(25,25,35,0.98)', backdropFilter: 'blur(40px)', border: '1px solid rgba(0, 0, 0, 0.08)',
                                                 borderRadius: '18px', padding: '10px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)', zIndex: 2000
                                             }}>
                                                 <button 
@@ -223,7 +223,7 @@ export const ChatHub = () => {
                                                         const path = role === 'instructor' ? `/instructor/${activeChat.other_user_id}` : `/profile/${activeChat.other_user_id}`;
                                                         navigate(path);
                                                     }}
-                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
+                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: '#1a1a2e', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                                 >
@@ -231,7 +231,7 @@ export const ChatHub = () => {
                                                 </button>
                                                 <button 
                                                     onClick={() => { setShowMenu(false); alert("History clearing is managed by administrators for security."); }}
-                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
+                                                    style={{ width: '100%', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '12px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', borderRadius: '12px', fontSize: '0.95rem', textAlign: 'left', transition: 'all 0.2s' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                                 >
@@ -250,7 +250,7 @@ export const ChatHub = () => {
                                     <div key={msg.id} style={{ alignSelf: isMe ? 'flex-end' : 'flex-start', maxWidth: '70%', marginBottom: i < messages.length - 1 && messages[i+1].sender === msg.sender ? '2px' : '16px' }}>
                                         <div style={{ 
                                             background: isMe ? '#0A84FF' : 'rgba(255,255,255,0.05)',
-                                            color: 'white',
+                                            color: '#1a1a2e',
                                             padding: '12px 18px',
                                             borderRadius: isMe ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
                                             fontSize: '0.95rem',
@@ -265,7 +265,7 @@ export const ChatHub = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', alignItems: 'center', gap: '6px', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginTop: '4px' }}>
+                                        <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', alignItems: 'center', gap: '6px', fontSize: '0.65rem', color: '#94a3b8', marginTop: '4px' }}>
                                             {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             {isMe && <CheckCheck size={14} color="#30D158" />}
                                         </div>
@@ -276,34 +276,34 @@ export const ChatHub = () => {
                         </div>
 
                         {/* Input Area */}
-                        <form onSubmit={handleSendMessage} style={{ padding: '24px 32px', background: 'rgba(10,10,15,0.4)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                        <form onSubmit={handleSendMessage} style={{ padding: '24px 32px', background: 'rgba(255, 255, 255, 0.7)', borderTop: '1px solid rgba(0, 0, 0, 0.05)' }}>
                             {file && (
                                 <div style={{ background: 'rgba(48, 209, 88, 0.1)', padding: '12px 18px', borderRadius: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ color: '#30D158', fontSize: '0.85rem', fontWeight: 800 }}>Attachment: {file.name} ({(file.size / (1024*1024)).toFixed(1)}MB)</span>
-                                    <button onClick={() => setFile(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={16} /></button>
+                                    <button onClick={() => setFile(null)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={16} /></button>
                                 </div>
                             )}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <button type="button" onClick={() => fileInputRef.current.click()} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><Paperclip size={22} /></button>
+                                <button type="button" onClick={() => fileInputRef.current.click()} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Paperclip size={22} /></button>
                                 <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={(e) => setFile(e.target.files[0])} />
                                 <input 
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     placeholder="Type your message..." 
-                                    style={{ flex: 1, padding: '14px 20px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: 'white', outline: 'none' }}
+                                    style={{ flex: 1, padding: '14px 20px', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.06)', borderRadius: '14px', color: '#1a1a2e', outline: 'none' }}
                                 />
-                                <button type="submit" style={{ width: '48px', height: '48px', borderRadius: '14px', background: '#0A84FF', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <button type="submit" style={{ width: '48px', height: '48px', borderRadius: '14px', background: '#0A84FF', border: 'none', color: '#1a1a2e', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Send size={20} />
                                 </button>
                             </div>
                         </form>
                     </>
                 ) : (
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)' }}>
-                        <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                        <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(0, 0, 0, 0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
                             <Send size={32} />
                         </div>
-                        <h3 style={{ color: 'white', fontWeight: 900, marginBottom: '8px' }}>Select a contact</h3>
+                        <h3 style={{ color: '#1a1a2e', fontWeight: 900, marginBottom: '8px' }}>Select a contact</h3>
                         <p>Messages are end-to-end encrypted locally.</p>
                     </div>
                 )}
@@ -322,19 +322,19 @@ export const ChatHub = () => {
 
                     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <GlassCard style={{ padding: '20px', borderRadius: '18px' }}>
-                            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', fontWeight: 900, marginBottom: '8px' }}>Learning Profile</p>
+                            <p style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 900, marginBottom: '8px' }}>Learning Profile</p>
                             <h4 style={{ fontSize: '0.95rem', fontWeight: 800, marginBottom: '4px' }}>Full Spectrum Developer</h4>
-                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Current Rank: Expert</p>
+                            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Current Rank: Expert</p>
                         </GlassCard>
                         
                         <div style={{ display: 'flex', gap: '12px' }}>
-                            <div style={{ flex: 1, padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', textAlign: 'center' }}>
+                            <div style={{ flex: 1, padding: '16px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '16px', textAlign: 'center' }}>
                                 <p style={{ fontWeight: 900, fontSize: '1.1rem' }}>4</p>
-                                <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Courses</p>
+                                <p style={{ fontSize: '0.6rem', color: '#94a3b8', textTransform: 'uppercase' }}>Courses</p>
                             </div>
-                            <div style={{ flex: 1, padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', textAlign: 'center' }}>
+                            <div style={{ flex: 1, padding: '16px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '16px', textAlign: 'center' }}>
                                 <p style={{ fontWeight: 900, fontSize: '1.1rem' }}>92%</p>
-                                <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Avg GPA</p>
+                                <p style={{ fontSize: '0.6rem', color: '#94a3b8', textTransform: 'uppercase' }}>Avg GPA</p>
                             </div>
                         </div>
                     </div>

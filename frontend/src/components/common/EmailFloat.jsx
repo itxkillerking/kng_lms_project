@@ -21,12 +21,12 @@ export const EmailFloat = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
+                color: '#1a1a2e',
                 boxShadow: '0 8px 32px rgba(10, 132, 255, 0.3)',
                 zIndex: 9999,
                 transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 cursor: 'pointer',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
+                border: '1px solid rgba(0, 0, 0, 0.1)'
             }}
             onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.1) translateY(-5px)';
@@ -41,15 +41,15 @@ export const EmailFloat = () => {
             <span style={{
                 position: 'absolute',
                 right: '70px',
-                background: 'rgba(5, 5, 10, 0.85)',
+                background: 'rgba(255, 255, 255, 0.92)',
                 backdropFilter: 'blur(10px)',
                 padding: '8px 16px',
                 borderRadius: '12px',
                 fontSize: '0.85rem',
                 fontWeight: 700,
-                color: 'white',
+                color: '#1a1a2e',
                 whiteSpace: 'nowrap',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
                 opacity: 0,
                 transform: 'translateX(10px)',
                 transition: 'all 0.3s ease',

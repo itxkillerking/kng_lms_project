@@ -52,7 +52,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
             : `https://drive.google.com/file/d/${processed.id}/preview`;
             
         return (
-            <div style={{ width: '100%', height: '100%', background: '#000', borderRadius: '12px', overflow: 'hidden' }}>
+            <div style={{ width: '100%', height: '100%', background: '#e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
                 <iframe
                     width="100%"
                     height="100%"
@@ -125,7 +125,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
     };
 
     return (
-        <div style={{ width: '100%', height: '100%', position: 'relative', background: '#000', borderRadius: '12px', overflow: 'hidden', group: 'player' }}>
+        <div style={{ width: '100%', height: '100%', position: 'relative', background: '#e2e8f0', borderRadius: '12px', overflow: 'hidden', group: 'player' }}>
             <video
                 ref={videoRef}
                 src={processed}
@@ -170,11 +170,11 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                        <button onClick={togglePlay} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                        <button onClick={togglePlay} style={{ background: 'none', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}>
                             {isPlaying ? <Pause size={24} fill="white" /> : <Play size={24} fill="white" />}
                         </button>
                         
-                        <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', fontWeight: 600, minWidth: '100px' }}>
+                        <div style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 600, minWidth: '100px' }}>
                             {Math.floor(videoRef.current?.currentTime || 0)}s / {Math.floor(duration || 0)}s
                         </div>
 
@@ -200,9 +200,9 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
                             <button 
                                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
                                 style={{ 
-                                    background: 'rgba(255,255,255,0.1)', 
-                                    border: '1px solid rgba(255,255,255,0.1)', 
-                                    color: 'white', 
+                                    background: 'rgba(0, 0, 0, 0.06)', 
+                                    border: '1px solid rgba(0, 0, 0, 0.08)', 
+                                    color: '#1a1a2e', 
                                     padding: '4px 12px', 
                                     borderRadius: '8px', 
                                     fontSize: '0.8rem', 
@@ -251,7 +251,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
                             )}
                         </div>
 
-                        <button onClick={toggleFullscreen} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                        <button onClick={toggleFullscreen} style={{ background: 'none', border: 'none', color: '#1a1a2e', cursor: 'pointer' }}>
                             <Maximize size={20} />
                         </button>
                     </div>
@@ -265,7 +265,7 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
                 left: '50%', 
                 transform: 'translateX(-50%)', 
                 background: 'rgba(255, 69, 58, 0.9)', 
-                color: 'white', 
+                color: '#1a1a2e', 
                 padding: '8px 16px', 
                 borderRadius: '12px', 
                 fontSize: '0.8rem', 

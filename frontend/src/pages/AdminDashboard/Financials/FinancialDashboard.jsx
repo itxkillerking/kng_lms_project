@@ -67,8 +67,8 @@ export const FinancialDashboard = () => {
         <div className="animate-fade-in" style={{ maxWidth: '1400px', margin: '0 auto' }}>
             <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: 'white' }}>Financial Oversight</h1>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem' }}>Track platform revenue, platform fees, and instructor payouts.</p>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '8px', color: '#1a1a2e' }}>Financial Oversight</h1>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Track platform revenue, platform fees, and instructor payouts.</p>
                 </div>
                 <GlassButton onClick={fetchData} style={{ borderRadius: '14px', padding: '12px 20px', display: 'flex', gap: '8px' }}>
                     <RefreshCw size={18} /> Update Data
@@ -94,8 +94,8 @@ export const FinancialDashboard = () => {
                                 </span>
                             )}
                         </div>
-                        <h4 style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)', fontWeight: 600, marginBottom: '4px' }}>{metric.label}</h4>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'white' }}>${parseFloat(metric.value || 0).toLocaleString()}</div>
+                        <h4 style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 600, marginBottom: '4px' }}>{metric.label}</h4>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1a1a2e' }}>${parseFloat(metric.value || 0).toLocaleString()}</div>
                     </GlassCard>
                 ))}
             </div>
@@ -144,12 +144,12 @@ export const FinancialDashboard = () => {
                         <div style={{ overflowX: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>{activeTab === 'transactions' ? 'Entity / Detail' : 'Instructor'}</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Amount</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Status</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Date</th>
-                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>Action</th>
+                                    <tr style={{ background: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>{activeTab === 'transactions' ? 'Entity / Detail' : 'Instructor'}</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Amount</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Status</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Date</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase' }}>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -161,24 +161,24 @@ export const FinancialDashboard = () => {
                                         </tr>
                                     ) : (activeTab === 'transactions' ? transactions : payouts).length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" style={{ padding: '80px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>No records found.</td>
+                                            <td colSpan="5" style={{ padding: '80px', textAlign: 'center', color: '#94a3b8' }}>No records found.</td>
                                         </tr>
                                     ) : (
                                         (activeTab === 'transactions' ? transactions : payouts).map((item) => (
-                                            <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                                            <tr key={item.id} style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.04)' }}>
                                                 <td style={{ padding: '16px 24px' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                         <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: activeTab === 'transactions' ? 'rgba(0,132,255,0.1)' : 'rgba(191,90,242,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: activeTab === 'transactions' ? '#0A84FF' : '#BF5AF2' }}>
                                                             {activeTab === 'transactions' ? <DollarSign size={18} /> : <User size={18} />}
                                                         </div>
                                                         <div>
-                                                            <p style={{ fontWeight: 600, color: 'white', fontSize: '0.9rem' }}>{activeTab === 'transactions' ? item.course_title : item.instructor_name}</p>
-                                                            <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>{activeTab === 'transactions' ? `@${item.student_name}` : `via ${item.method}`}</p>
+                                                            <p style={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.9rem' }}>{activeTab === 'transactions' ? item.course_title : item.instructor_name}</p>
+                                                            <p style={{ fontSize: '0.75rem', color: '#64748b' }}>{activeTab === 'transactions' ? `@${item.student_name}` : `via ${item.method}`}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
-                                                    <div style={{ fontWeight: 700, color: 'white' }}>${parseFloat(item.amount).toLocaleString()}</div>
+                                                    <div style={{ fontWeight: 700, color: '#1a1a2e' }}>${parseFloat(item.amount).toLocaleString()}</div>
                                                     {activeTab === 'transactions' && <div style={{ fontSize: '0.7rem', color: '#10b981' }}>Fee: -${item.platform_fee}</div>}
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
@@ -195,8 +195,8 @@ export const FinancialDashboard = () => {
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
-                                                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>{new Date(item.created_at).toLocaleDateString()}</div>
-                                                    <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem' }}>{new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                    <div style={{ color: '#64748b', fontSize: '0.85rem' }}>{new Date(item.created_at).toLocaleDateString()}</div>
+                                                    <div style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 24px' }}>
                                                     {activeTab === 'payouts' && item.status === 'pending' ? (
@@ -207,7 +207,7 @@ export const FinancialDashboard = () => {
                                                             Process Payout
                                                         </GlassButton>
                                                     ) : (
-                                                        <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)' }}>No Action</span>
+                                                        <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>No Action</span>
                                                     )}
                                                 </td>
                                             </tr>
@@ -221,20 +221,20 @@ export const FinancialDashboard = () => {
 
                 <div style={{ width: '380px' }}>
                     <GlassCard heavy style={{ padding: '24px' }}>
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <TrendingUp size={22} color="var(--accent-blue)" /> Revenue Trends
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             {summary?.trends?.map((trend, i) => (
-                                <div key={i} style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div key={i} style={{ padding: '16px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                        <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{new Date(trend.month).toLocaleDateString([], { month: 'long', year: 'numeric' })}</span>
+                                        <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>{new Date(trend.month).toLocaleDateString([], { month: 'long', year: 'numeric' })}</span>
                                         <span style={{ fontSize: '0.9rem', color: '#10b981', fontWeight: 700 }}>${trend.revenue.toLocaleString()}</span>
                                     </div>
-                                    <div style={{ height: '6px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', position: 'relative' }}>
+                                    <div style={{ height: '6px', width: '100%', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '3px', position: 'relative' }}>
                                         <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', borderRadius: '3px', background: 'linear-gradient(to right, #0A84FF, #BF5AF2)', width: `${(trend.revenue / summary.total_revenue) * 100}%` }}></div>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '0.7rem', color: '#94a3b8' }}>
                                         <span>{trend.orders} Orders</span>
                                         <span>Platform Share: ${(trend.revenue * 0.2).toLocaleString()}</span>
                                     </div>

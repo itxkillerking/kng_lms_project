@@ -54,7 +54,7 @@ export const CourseManager = () => {
                         <GlassCard key={course.id} style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ height: '160px', background: course.thumbnail ? `url(${course.thumbnail}) center/cover` : 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))', position: 'relative' }}>
                                 <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
-                                    <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', color: '#1a1a2e', border: '1px solid rgba(0, 0, 0, 0.08)' }}>
                                         {course.modules?.length || 0} Modules
                                     </div>
                                 </div>
@@ -73,7 +73,7 @@ export const CourseManager = () => {
                                         </GlassButton>
                                     </Link>
                                     <Link to={`/teacher/courses/${course.id}/content`} style={{ flex: '1', textDecoration: 'none', display: 'flex' }}>
-                                        <GlassButton style={{ width: '100%', gap: '8px', fontSize: '0.85rem', borderColor: 'rgba(10, 132, 255, 0.5)', color: 'white', background: 'rgba(10, 132, 255, 0.1)', justifyContent: 'center' }}>
+                                        <GlassButton style={{ width: '100%', gap: '8px', fontSize: '0.85rem', borderColor: 'rgba(10, 132, 255, 0.5)', color: '#1a1a2e', background: 'rgba(10, 132, 255, 0.1)', justifyContent: 'center' }}>
                                             <Edit size={16} /> Manage Content
                                         </GlassButton>
                                     </Link>

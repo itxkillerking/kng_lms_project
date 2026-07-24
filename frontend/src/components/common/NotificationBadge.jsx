@@ -29,7 +29,7 @@ const NotificationBadge = ({ count: manualCount }) => {
     return (
         <span style={{ 
             background: '#FF453A', 
-            color: 'white', 
+            color: '#1a1a2e', 
             fontSize: '0.7rem', 
             fontWeight: 900, 
             padding: '2px 6px', 

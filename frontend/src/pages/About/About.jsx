@@ -48,7 +48,7 @@ const About = () => {
     ];
 
     return (
-        <div style={{ minHeight: '100vh', background: '#040407', color: 'white', padding: isMobile ? '120px 20px 80px' : '160px 60px 120px' }}>
+        <div style={{ minHeight: '100vh', background: '#f5f7fa', color: '#1a1a2e', padding: isMobile ? '120px 20px 80px' : '160px 60px 120px' }}>
             {/* Background Architecture */}
             <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
                 <div style={{ position: 'absolute', top: '10%', right: '5%', width: '600px', height: '600px', background: 'rgba(10, 132, 255, 0.08)', filter: 'blur(150px)', borderRadius: '50%' }} />
@@ -65,8 +65,8 @@ const About = () => {
                             borderRadius: '12px', 
                             padding: '8px 16px', 
                             fontSize: '0.85rem', 
-                            background: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.08)'
+                            background: 'rgba(0, 0, 0, 0.03)',
+                            border: '1px solid rgba(0, 0, 0, 0.06)'
                         }}
                     >
                         <ArrowLeft size={16} style={{ marginRight: '8px' }} /> Go Back
@@ -78,7 +78,7 @@ const About = () => {
                         Changing the Way <br />
                         <span style={{ background: 'linear-gradient(to right, #0A84FF, #BF5AF2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Knowledge is Delivered</span>
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.4)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: '1.25rem', color: '#64748b', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
                         KLS Tech Campus is the elite standard for future professionals, bridging the gap between confusion and mastery.
                     </p>
                 </div>
@@ -92,16 +92,16 @@ const About = () => {
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <h2 style={{ fontSize: '2rem', fontWeight: 850, marginBottom: '24px', letterSpacing: '-0.02em' }}>{section.title}</h2>
-                                    <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.9, marginBottom: section.subPoints || section.goals ? '32px' : '0' }}>
+                                    <p style={{ fontSize: '1.15rem', color: '#64748b', lineHeight: 1.9, marginBottom: section.subPoints || section.goals ? '32px' : '0' }}>
                                         {section.content}
                                     </p>
 
                                     {section.subPoints && (
                                         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '20px' }}>
                                             {section.subPoints.map((point, i) => (
-                                                <div key={i} style={{ padding: '24px', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                                    <h4 style={{ fontWeight: 800, color: 'white', marginBottom: '12px', fontSize: '1rem' }}>{point.label}</h4>
-                                                    <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>{point.text}</p>
+                                                <div key={i} style={{ padding: '24px', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                                    <h4 style={{ fontWeight: 800, color: '#1a1a2e', marginBottom: '12px', fontSize: '1rem' }}>{point.label}</h4>
+                                                    <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6 }}>{point.text}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -114,7 +114,7 @@ const About = () => {
                                                     <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(48, 209, 88, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '4px', flexShrink: 0 }}>
                                                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#30D158' }} />
                                                     </div>
-                                                    <span style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+                                                    <span style={{ fontSize: '1.1rem', color: '#475569', lineHeight: 1.5 }}>
                                                         <strong>{goal.split(':')[0]}:</strong>{goal.split(':')[1]}
                                                     </span>
                                                 </div>
@@ -156,12 +156,12 @@ const About = () => {
                             right: '5px', 
                             width: '36px', 
                             height: '36px', 
-                            background: '#040407',
+                            background: '#f5f7fa',
                             borderRadius: '50%', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
-                            border: '1px solid rgba(255,255,255,0.1)'
+                            border: '1px solid rgba(0, 0, 0, 0.08)'
                         }}>
                             <div style={{ 
                                 width: '20px', 
@@ -175,7 +175,7 @@ const About = () => {
                     
                     <div style={{ textAlign: 'center' }}>
                         <h3 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '8px', letterSpacing: '-0.02em' }}>Jawad Ahmed</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>CEO & FOUNDER</p>
+                        <p style={{ color: '#64748b', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>CEO & FOUNDER</p>
                         <p style={{ color: '#0A84FF', fontSize: '0.8rem', fontWeight: 800, marginTop: '4px', letterSpacing: '0.1em' }}>KLS TECH CAMPUS</p>
                     </div>
 
@@ -184,7 +184,7 @@ const About = () => {
                         <p style={{ 
                             fontSize: '1.2rem', 
                             lineHeight: 1.8, 
-                            color: 'rgba(255,255,255,0.6)', 
+                            color: '#475569', 
                             fontStyle: 'italic',
                             fontWeight: 500
                         }}>

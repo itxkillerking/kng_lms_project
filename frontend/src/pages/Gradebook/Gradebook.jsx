@@ -170,7 +170,7 @@ const Gradebook = () => {
                                                 {item.subData.grade_score} pts
                                             </div>
                                         ) : (
-                                            <div style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.1)', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                            <div style={{ padding: '6px 12px', background: 'rgba(0, 0, 0, 0.06)', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                                                 Pending Review
                                             </div>
                                         )
