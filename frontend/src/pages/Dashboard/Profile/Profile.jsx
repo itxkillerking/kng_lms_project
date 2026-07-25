@@ -136,12 +136,12 @@ const Profile = () => {
                 {paragraphs.map((para, idx) => (
                     <div key={idx} style={{
                         padding: '24px',
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))',
+                        background: 'rgba(0, 0, 0, 0.02)',
                         borderRadius: '20px',
                         border: '1px solid rgba(0, 0, 0, 0.05)',
                         borderLeft: '4px solid #0A84FF',
                     }}>
-                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: 'rgba(255,255,255,0.85)', margin: 0, fontWeight: 500 }}>
+                        <p style={{ fontSize: '1rem', lineHeight: '1.7', color: '#1a1a2e', margin: 0, fontWeight: 500 }}>
                             {para}
                         </p>
                     </div>
