@@ -28,7 +28,21 @@ try:
 except Exception as e:
     print(f"TEMPORARY: Error creating admin user: {e}")
 
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({
+        "status": "ok",
+        "service": "KNG LMS Backend API",
+        "version": "1.0.0",
+        "login_endpoint": "/api/users/login/",
+        "frontend_url": "https://klstechcampus.netlify.app"
+    })
+
 urlpatterns = [
+    path('', health_check, name='health_check'),
+    path('api/', health_check, name='api_root'),
+    path('api/health/', health_check, name='api_health'),
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/', include('courses.urls')),

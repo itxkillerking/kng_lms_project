@@ -85,6 +85,11 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
 
 class CustomTokenObtainPairView(BaseTokenObtainPairView):
+    permission_classes = (AllowAny,)
+
+    def options(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
