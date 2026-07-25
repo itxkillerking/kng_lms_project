@@ -46,13 +46,24 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
         setProgress(0);
     }, [src]);
 
+    const containerRef = useRef(null);
+    const toggleIframeFullscreen = () => {
+        if (containerRef.current) {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                containerRef.current.requestFullscreen();
+            }
+        }
+    };
+
     if (isYouTube || isDrive) {
         const embedSrc = isYouTube 
             ? `https://www.youtube.com/embed/${processed.id}?rel=0&modestbranding=1`
             : `https://drive.google.com/file/d/${processed.id}/preview`;
             
         return (
-            <div style={{ width: '100%', height: '100%', background: '#e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+            <div ref={containerRef} style={{ width: '100%', height: '100%', background: '#1a1a2e', borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
                 <iframe
                     width="100%"
                     height="100%"
@@ -66,6 +77,35 @@ export const StrictVideoPlayer = ({ src, onComplete, lessonId }) => {
                         setTimeout(() => onComplete && onComplete(lessonId), 5000); 
                     }}
                 />
+                
+                {/* Fullscreen Button Overlay for Document Viewer */}
+                <button 
+                    onClick={toggleIframeFullscreen}
+                    style={{
+                        position: 'absolute',
+                        top: '16px',
+                        right: '16px',
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        backdropFilter: 'blur(10px)',
+                        color: 'white',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        padding: '10px 16px',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontWeight: 600,
+                        fontSize: '0.85rem',
+                        zIndex: 50,
+                        transition: 'all 0.2s',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.8)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.6)'}
+                >
+                    <Maximize size={16} /> Enter Fullscreen
+                </button>
             </div>
         );
     }

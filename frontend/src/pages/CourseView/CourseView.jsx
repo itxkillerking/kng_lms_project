@@ -50,6 +50,7 @@ const CourseView = () => {
 
     const [activeItem, setActiveItem] = useState(null);
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [courseProgress, setCourseProgress] = useState(0);
     const [progressUpdating, setProgressUpdating] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
     const isMobile = window.innerWidth <= 768;
@@ -57,6 +58,7 @@ const CourseView = () => {
     // Sync active item and completed lessons
     useEffect(() => {
         if (course && progressData) {
+            setCourseProgress(course.progress || 0);
             const completedIds = progressData
                 .filter(p => p.is_complete && course.modules?.some(m => m.lessons.some(l => l.id === p.lesson)))
                 .map(p => p.lesson);
@@ -116,6 +118,8 @@ const CourseView = () => {
         try {
             const response = await api.post('progress/toggle_complete/', { lesson_id: lessonId });
             const { is_complete, progress_percentage, certificate_generated } = response.data;
+            
+            setCourseProgress(progress_percentage);
             
             if (is_complete) {
                 setCompletedLessons(prev => [...prev, lessonId]);
@@ -191,7 +195,7 @@ const CourseView = () => {
                             </div>
                             
                             {/* Graduation Call to Action */}
-                            {(course.progress === 100 || (completedLessons.length / course.total_lessons >= 1)) && (
+                            {courseProgress === 100 && (
                                 <GlassCard style={{ 
                                     marginTop: '24px', 
                                     padding: '24px', 
