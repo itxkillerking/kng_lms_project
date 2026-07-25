@@ -11,29 +11,21 @@ class CustomCorsResponseMiddleware:
 
     def __call__(self, request):
         if request.method == "OPTIONS":
-            response = HttpResponse(status=200)
+            response = HttpResponse(status=200, content_type="text/plain")
         else:
             response = self.get_response(request)
 
-        origin = request.headers.get('Origin')
-        allowed_origins = [
-            'https://klstechcampus.netlify.app',
-            'http://localhost:5173',
-            'http://localhost:3000',
-            'http://127.0.0.1:5173',
-            'http://127.0.0.1:3000',
-        ]
-
+        origin = request.META.get('HTTP_ORIGIN') or getattr(request, 'headers', {}).get('Origin')
+        
         if origin:
-            if origin in allowed_origins or origin.endswith('.netlify.app') or origin.endswith('.vercel.app'):
-                response['Access-Control-Allow-Origin'] = origin
-            else:
-                response['Access-Control-Allow-Origin'] = '*'
+            response['Access-Control-Allow-Origin'] = origin
         else:
             response['Access-Control-Allow-Origin'] = '*'
 
+        req_headers = request.META.get('HTTP_ACCESS_CONTROL_REQUEST_HEADERS', '*')
+        
         response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-        response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-CSRFToken, X-Requested-With, Accept, Origin, User-Agent, DNT'
+        response['Access-Control-Allow-Headers'] = req_headers if req_headers != '*' else 'Content-Type, Authorization, X-CSRFToken, X-Requested-With, Accept, Origin, User-Agent, DNT'
         response['Access-Control-Allow-Credentials'] = 'true'
         response['Access-Control-Max-Age'] = '86400'
         return response
