@@ -283,12 +283,24 @@ FRONTEND_URL = 'http://localhost:5173'
 # Note: For 5000+ concurrent users, PgBouncer should be used in front of PostgreSQL.
 # In Django, we enable CONN_MAX_AGE to persist connections.
 
-# ── Cloudinary Media Storage (For Persistence on Render) ────
-if not DEBUG or os.environ.get('USE_CLOUDINARY'):
+# ── Cloudinary Media Storage ─────────────────────────────────
+cloudinary_url = os.environ.get('CLOUDINARY_URL', '').replace('CLOUDINARY_URL=', '').strip()
+
+cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+api_key = os.environ.get('CLOUDINARY_API_KEY')
+api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+
+if not (cloud_name and api_key and api_secret) and cloudinary_url:
+    import re
+    match = re.match(r'cloudinary://([^:]+):([^@]+)@(.+)', cloudinary_url)
+    if match:
+        api_key, api_secret, cloud_name = match.groups()
+
+if cloud_name and api_key and api_secret:
     CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-        'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
+        'CLOUD_NAME': cloud_name,
+        'API_KEY': api_key,
+        'API_SECRET': api_secret
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
