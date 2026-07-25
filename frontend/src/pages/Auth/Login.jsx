@@ -34,7 +34,7 @@ const Login = () => {
       }
 
       // Dynamic redirection based on role
-      if (userData.role === 'admin') {
+      if (userData.role === 'admin' || userData.role === 'staff') {
         navigate('/admin');
       } else if (userData.role === 'instructor') {
         navigate('/teacher');
