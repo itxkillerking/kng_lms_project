@@ -66,7 +66,22 @@ const Profile = () => {
             window.location.reload(); 
         } catch (error) {
             console.error("Error updating profile:", error);
-            alert("Failed to update profile");
+            let errorMessage = "Failed to update profile.";
+            if (error.response && error.response.data) {
+                const errors = error.response.data;
+                const errorMessages = [];
+                for (const key in errors) {
+                    if (Array.isArray(errors[key])) {
+                        errorMessages.push(`${key}: ${errors[key].join(', ')}`);
+                    } else {
+                        errorMessages.push(`${key}: ${errors[key]}`);
+                    }
+                }
+                if (errorMessages.length > 0) {
+                    errorMessage = errorMessages.join('\n');
+                }
+            }
+            alert(errorMessage);
         } finally {
             setLoading(false);
         }
