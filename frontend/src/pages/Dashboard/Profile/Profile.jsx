@@ -41,6 +41,7 @@ const Profile = () => {
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [showCropModal, setShowCropModal] = useState(false);
+    const [errorModal, setErrorModal] = useState({ isOpen: false, message: '' });
     
     useEffect(() => {
         if (user) {
@@ -81,7 +82,7 @@ const Profile = () => {
                     errorMessage = errorMessages.join('\n');
                 }
             }
-            alert(errorMessage);
+            setErrorModal({ isOpen: true, message: errorMessage });
         } finally {
             setLoading(false);
         }
@@ -116,7 +117,7 @@ const Profile = () => {
             window.location.reload();
         } catch (error) {
             console.error("Upload failed:", error);
-            alert("Failed to upload image.");
+            setErrorModal({ isOpen: true, message: "Failed to upload image. Please try again." });
         } finally {
             setLoading(false);
             setShowCropModal(false);
@@ -398,6 +399,41 @@ const Profile = () => {
                                 </GlassButton>
                             </div>
                         </div>
+                    </GlassCard>
+                </div>
+            )}
+
+            {/* Beautiful Error Modal */}
+            {errorModal.isOpen && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    backdropFilter: 'blur(8px)',
+                    zIndex: 9999,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '20px'
+                }}>
+                    <GlassCard heavy style={{ maxWidth: '400px', width: '100%', padding: '32px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: '#ff453a' }} />
+                        <div style={{ 
+                            width: '64px', height: '64px', 
+                            background: 'rgba(255, 69, 58, 0.1)', 
+                            borderRadius: '50%', 
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            margin: '0 auto 24px auto' 
+                        }}>
+                            <X size={32} color="#ff453a" />
+                        </div>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a2e', marginBottom: '16px' }}>Validation Error</h3>
+                        <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '32px', whiteSpace: 'pre-wrap' }}>
+                            {errorModal.message}
+                        </p>
+                        <GlassButton 
+                            onClick={() => setErrorModal({ isOpen: false, message: '' })}
+                            style={{ width: '100%', background: '#1a1a2e', color: 'white', border: 'none', padding: '14px', borderRadius: '16px', fontWeight: 600, justifyContent: 'center' }}
+                        >
+                            Got it, I'll fix it
+                        </GlassButton>
                     </GlassCard>
                 </div>
             )}
