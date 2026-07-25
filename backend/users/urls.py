@@ -9,12 +9,13 @@ from .views import (
     CustomTokenObtainPairView, LogoutView,
     RequestOTPView, VerifyOTPView,
     InstructorStudentsView, SuspensionRequestViewSet,
-    PublicProfileView
+    PublicProfileView, InstructorRevokeRequestViewSet
 )
 
 router = DefaultRouter()
 router.register('admin', AdminUserViewSet, basename='admin-users')
 router.register('suspension-requests', SuspensionRequestViewSet, basename='suspension-requests')
+router.register('revoke-requests', InstructorRevokeRequestViewSet, basename='revoke-requests')
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),

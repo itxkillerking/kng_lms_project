@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X, MessageSquare } from 'lucide-react';
+import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X, MessageSquare, Shield } from 'lucide-react';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { useAuth } from '../../context/AuthContext';
@@ -60,6 +60,10 @@ const TeacherDashboard = () => {
     { label: 'Grading', path: '/teacher/grading', icon: CheckSquare },
     { label: 'Announcements', path: '/teacher/announcements', icon: Megaphone },
   ];
+
+  if (user?.role === 'admin') {
+    navItems.push({ label: 'Admin Dashboard', path: '/admin', icon: Shield, special: true });
+  }
 
   const currentPath = location.pathname;
 
@@ -141,13 +145,13 @@ const TeacherDashboard = () => {
                   gap: '12px',
                   padding: '14px 20px',
                   borderRadius: '16px',
-                  background: isActive ? 'rgba(10, 132, 255, 0.1)' : 'transparent',
-                  border: isActive ? '1px solid rgba(10, 132, 255, 0.2)' : '1px solid transparent',
+                  background: isActive ? 'rgba(10, 132, 255, 0.1)' : item.special ? 'rgba(191, 90, 242, 0.05)' : 'transparent',
+                  border: isActive ? '1px solid rgba(10, 132, 255, 0.2)' : item.special ? '1px solid rgba(191, 90, 242, 0.1)' : '1px solid transparent',
                   transition: 'all 0.2s'
                 }}
               >
-                <Icon size={20} color={isActive ? '#0A84FF' : 'currentColor'} />
-                <span style={{ fontWeight: isActive ? 700 : 500, fontSize: '0.95rem' }}>{item.label}</span>
+                <Icon size={20} color={isActive ? '#0A84FF' : item.special ? '#BF5AF2' : 'currentColor'} />
+                <span style={{ fontWeight: isActive || item.special ? 700 : 500, fontSize: '0.95rem' }}>{item.label}</span>
                 {item.badge && <NotificationBadge style={{ marginLeft: '8px' }} />}
                 {isActive && <ChevronRight size={16} style={{ marginLeft: 'auto' }} color="#0A84FF" />}
               </Link>

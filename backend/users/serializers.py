@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserActivityLog, SuspensionRequest
+from .models import User, UserActivityLog, SuspensionRequest, InstructorRevokeRequest
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,6 +41,17 @@ class SuspensionRequestSerializer(serializers.ModelSerializer):
         model = SuspensionRequest
         fields = '__all__'
         read_only_fields = ('instructor', 'status', 'created_at', 'resolved_at')
+
+class InstructorRevokeRequestSerializer(serializers.ModelSerializer):
+    staff_name = serializers.CharField(source='staff_member.get_full_name', read_only=True)
+    staff_username = serializers.CharField(source='staff_member.username', read_only=True)
+    instructor_name = serializers.CharField(source='instructor.get_full_name', read_only=True)
+    instructor_username = serializers.CharField(source='instructor.username', read_only=True)
+
+    class Meta:
+        model = InstructorRevokeRequest
+        fields = '__all__'
+        read_only_fields = ('staff_member', 'status', 'created_at', 'resolved_at')
 
 class PublicProfileSerializer(serializers.ModelSerializer):
     """Serializer for public instructor profile viewing."""

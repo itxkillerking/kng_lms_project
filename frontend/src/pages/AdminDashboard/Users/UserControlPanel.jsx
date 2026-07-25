@@ -21,30 +21,43 @@ import {
     UserPlus,
     XCircle
 } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext';
 import api from '../../../services/api';
 import { GlassSelect } from '../../../components/common/GlassSelect';
 
 export const UserControlPanel = () => {
+    const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
     const [suspensionRequests, setSuspensionRequests] = useState([]);
+    const [revokeRequests, setRevokeRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
-    const [activeTab, setActiveTab] = useState('users'); // 'users' or 'logs'
+    const [activeTab, setActiveTab] = useState('users'); // 'users', 'logs', 'suspension', 'revoke'
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [usersRes, logsRes, suspensionRes] = await Promise.all([
+            const promises = [
                 api.get('users/admin/'),
-                api.get('users/admin/activity_logs/'),
                 api.get('users/suspension-requests/')
-            ]);
+            ];
+            
+            if (currentUser?.role === 'admin') {
+                promises.push(api.get('users/admin/activity_logs/'));
+                promises.push(api.get('users/revoke-requests/'));
+            } else if (currentUser?.role === 'staff') {
+                promises.push(Promise.resolve({ data: [] })); // No logs for staff
+                promises.push(api.get('users/revoke-requests/')); // Staff can see their own requests or we can let them submit
+            }
+
+            const [usersRes, suspensionRes, logsRes, revokeRes] = await Promise.all(promises);
             setUsers(Array.isArray(usersRes.data) ? usersRes.data : usersRes.data.results || []);
-            setActivityLogs(Array.isArray(logsRes.data) ? logsRes.data : []);
             setSuspensionRequests(Array.isArray(suspensionRes.data) ? suspensionRes.data : suspensionRes.data.results || []);
+            if (logsRes) setActivityLogs(Array.isArray(logsRes.data) ? logsRes.data : []);
+            if (revokeRes) setRevokeRequests(Array.isArray(revokeRes.data) ? revokeRes.data : revokeRes.data.results || []);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -77,7 +90,35 @@ export const UserControlPanel = () => {
         }
     };
 
+    const handleRevokeAction = async (id, action) => {
+        if (!window.confirm(`Are you sure you want to ${action} this request?`)) return;
+        try {
+            await api.post(`users/revoke-requests/${id}/${action}/`);
+            fetchData();
+        } catch (error) {
+            console.error(`Error performing ${action}:`, error);
+            alert(`Failed to ${action} request`);
+        }
+    };
+
+    const handleStaffRevokeRequest = async (instructorId) => {
+        const reason = window.prompt("Reason for revoking this instructor:");
+        if (!reason) return;
+        try {
+            await api.post('users/revoke-requests/', { instructor: instructorId, reason });
+            alert("Revocation request submitted to superadmin.");
+            fetchData();
+        } catch (error) {
+            console.error("Error submitting revoke request:", error);
+            alert("Failed to submit request.");
+        }
+    };
+
     const handleDelete = async (userId) => {
+        if (currentUser?.role === 'staff') {
+            alert("Staff cannot delete users directly.");
+            return;
+        }
         if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
             try {
                 await api.delete(`users/admin/${userId}/`);
@@ -89,6 +130,10 @@ export const UserControlPanel = () => {
     };
 
     const handleChangeRole = async (userId, newRole) => {
+        if (currentUser?.role === 'staff' && (newRole === 'admin' || newRole === 'instructor')) {
+            alert("Staff cannot assign admin or instructor roles.");
+            return;
+        }
         if (window.confirm(`Change user role to ${newRole.toUpperCase()}?`)) {
             await handleAction(userId, 'change_role', { role: newRole });
         }
@@ -139,21 +184,23 @@ export const UserControlPanel = () => {
                     >
                         Directory
                     </button>
-                    <button 
-                        onClick={() => setActiveTab('logs')}
-                        style={{ 
-                            padding: '10px 24px', 
-                            borderRadius: '12px', 
-                            border: 'none', 
-                            background: activeTab === 'logs' ? 'var(--accent-blue)' : 'transparent',
-                            color: '#1a1a2e',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        Activity Log
-                    </button>
+                    {currentUser?.role === 'admin' && (
+                        <button 
+                            onClick={() => setActiveTab('logs')}
+                            style={{ 
+                                padding: '10px 24px', 
+                                borderRadius: '12px', 
+                                border: 'none', 
+                                background: activeTab === 'logs' ? 'var(--accent-blue)' : 'transparent',
+                                color: '#1a1a2e',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            Activity Log
+                        </button>
+                    )}
                     <button 
                         onClick={() => setActiveTab('suspension')}
                         style={{ 
@@ -168,6 +215,21 @@ export const UserControlPanel = () => {
                         }}
                     >
                         Suspension Requests {suspensionRequests.filter(r => r.status === 'pending').length > 0 && `(${suspensionRequests.filter(r => r.status === 'pending').length})`}
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('revoke')}
+                        style={{ 
+                            padding: '10px 24px', 
+                            borderRadius: '12px', 
+                            border: 'none', 
+                            background: activeTab === 'revoke' ? 'var(--accent-blue)' : 'transparent',
+                            color: '#1a1a2e',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        Revoke Requests {revokeRequests.filter(r => r.status === 'pending').length > 0 && `(${revokeRequests.filter(r => r.status === 'pending').length})`}
                     </button>
                 </div>
             </div>
@@ -295,21 +357,39 @@ export const UserControlPanel = () => {
                                                                     }}>
                                                                         <BadgeCheck size={16} /> Verified
                                                                     </div>
-                                                                    <button 
-                                                                        onClick={() => handleAction(user.id, 'disapprove_teacher')}
-                                                                        style={{ 
-                                                                            background: 'rgba(255, 69, 58, 0.1)', 
-                                                                            border: 'none', 
-                                                                            color: '#ff453a', 
-                                                                            cursor: 'pointer', 
-                                                                            fontSize: '0.75rem', 
-                                                                            padding: '6px 10px', 
-                                                                            borderRadius: '8px',
-                                                                            fontWeight: 600
-                                                                        }}
-                                                                    >
-                                                                        Revoke
-                                                                    </button>
+                                                                    {currentUser?.role === 'staff' ? (
+                                                                        <button 
+                                                                            onClick={() => handleStaffRevokeRequest(user.id)}
+                                                                            style={{ 
+                                                                                background: 'rgba(255, 153, 0, 0.1)', 
+                                                                                border: 'none', 
+                                                                                color: '#ff9900', 
+                                                                                cursor: 'pointer', 
+                                                                                fontSize: '0.75rem', 
+                                                                                padding: '6px 10px', 
+                                                                                borderRadius: '8px',
+                                                                                fontWeight: 600
+                                                                            }}
+                                                                        >
+                                                                            Request Revoke
+                                                                        </button>
+                                                                    ) : (
+                                                                        <button 
+                                                                            onClick={() => handleAction(user.id, 'disapprove_teacher')}
+                                                                            style={{ 
+                                                                                background: 'rgba(255, 69, 58, 0.1)', 
+                                                                                border: 'none', 
+                                                                                color: '#ff453a', 
+                                                                                cursor: 'pointer', 
+                                                                                fontSize: '0.75rem', 
+                                                                                padding: '6px 10px', 
+                                                                                borderRadius: '8px',
+                                                                                fontWeight: 600
+                                                                            }}
+                                                                        >
+                                                                            Revoke
+                                                                        </button>
+                                                                    )}
                                                                 </div>
                                                                
                                                             ) : (
@@ -377,29 +457,31 @@ export const UserControlPanel = () => {
                                                                 <UserCheck size={20} />
                                                             </button>
                                                         )}
-                                                        <button 
-                                                            title="Permanently Delete"
-                                                            onClick={() => handleDelete(user.id)}
-                                                            style={{ 
-                                                                background: 'rgba(0, 0, 0, 0.03)', 
-                                                                border: '1px solid rgba(0, 0, 0, 0.06)', 
-                                                                padding: '12px', 
-                                                                borderRadius: '12px', 
-                                                                color: '#64748b', 
-                                                                cursor: 'pointer',
-                                                                transition: 'all 0.2s'
-                                                            }}
-                                                            onMouseEnter={e => {
-                                                                e.currentTarget.style.background = 'rgba(255, 69, 58, 0.05)';
-                                                                e.currentTarget.style.color = '#ff453a';
-                                                            }}
-                                                            onMouseLeave={e => {
-                                                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                                                                e.currentTarget.style.color = 'rgba(255,255,255,0.4)';
-                                                            }}
-                                                        >
-                                                            <Trash2 size={20} />
-                                                        </button>
+                                                        {currentUser?.role === 'admin' && (
+                                                            <button 
+                                                                title="Permanently Delete"
+                                                                onClick={() => handleDelete(user.id)}
+                                                                style={{ 
+                                                                    background: 'rgba(0, 0, 0, 0.03)', 
+                                                                    border: '1px solid rgba(0, 0, 0, 0.06)', 
+                                                                    padding: '12px', 
+                                                                    borderRadius: '12px', 
+                                                                    color: '#64748b', 
+                                                                    cursor: 'pointer',
+                                                                    transition: 'all 0.2s'
+                                                                }}
+                                                                onMouseEnter={e => {
+                                                                    e.currentTarget.style.background = 'rgba(255, 69, 58, 0.05)';
+                                                                    e.currentTarget.style.color = '#ff453a';
+                                                                }}
+                                                                onMouseLeave={e => {
+                                                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                                    e.currentTarget.style.color = 'rgba(255,255,255,0.4)';
+                                                                }}
+                                                            >
+                                                                <Trash2 size={20} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -475,7 +557,7 @@ export const UserControlPanel = () => {
                         </div>
                     </GlassCard>
                 </div>
-            ) : (
+            ) : activeTab === 'suspension' ? (
                 <div className="animate-fade-in">
                     <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
                         <div style={{ padding: '24px', background: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -562,7 +644,96 @@ export const UserControlPanel = () => {
                         </div>
                     </GlassCard>
                 </div>
-            )}
+            ) : activeTab === 'revoke' ? (
+                <div className="animate-fade-in">
+                    <GlassCard heavy style={{ padding: '0', overflow: 'hidden', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                        <div style={{ padding: '24px', background: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <ShieldAlert size={20} color="#ff9900" /> Instructor Revocation Requests
+                            </h3>
+                            <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                                Review staff requests to revoke instructors
+                            </div>
+                        </div>
+                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                    <tr style={{ background: 'rgba(0, 0, 0, 0.01)', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Instructor</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Requested By (Staff)</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Reason</th>
+                                        <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Status</th>
+                                        {currentUser?.role === 'admin' && <th style={{ padding: '16px 24px', fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase' }}>Actions</th>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {revokeRequests.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={currentUser?.role === 'admin' ? "5" : "4"} style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
+                                                No revocation requests to review.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        revokeRequests.map((req) => (
+                                            <tr key={req.id} style={{ borderBottom: '1px solid rgba(0, 0, 0, 0.04)' }}>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <div style={{ color: '#1a1a2e', fontWeight: 600 }}>{req.instructor_name}</div>
+                                                    <div style={{ color: '#64748b', fontSize: '0.8rem' }}>@{req.instructor_username}</div>
+                                                </td>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <div style={{ color: '#1a1a2e', fontWeight: 600 }}>{req.staff_name}</div>
+                                                    <div style={{ color: '#64748b', fontSize: '0.8rem' }}>@{req.staff_username}</div>
+                                                    <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '4px' }}>
+                                                        {new Date(req.created_at).toLocaleString()}
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: '20px 24px', maxWidth: '300px' }}>
+                                                    <p style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.4 }}>
+                                                        {req.reason}
+                                                    </p>
+                                                </td>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <span style={{ 
+                                                        fontSize: '0.75rem', 
+                                                        padding: '6px 10px', 
+                                                        borderRadius: '8px', 
+                                                        background: req.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : req.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 69, 58, 0.1)', 
+                                                        color: req.status === 'pending' ? '#f59e0b' : req.status === 'approved' ? '#10b981' : '#ff453a',
+                                                        fontWeight: 700,
+                                                        textTransform: 'uppercase'
+                                                    }}>
+                                                        {req.status}
+                                                    </span>
+                                                </td>
+                                                {currentUser?.role === 'admin' && (
+                                                    <td style={{ padding: '20px 24px' }}>
+                                                        {req.status === 'pending' && (
+                                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                                <button 
+                                                                    onClick={() => handleRevokeAction(req.id, 'approve')}
+                                                                    style={{ background: '#ff453a', border: 'none', color: '#1a1a2e', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}
+                                                                >
+                                                                    Approve
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => handleRevokeAction(req.id, 'reject')}
+                                                                    style={{ background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.08)', color: '#1a1a2e', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600 }}
+                                                                >
+                                                                    Reject
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </GlassCard>
+                </div>
+            ) : null}
         </div>
     );
 };

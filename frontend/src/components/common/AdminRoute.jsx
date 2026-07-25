@@ -9,5 +9,5 @@ export const AdminRoute = () => {
         return <div style={{ color: '#1a1a2e', padding: '40px', textAlign: 'center' }}>Verifying Authorization...</div>;
     }
 
-    return user && user.role === 'admin' ? <Outlet /> : <Navigate to="/dashboard" replace />;
+    return user && ['admin', 'staff'].includes(user.role) ? <Outlet /> : <Navigate to="/dashboard" replace />;
 };

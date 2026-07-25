@@ -3,9 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView as BaseTokenObtainPairView
-from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer, SuspensionRequestSerializer
-from .models import User, UserActivityLog, UserOTP, SuspensionRequest
-from .permissions import IsSuperAdmin
+from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer, SuspensionRequestSerializer, InstructorRevokeRequestSerializer
+from .models import User, UserActivityLog, UserOTP, SuspensionRequest, InstructorRevokeRequest
+from .permissions import IsSuperAdmin, IsStaffOrAdmin
 from .communication import (
     send_registration_email,
     send_otp_email,
@@ -37,7 +37,16 @@ class CurrentUserView(generics.RetrieveUpdateAPIView):
 class AdminUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [IsSuperAdmin]
+    permission_classes = [IsStaffOrAdmin]
+
+    def destroy(self, request, *args, **kwargs):
+        target_user = self.get_object()
+        if request.user.role == 'staff':
+            if target_user.role == 'admin':
+                return Response({'error': 'Staff cannot delete an admin.'}, status=status.HTTP_403_FORBIDDEN)
+            if target_user.role == 'instructor':
+                return Response({'error': 'Staff cannot delete an instructor. Submit a revocation request.'}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
     @action(detail=True, methods=['post'])
     def approve_teacher(self, request, pk=None):
@@ -59,6 +68,13 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         new_role = request.data.get('role')
         if new_role not in dict(User.ROLE_CHOICES):
             return Response({'error': 'Invalid role'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if request.user.role == 'staff':
+            if user.role == 'admin' or new_role == 'admin':
+                return Response({'error': 'Staff cannot assign or modify admin roles.'}, status=status.HTTP_403_FORBIDDEN)
+            if user.role == 'instructor' or new_role == 'instructor':
+                return Response({'error': 'Staff cannot modify instructor roles.'}, status=status.HTTP_403_FORBIDDEN)
+
         user.role = new_role
         user.save()
         return Response({'status': f'Role changed to {new_role}'})
@@ -66,6 +82,12 @@ class AdminUserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def suspend(self, request, pk=None):
         user = self.get_object()
+        if request.user.role == 'staff':
+            if user.role == 'admin':
+                return Response({'error': 'Staff cannot suspend an admin.'}, status=status.HTTP_403_FORBIDDEN)
+            if user.role == 'instructor':
+                return Response({'error': 'Staff cannot suspend an instructor directly. Submit a request.'}, status=status.HTTP_403_FORBIDDEN)
+                
         user.account_status = 'suspended'
         user.save()
         return Response({'status': 'user suspended'})
@@ -79,9 +101,47 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def activity_logs(self, request):
+        if request.user.role == 'staff':
+            return Response({'error': 'Staff cannot view activity logs.'}, status=status.HTTP_403_FORBIDDEN)
         logs = UserActivityLog.objects.all()[:200]
         serializer = UserActivityLogSerializer(logs, many=True)
         return Response(serializer.data)
+
+class InstructorRevokeRequestViewSet(viewsets.ModelViewSet):
+    queryset = InstructorRevokeRequest.objects.all()
+    serializer_class = InstructorRevokeRequestSerializer
+    permission_classes = [IsStaffOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(staff_member=self.request.user)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def approve(self, request, pk=None):
+        revoke_req = self.get_object()
+        if revoke_req.status != 'pending':
+            return Response({'error': 'Request already processed'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Revoke the instructor
+        instructor = revoke_req.instructor
+        instructor.role = 'student'
+        instructor.is_verified_teacher = False
+        instructor.save()
+        
+        revoke_req.status = 'approved'
+        revoke_req.resolved_at = timezone.now()
+        revoke_req.save()
+        return Response({'status': 'Instructor revoked successfully'})
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
+    def reject(self, request, pk=None):
+        revoke_req = self.get_object()
+        if revoke_req.status != 'pending':
+            return Response({'error': 'Request already processed'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        revoke_req.status = 'rejected'
+        revoke_req.resolved_at = timezone.now()
+        revoke_req.save()
+        return Response({'status': 'Revocation request rejected'})
 
 
 class CustomTokenObtainPairView(BaseTokenObtainPairView):

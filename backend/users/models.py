@@ -7,6 +7,7 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ('student', 'Student'),
         ('instructor', 'Instructor'),
+        ('staff', 'Staff'),
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
@@ -42,7 +43,7 @@ class User(AbstractUser):
         
     @property
     def is_instructor(self):
-        return self.role == 'instructor'
+        return self.role in ['instructor', 'admin']
         
     @property
     def is_admin(self):
@@ -114,3 +115,21 @@ class SuspensionRequest(models.Model):
 
     def __str__(self):
         return f"Suspension Request: {self.student.username} by {self.instructor.username} ({self.status})"
+
+class InstructorRevokeRequest(models.Model):
+    staff_member = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submitted_revoke_requests')
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='revoke_requests')
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Revoke Request: {self.instructor.username} by {self.staff_member.username} ({self.status})"
