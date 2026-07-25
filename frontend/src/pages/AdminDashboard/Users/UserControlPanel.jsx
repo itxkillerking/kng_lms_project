@@ -41,23 +41,23 @@ export const UserControlPanel = () => {
         setLoading(true);
         try {
             const promises = [
-                api.get('users/admin/'),
-                api.get('users/suspension-requests/')
+                api.get('users/admin/').catch(e => ({ data: [] })),
+                api.get('users/suspension-requests/').catch(e => ({ data: [] }))
             ];
             
             if (currentUser?.role === 'admin') {
-                promises.push(api.get('users/admin/activity_logs/'));
-                promises.push(api.get('users/revoke-requests/'));
+                promises.push(api.get('users/admin/activity_logs/').catch(e => ({ data: [] })));
+                promises.push(api.get('users/revoke-requests/').catch(e => ({ data: [] })));
             } else if (currentUser?.role === 'staff') {
-                promises.push(Promise.resolve({ data: [] })); // No logs for staff
-                promises.push(api.get('users/revoke-requests/')); // Staff can see their own requests or we can let them submit
+                promises.push(Promise.resolve({ data: [] })); 
+                promises.push(api.get('users/revoke-requests/').catch(e => ({ data: [] }))); 
             }
 
             const [usersRes, suspensionRes, logsRes, revokeRes] = await Promise.all(promises);
-            setUsers(Array.isArray(usersRes.data) ? usersRes.data : usersRes.data.results || []);
-            setSuspensionRequests(Array.isArray(suspensionRes.data) ? suspensionRes.data : suspensionRes.data.results || []);
-            if (logsRes) setActivityLogs(Array.isArray(logsRes.data) ? logsRes.data : []);
-            if (revokeRes) setRevokeRequests(Array.isArray(revokeRes.data) ? revokeRes.data : revokeRes.data.results || []);
+            setUsers(Array.isArray(usersRes?.data) ? usersRes.data : usersRes?.data?.results || []);
+            setSuspensionRequests(Array.isArray(suspensionRes?.data) ? suspensionRes.data : suspensionRes?.data?.results || []);
+            if (logsRes) setActivityLogs(Array.isArray(logsRes?.data) ? logsRes.data : []);
+            if (revokeRes) setRevokeRequests(Array.isArray(revokeRes?.data) ? revokeRes.data : revokeRes?.data?.results || []);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
