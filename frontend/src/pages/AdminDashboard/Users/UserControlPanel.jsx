@@ -327,6 +327,7 @@ export const UserControlPanel = () => {
                                                             options={[
                                                                 { label: 'Student', value: 'student' },
                                                                 { label: 'Instructor', value: 'instructor' },
+                                                                { label: 'Staff', value: 'staff' },
                                                                 { label: 'SuperAdmin', value: 'admin' }
                                                             ]}
                                                         />
