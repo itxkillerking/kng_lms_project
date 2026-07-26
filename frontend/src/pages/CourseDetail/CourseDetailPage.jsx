@@ -17,9 +17,7 @@ const CourseDetailPage = () => {
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEnrolled, setIsEnrolled] = useState(false);
-    const [enrollStatus, setEnrollStatus] = useState('none');
     const [enrolling, setEnrolling] = useState(false);
-    const [showPopup, setShowPopup] = useState(false);
 
     // Responsive Handling
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -40,7 +38,6 @@ const CourseDetailPage = () => {
 
                 if (user) {
                     const statusRes = await api.get(`courses/${id}/enrollment_status/`);
-                    setEnrollStatus(statusRes.data.status);
                     if (statusRes.data.status === 'approved') {
                         setIsEnrolled(true);
                     }
@@ -61,26 +58,16 @@ const CourseDetailPage = () => {
             return;
         }
 
-        if (enrollStatus === 'approved') {
+        if (isEnrolled) {
             navigate(`/learn/${id}`);
-            return;
-        }
-
-        if (enrollStatus === 'pending') {
-            setShowPopup(true);
             return;
         }
 
         setEnrolling(true);
         try {
-            const res = await api.post(`courses/${id}/enroll/`);
-            setEnrollStatus(res.data.status);
-            if (res.data.status === 'pending') {
-                setShowPopup(true);
-            } else if (res.data.status === 'approved') {
-                setIsEnrolled(true);
-                navigate(`/learn/${id}`);
-            }
+            await api.post(`courses/${id}/enroll/`);
+            setIsEnrolled(true);
+            navigate(`/learn/${id}`);
         } catch (error) {
             console.error("Enrollment failed:", error);
             alert("Enrollment failed. Please try again.");
@@ -155,13 +142,13 @@ const CourseDetailPage = () => {
 
                             {isMobile && (
                                 <div style={{ marginTop: '40px' }}>
-                                    <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} enrollStatus={enrollStatus} />
+                                    <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} isEnrolled={isEnrolled} />
                                 </div>
                             )}
                         </div>
 
                         {!isMobile && (
-                            <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} enrollStatus={enrollStatus} />
+                            <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} isEnrolled={isEnrolled} />
                         )}
                     </div>
                 </div>
@@ -280,32 +267,11 @@ const CourseDetailPage = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Stylish Popup for Enrollment Request */}
-            {showPopup && (
-                <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(8px)' }}>
-                    <div style={{ background: 'rgba(255, 255, 255, 0.95)', padding: '40px', borderRadius: '24px', maxWidth: '400px', width: '100%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
-                        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(10, 132, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                            <CheckCircle size={32} color="#0A84FF" />
-                        </div>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e', marginBottom: '12px' }}>Request Sent!</h3>
-                        <p style={{ color: '#475569', lineHeight: 1.6, marginBottom: '32px' }}>
-                            Your enrollment request has been successfully sent to the admin. You will be notified once it is approved.
-                        </p>
-                        <GlassButton 
-                            onClick={() => setShowPopup(false)} 
-                            style={{ width: '100%', background: '#0A84FF', color: 'white', border: 'none', padding: '14px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700 }}
-                        >
-                            Got it, thanks!
-                        </GlassButton>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
 
-const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolling, enrollStatus }) => (
+const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolling, isEnrolled }) => (
     <GlassCard heavy style={{ position: isMobile ? 'static' : 'sticky', top: '40px', padding: isSmallMobile ? '24px' : '32px', borderRadius: '32px', width: '100%', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
         <div style={{ width: '100%', aspectRatio: '16/9', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '20px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             {course.thumbnail ? (
@@ -322,17 +288,22 @@ const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolli
             <p style={{ fontSize: '0.9rem', color: '#30D158', fontWeight: 700, marginTop: '8px' }}>Full lifetime access</p>
         </div>
 
-        <GlassButton
-            variant={enrollStatus === 'pending' ? 'secondary' : 'primary'}
+        <GlassButton 
             style={{ 
-                width: '100%', py: '18px', fontSize: '1.1rem', borderRadius: '16px', fontWeight: 800,
-                background: enrollStatus === 'pending' ? 'rgba(0,0,0,0.05)' : '',
-                color: enrollStatus === 'pending' ? '#64748b' : ''
+                width: '100%', 
+                background: '#0A84FF',
+                color: 'white',
+                border: 'none',
+                padding: '16px',
+                borderRadius: '12px',
+                fontSize: '1rem',
+                fontWeight: 700,
+                boxShadow: '0 8px 20px -8px rgba(10, 132, 255, 0.5)'
             }}
             onClick={handleEnroll}
-            disabled={enrolling || enrollStatus === 'pending'}
+            disabled={enrolling}
         >
-            {enrollStatus === 'approved' ? 'Go to Classroom' : (enrollStatus === 'pending' ? 'Enrollment Pending' : (enrolling ? 'Requesting...' : 'Request Enrollment'))}
+            {isEnrolled ? 'Go to Classroom' : (enrolling ? 'Enrolling...' : 'Enroll Now')}
         </GlassButton>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>

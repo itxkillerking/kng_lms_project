@@ -59,14 +59,13 @@ class CourseViewSet(viewsets.ModelViewSet):
             qs = qs.filter(
                 Q(title__icontains=search_query) |
                 Q(description__icontains=search_query) |
-                Q(instructor__username__icontains=search_query)
+                Q(category__name__icontains=search_query)
             )
 
-        category_id = self.request.query_params.get('category')
-        if category_id:
-            qs = qs.filter(category_id=category_id)
-
-        if instructor_filter == 'me' and user.is_authenticated:
+        if instructor_filter:
+            qs = qs.filter(instructor_id=instructor_filter)
+        elif user.is_authenticated and user.role == 'instructor':
+             # Default for instructors if no filter applied: Only show their courses
             qs = qs.filter(instructor=user)
         
         if moderation_param:
@@ -145,18 +144,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         
         return Response({'status': 'enrolled', 'message': 'Already enrolled'}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
-    def enrollment_status(self, request, pk=None):
-        """Check the current user's enrollment status for this course."""
-        course = self.get_object()
-        from .models import CourseEnrollment
-        
-        try:
-            enrollment = CourseEnrollment.objects.get(student=request.user, course=course)
-            return Response({'status': 'approved'})
-        except CourseEnrollment.DoesNotExist:
-            return Response({'status': 'none'})
-
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_courses(self, request):
         """Get courses the student is enrolled in."""
@@ -164,54 +151,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         courses = [e.course for e in enrollments]
         serializer = self.get_serializer(courses, many=True)
         return Response(serializer.data)
-
-    # --- Admin Enrollment Endpoints ---
-    @action(detail=False, methods=['get'], permission_classes=[IsSuperAdmin])
-    def pending_enrollments(self, request):
-        from .models import CourseEnrollment
-        from .serializers import CourseEnrollmentSerializer
-        enrollments = CourseEnrollment.objects.filter(status='pending').order_by('-enrolled_at')
-        return Response(CourseEnrollmentSerializer(enrollments, many=True).data)
-
-    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
-    def approve_enrollment(self, request, pk=None):
-        from .models import CourseEnrollment
-        from users.communication import send_enrollment_email
-        try:
-            enrollment = CourseEnrollment.objects.get(pk=pk, status='pending')
-            enrollment.status = 'approved'
-            enrollment.save()
-            
-            # Trigger enrollment email
-            if enrollment.student.email:
-                send_enrollment_email(enrollment.student, enrollment.course)
-                
-            return Response({'status': 'Enrollment approved'})
-        except CourseEnrollment.DoesNotExist:
-            return Response({'error': 'Pending enrollment not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
-    def reject_enrollment(self, request, pk=None):
-        from .models import CourseEnrollment
-        from messaging.models import Message
-        
-        reason = request.data.get('reason', 'No reason provided')
-        try:
-            enrollment = CourseEnrollment.objects.get(pk=pk, status='pending')
-            enrollment.status = 'rejected'
-            enrollment.rejection_reason = reason
-            enrollment.save()
-            
-            # Send in-app notification
-            Message.objects.create(
-                sender=request.user,
-                recipient=enrollment.student,
-                content=f"Your enrollment request for {enrollment.course.title} was rejected. Reason: {reason}"
-            )
-            
-            return Response({'status': 'Enrollment rejected'})
-        except CourseEnrollment.DoesNotExist:
-            return Response({'error': 'Pending enrollment not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
