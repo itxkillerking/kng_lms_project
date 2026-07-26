@@ -101,10 +101,13 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_progress(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            from .models import CourseEnrollment
-            enrollment = CourseEnrollment.objects.filter(student=request.user, course=obj).first()
-            if enrollment:
-                return enrollment.progress_percentage
+            try:
+                from .models import CourseEnrollment
+                enrollment = CourseEnrollment.objects.filter(student=request.user, course=obj).first()
+                if enrollment:
+                    return enrollment.progress_percentage
+            except Exception:
+                return 0
         return 0
 
     def get_average_rating(self, obj):

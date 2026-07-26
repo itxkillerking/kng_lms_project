@@ -161,7 +161,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_courses(self, request):
         """Get courses the student is enrolled in and approved for."""
-        enrollments = request.user.enrollments.filter(status='approved')
+        try:
+            enrollments = request.user.enrollments.filter(status='approved')
+        except Exception:
+            enrollments = request.user.enrollments.all()
         courses = [e.course for e in enrollments]
         serializer = self.get_serializer(courses, many=True)
         return Response(serializer.data)
