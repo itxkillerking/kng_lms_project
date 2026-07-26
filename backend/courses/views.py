@@ -131,20 +131,19 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def enroll(self, request, pk=None):
-        """Request to enroll in the course."""
+        """Enroll in the course."""
         course = self.get_object()
         from .models import CourseEnrollment
         
         enrollment, created = CourseEnrollment.objects.get_or_create(
             student=request.user,
-            course=course,
-            defaults={'status': 'pending'}
+            course=course
         )
         
         if created:
-            return Response({'status': 'pending', 'message': 'Enrollment request sent successfully'}, status=status.HTTP_201_CREATED)
+            return Response({'status': 'enrolled', 'message': 'Successfully enrolled!'}, status=status.HTTP_201_CREATED)
         
-        return Response({'status': enrollment.status, 'message': f'Enrollment status: {enrollment.status}'}, status=status.HTTP_200_OK)
+        return Response({'status': 'enrolled', 'message': 'Already enrolled'}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
     def enrollment_status(self, request, pk=None):
@@ -154,17 +153,14 @@ class CourseViewSet(viewsets.ModelViewSet):
         
         try:
             enrollment = CourseEnrollment.objects.get(student=request.user, course=course)
-            return Response({'status': enrollment.status, 'rejection_reason': enrollment.rejection_reason})
+            return Response({'status': 'approved'})
         except CourseEnrollment.DoesNotExist:
             return Response({'status': 'none'})
 
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_courses(self, request):
-        """Get courses the student is enrolled in and approved for."""
-        try:
-            enrollments = request.user.enrollments.filter(status='approved')
-        except Exception:
-            enrollments = request.user.enrollments.all()
+        """Get courses the student is enrolled in."""
+        enrollments = request.user.enrollments.all()
         courses = [e.course for e in enrollments]
         serializer = self.get_serializer(courses, many=True)
         return Response(serializer.data)
