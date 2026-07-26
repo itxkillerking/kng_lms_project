@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../../../services/api';
-import { GlassCard } from '../../../../components/common/GlassCard';
-import { GlassButton } from '../../../../components/common/GlassButton';
+import api from '../../../services/api';
+import { GlassCard } from '../../../components/common/GlassCard';
+import { GlassButton } from '../../../components/common/GlassButton';
 import { CheckCircle, XCircle, Search, AlertCircle, Book, User as UserIcon } from 'lucide-react';
 
 export const EnrollmentRequests = () => {
