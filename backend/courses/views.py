@@ -29,12 +29,12 @@ class LessonCommentViewSet(viewsets.ModelViewSet):
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.select_related('instructor', 'category').prefetch_related('modules', 'modules__lessons')
     serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy', 'approve', 'reject', 'instructors']:
-             # Use a combination or check for admin
-             # For now, IsAuthenticated + internal role check is often used, but let's be explicit
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
              return [IsAuthenticated()]
-        return [IsAuthenticatedOrReadOnly()]
+        return super().get_permissions()
 
     def get_queryset(self):
         qs = self.queryset
