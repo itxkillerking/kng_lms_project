@@ -137,3 +137,15 @@ class CourseSerializer(serializers.ModelSerializer):
             'total_lessons', 'total_quizzes', 'total_assignments', 'total_duration_mins'
         ]
         read_only_fields = ('instructor', 'moderation_status') # Allow instructor to be set automatically
+
+from .models import CourseEnrollment
+
+class CourseEnrollmentSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.get_full_name', read_only=True)
+    student_username = serializers.CharField(source='student.username', read_only=True)
+    student_email = serializers.CharField(source='student.email', read_only=True)
+    course_title = serializers.CharField(source='course.title', read_only=True)
+
+    class Meta:
+        model = CourseEnrollment
+        fields = '__all__'

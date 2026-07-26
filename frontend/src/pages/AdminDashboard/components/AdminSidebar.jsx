@@ -11,7 +11,8 @@ import {
     ChevronRight,
     Menu,
     X,
-    MessageSquare
+    MessageSquare,
+    UserPlus
 } from 'lucide-react';
 import NotificationBadge from '../../../components/common/NotificationBadge';
 import { useAuth } from '../../../context/AuthContext';
@@ -27,6 +28,7 @@ export const AdminSidebar = ({ isOpen, setIsOpen }) => {
         { label: 'User Control', path: '/admin/users', icon: Users },
         { label: 'Course Management', path: '/admin/courses', icon: BookOpen },
         { label: 'Course Moderation', path: '/admin/moderation', icon: ShieldCheck },
+        { label: 'Enrollment Requests', path: '/admin/enrollments', icon: UserPlus },
         { label: 'System Settings', path: '/admin/settings', icon: Settings },
     ];
 

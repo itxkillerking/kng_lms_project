@@ -5,6 +5,7 @@ import { AnalyticsDashboard } from './Overview/AnalyticsDashboard';
 import { UserControlPanel } from './Users/UserControlPanel';
 import { CourseModeration } from './Courses/CourseModeration';
 import { CourseManager } from './Courses/CourseManager';
+import { EnrollmentRequests } from './Courses/EnrollmentRequests';
 import { SystemSettings } from './Settings/SystemSettings';
 import SplashScreen from '../../components/common/SplashScreen';
 
@@ -48,6 +49,7 @@ const AdminDashboard = () => {
                     <Route path="/users" element={<UserControlPanel />} />
                     <Route path="/courses" element={<CourseManager />} />
                     <Route path="/moderation" element={<CourseModeration />} />
+                    <Route path="/enrollments" element={<EnrollmentRequests />} />
                     <Route path="/settings" element={<SystemSettings />} />
                 </Routes>
             </main>
