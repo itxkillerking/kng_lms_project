@@ -90,11 +90,14 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         instructor_id = self.request.data.get('instructor')
-        if instructor_id and self.request.user.role == 'admin':
-            # Admin can assign any instructor
-            serializer.save(instructor_id=instructor_id)
+        if self.request.user.role == 'admin':
+            # Admin can assign any instructor. Courses created by admin are automatically approved.
+            if instructor_id:
+                serializer.save(instructor_id=instructor_id, moderation_status='approved')
+            else:
+                serializer.save(instructor=self.request.user, moderation_status='approved')
         else:
-            # Teachers assign themselves
+            # Teachers assign themselves, status defaults to 'pending'
             serializer.save(instructor=self.request.user)
 
     @action(detail=True, methods=['post'], permission_classes=[IsSuperAdmin])
