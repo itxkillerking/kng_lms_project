@@ -306,11 +306,16 @@ if not (cloud_name and api_key and api_secret) and cloudinary_url:
 
 if cloud_name and api_key and api_secret:
     import cloudinary
-    cloudinary.config(
-        cloud_name=cloud_name,
-        api_key=api_key,
-        api_secret=api_secret
-    )
+    config_params = {
+        'cloud_name': cloud_name,
+        'api_key': api_key,
+        'api_secret': api_secret
+    }
+    # PythonAnywhere free tier requires a proxy for external APIs
+    if 'pythonanywhere' in os.environ.get('ALLOWED_HOSTS', '').lower() or 'PYTHONANYWHERE_DOMAIN' in os.environ:
+        config_params['api_proxy'] = 'http://proxy.server:3128'
+        
+    cloudinary.config(**config_params)
     STORAGES = {
         "default": {
             "BACKEND": "kng_lms.cloudinary_universal.UniversalCloudinaryStorage",
