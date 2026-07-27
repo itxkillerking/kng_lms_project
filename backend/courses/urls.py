@@ -7,7 +7,8 @@ from .views import (
     AnnouncementViewSet, 
     CategoryViewSet, 
     ReviewViewSet,
-    LessonCommentViewSet
+    LessonCommentViewSet,
+    EnrollmentRequestViewSet
 )
 
 router = DefaultRouter()
@@ -18,6 +19,7 @@ router.register(r'lessons', LessonViewSet)
 router.register(r'announcements', AnnouncementViewSet)
 router.register(r'reviews', ReviewViewSet)
 router.register(r'lesson-comments', LessonCommentViewSet)
+router.register(r'enrollment-requests', EnrollmentRequestViewSet, basename='enrollment-requests')
 
 urlpatterns = [
     path('', include(router.urls)),

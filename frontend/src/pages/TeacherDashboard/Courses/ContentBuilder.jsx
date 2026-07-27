@@ -101,8 +101,9 @@ export const ContentBuilder = () => {
         formData.append('video_type', lessonForm.video_type);
         formData.append('duration', lessonForm.duration);
         
-        
-        if (lessonForm.video_url) {
+        if (lessonForm.video_type === 'file' && lessonForm.video_file) {
+            formData.append('video_file', lessonForm.video_file);
+        } else if (lessonForm.video_type !== 'file' && lessonForm.video_url) {
             formData.append('video_url', lessonForm.video_url);
         }
 
@@ -259,6 +260,7 @@ export const ContentBuilder = () => {
                                     >
                                         <option value="drive" style={{ background: '#1a1a1a', color: '#1a1a2e' }}>Google Drive</option>
                                         <option value="youtube" style={{ background: '#1a1a1a', color: '#1a1a2e' }}>YouTube</option>
+                                        <option value="file" style={{ background: '#1a1a1a', color: '#1a1a2e' }}>Direct File Upload</option>
                                     </select>
                                 </div>
                                 <div>
@@ -275,22 +277,50 @@ export const ContentBuilder = () => {
 
                             <div>
                                 <label style={{ display: 'block', marginBottom: '12px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)' }}>Content Source</label>
-                                <div style={{ position: 'relative' }}>
-                                    <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.7, color: 'var(--accent-blue)' }}>
-                                        {lessonForm.video_type === 'youtube' ? <Youtube size={18} /> : <Cloud size={18} />}
+                                {lessonForm.video_type === 'file' ? (
+                                    <div 
+                                        style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            gap: '12px', 
+                                            padding: '12px 16px', 
+                                            background: 'rgba(0, 0, 0, 0.03)', 
+                                            borderRadius: '12px', 
+                                            border: '1px solid var(--glass-border)',
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={() => document.getElementById('lesson-video-file').click()}
+                                    >
+                                        <UploadCloud size={18} color="var(--accent-blue)" />
+                                        <span style={{ fontSize: '0.85rem', flex: 1, color: lessonForm.video_file ? 'black' : 'var(--text-secondary)' }}>
+                                            {lessonForm.video_file ? lessonForm.video_file.name : 'Upload any file (Video, Image, PDF, DOCX)...'}
+                                        </span>
+                                        {lessonForm.video_file && <Plus size={16} color="var(--success)" style={{ transform: 'rotate(45deg)' }} onClick={(e) => { e.stopPropagation(); setLessonForm({...lessonForm, video_file: null}); }} />}
+                                        <input id="lesson-video-file" type="file" style={{ display: 'none' }} onChange={e => setLessonForm({...lessonForm, video_file: e.target.files[0]})} />
                                     </div>
-                                    <input 
-                                        className="glass-input" 
-                                        style={{ width: '100%', paddingLeft: '48px', color: '#1a1a2e' }}
-                                        placeholder={lessonForm.video_type === 'drive' ? 'Paste Google Drive Sharing link...' : 'Paste YouTube Video URL...'}
-                                        value={lessonForm.video_url}
-                                        onChange={e => setLessonForm({...lessonForm, video_url: e.target.value})}
-                                        required
-                                    />
-                                </div>
+                                ) : (
+                                    <div style={{ position: 'relative' }}>
+                                        <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.7, color: 'var(--accent-blue)' }}>
+                                            {lessonForm.video_type === 'youtube' ? <Youtube size={18} /> : <Cloud size={18} />}
+                                        </div>
+                                        <input 
+                                            className="glass-input" 
+                                            style={{ width: '100%', paddingLeft: '48px', color: '#1a1a2e' }}
+                                            placeholder={lessonForm.video_type === 'drive' ? 'Paste Google Drive Sharing link...' : 'Paste YouTube Video URL...'}
+                                            value={lessonForm.video_url}
+                                            onChange={e => setLessonForm({...lessonForm, video_url: e.target.value})}
+                                            required={lessonForm.video_type !== 'file'}
+                                        />
+                                    </div>
+                                )}
                                 {lessonForm.video_type === 'drive' && (
                                     <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--accent-blue)', opacity: 0.8 }}>
                                         Note: Ensure video is set to "Anyone with the link can view"
+                                    </p>
+                                )}
+                                {lessonForm.video_type === 'file' && (
+                                    <p style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--accent-blue)', opacity: 0.8 }}>
+                                        Note: System auto-detects file type. Limits: Image(10MB), Doc(25MB), Video(100MB).
                                     </p>
                                 )}
                             </div>

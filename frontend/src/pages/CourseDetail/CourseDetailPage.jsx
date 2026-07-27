@@ -17,7 +17,9 @@ const CourseDetailPage = () => {
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [enrollmentStatus, setEnrollmentStatus] = useState('none');
     const [enrolling, setEnrolling] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
 
     // Responsive Handling
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -38,7 +40,8 @@ const CourseDetailPage = () => {
 
                 if (user) {
                     const statusRes = await api.get(`courses/${id}/enrollment_status/`);
-                    if (statusRes.data.status === 'approved') {
+                    setEnrollmentStatus(statusRes.data.status);
+                    if (statusRes.data.status === 'enrolled') {
                         setIsEnrolled(true);
                     }
                 }
@@ -65,12 +68,23 @@ const CourseDetailPage = () => {
 
         setEnrolling(true);
         try {
-            await api.post(`courses/${id}/enroll/`);
-            setIsEnrolled(true);
-            navigate(`/learn/${id}`);
+            const res = await api.post(`courses/${id}/enroll/`);
+            if (res.data.status === 'enrolled') {
+                setIsEnrolled(true);
+                setEnrollmentStatus('enrolled');
+                navigate(`/learn/${id}`);
+            } else if (res.data.status === 'pending') {
+                setEnrollmentStatus('pending');
+                setShowPopup(true);
+            }
         } catch (error) {
             console.error("Enrollment failed:", error);
-            alert("Enrollment failed. Please try again.");
+            if (error.response?.data?.status) {
+                setEnrollmentStatus(error.response.data.status);
+                alert(error.response.data.message);
+            } else {
+                alert("Enrollment failed. Please try again.");
+            }
         } finally {
             setEnrolling(false);
         }
@@ -93,6 +107,23 @@ const CourseDetailPage = () => {
 
     return (
         <div style={{ minHeight: '100vh', background: '#f5f7fa', color: '#1a1a2e', paddingBottom: '100px' }}>
+            {showPopup && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+                    <div style={{ background: 'white', padding: '40px', borderRadius: '24px', maxWidth: '400px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+                        <div style={{ width: '64px', height: '64px', background: 'rgba(48, 209, 88, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                            <CheckCircle size={32} color="#30D158" />
+                        </div>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '12px' }}>Enrollment Request Sent</h2>
+                        <p style={{ color: '#64748b', lineHeight: 1.6, marginBottom: '32px' }}>
+                            Your request has been sent to the administrator.<br/>
+                            You will be enrolled after approval.
+                        </p>
+                        <GlassButton onClick={() => setShowPopup(false)} style={{ width: '100%', background: '#0A84FF', color: 'white', padding: '14px', borderRadius: '12px', fontWeight: 700, border: 'none' }}>
+                            OK
+                        </GlassButton>
+                    </div>
+                </div>
+            )}
             {/* Dark Hero Section */}
             <div style={{
                 position: 'relative',
@@ -142,7 +173,7 @@ const CourseDetailPage = () => {
 
                             {isMobile && (
                                 <div style={{ marginTop: '40px' }}>
-                                    <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} isEnrolled={isEnrolled} />
+                                    <EnrollmentCard course={course} isMobile={isMobile} isSmallMobile={isSmallMobile} handleEnroll={handleEnroll} enrolling={enrolling} isEnrolled={isEnrolled} enrollmentStatus={enrollmentStatus} />
                                 </div>
                             )}
                         </div>
@@ -271,54 +302,78 @@ const CourseDetailPage = () => {
     );
 };
 
-const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolling, isEnrolled }) => (
-    <GlassCard heavy style={{ position: isMobile ? 'static' : 'sticky', top: '40px', padding: isSmallMobile ? '24px' : '32px', borderRadius: '32px', width: '100%', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
-        <div style={{ width: '100%', aspectRatio: '16/9', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '20px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            {course.thumbnail ? (
-                <img src={course.thumbnail} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-                <PlayCircle size={48} color="rgba(255,255,255,0.1)" />
-            )}
-        </div>
-        <div style={{ marginBottom: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                <span style={{ fontSize: '2.5rem', fontWeight: 900 }}>{course.price > 0 ? `$${course.price}` : 'Free'}</span>
-                {course.price > 0 && <span style={{ color: '#64748b', textDecoration: 'line-through', fontSize: '1.2rem' }}>$199.99</span>}
-            </div>
-            <p style={{ fontSize: '0.9rem', color: '#30D158', fontWeight: 700, marginTop: '8px' }}>Full lifetime access</p>
-        </div>
+const EnrollmentCard = ({ course, isMobile, isSmallMobile, handleEnroll, enrolling, isEnrolled, enrollmentStatus }) => {
+    
+    let buttonText = 'Enroll Now';
+    let buttonDisabled = enrolling;
+    let buttonStyle = { 
+        width: '100%', background: '#0A84FF', color: 'white', border: 'none', padding: '16px',
+        borderRadius: '12px', fontSize: '1rem', fontWeight: 700, boxShadow: '0 8px 20px -8px rgba(10, 132, 255, 0.5)'
+    };
 
-        <GlassButton 
-            style={{ 
-                width: '100%', 
-                background: '#0A84FF',
-                color: 'white',
-                border: 'none',
-                padding: '16px',
-                borderRadius: '12px',
-                fontSize: '1rem',
-                fontWeight: 700,
-                boxShadow: '0 8px 20px -8px rgba(10, 132, 255, 0.5)'
-            }}
-            onClick={handleEnroll}
-            disabled={enrolling}
-        >
-            {isEnrolled ? 'Go to Classroom' : (enrolling ? 'Enrolling...' : 'Enroll Now')}
-        </GlassButton>
+    if (isEnrolled || enrollmentStatus === 'enrolled') {
+        buttonText = 'Go to Classroom';
+    } else if (enrollmentStatus === 'pending') {
+        buttonText = 'Pending Approval';
+        buttonDisabled = true;
+        buttonStyle.background = 'var(--text-secondary)';
+        buttonStyle.boxShadow = 'none';
+        buttonStyle.cursor = 'not-allowed';
+    } else if (enrollmentStatus === 'rejected') {
+        buttonText = 'Request Rejected';
+        buttonDisabled = true;
+        buttonStyle.background = 'var(--danger)';
+        buttonStyle.boxShadow = 'none';
+        buttonStyle.cursor = 'not-allowed';
+    } else if (enrollmentStatus === 'locked') {
+        buttonText = 'Course Locked';
+        buttonDisabled = true;
+        buttonStyle.background = '#475569';
+        buttonStyle.boxShadow = 'none';
+        buttonStyle.cursor = 'not-allowed';
+    } else if (enrolling) {
+        buttonText = 'Requesting...';
+    }
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: '#475569' }}>
-                <CheckCircle size={14} color="#30D158" /> Access on mobile and TV
+    return (
+        <GlassCard heavy style={{ position: isMobile ? 'static' : 'sticky', top: '40px', padding: isSmallMobile ? '24px' : '32px', borderRadius: '32px', width: '100%', border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+            <div style={{ width: '100%', aspectRatio: '16/9', background: 'rgba(0, 0, 0, 0.03)', borderRadius: '20px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                {course.thumbnail ? (
+                    <img src={course.thumbnail} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                    <PlayCircle size={48} color="rgba(255,255,255,0.1)" />
+                )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: '#475569' }}>
-                <CheckCircle size={14} color="#30D158" /> Certificate of completion
+            <div style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                    <span style={{ fontSize: '2.5rem', fontWeight: 900 }}>{course.price > 0 ? `$${course.price}` : 'Free'}</span>
+                    {course.price > 0 && <span style={{ color: '#64748b', textDecoration: 'line-through', fontSize: '1.2rem' }}>$199.99</span>}
+                </div>
+                <p style={{ fontSize: '0.9rem', color: '#30D158', fontWeight: 700, marginTop: '8px' }}>Full lifetime access</p>
             </div>
-        </div>
 
-        <p style={{ textAlign: 'center', fontSize: '0.85rem', color: '#64748b', marginTop: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.05)', paddingTop: '16px' }}>
-            30-Day Money-Back Guarantee
-        </p>
-    </GlassCard>
-);
+            <GlassButton 
+                style={buttonStyle}
+                onClick={handleEnroll}
+                disabled={buttonDisabled}
+            >
+                {buttonText}
+            </GlassButton>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: '#475569' }}>
+                    <CheckCircle size={14} color="#30D158" /> Access on mobile and TV
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: '#475569' }}>
+                    <CheckCircle size={14} color="#30D158" /> Certificate of completion
+                </div>
+            </div>
+
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: '#64748b', marginTop: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.05)', paddingTop: '16px' }}>
+                30-Day Money-Back Guarantee
+            </p>
+        </GlassCard>
+    );
+};
 
 export default CourseDetailPage;

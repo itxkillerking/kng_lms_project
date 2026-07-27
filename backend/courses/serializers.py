@@ -1,6 +1,15 @@
 from rest_framework import serializers
-from .models import Course, Module, Lesson, Announcement, Category, Review, LessonComment
+from .models import Course, Module, Lesson, Announcement, Category, Review, LessonComment, EnrollmentRequest
 from django.db.models import Avg
+
+class EnrollmentRequestSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.username', read_only=True)
+    course_title = serializers.CharField(source='course.title', read_only=True)
+    reviewed_by_name = serializers.CharField(source='reviewed_by.username', read_only=True)
+
+    class Meta:
+        model = EnrollmentRequest
+        fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

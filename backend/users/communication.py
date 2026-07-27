@@ -4,6 +4,7 @@ Handles triggering background tasks for email sending and OTP generation.
 """
 import random
 import string
+from django.conf import settings
 from .tasks import send_registration_email_task, send_enrollment_email_task, send_otp_email_task
 
 
@@ -15,16 +16,25 @@ def generate_otp(length=6):
 def send_registration_email(user):
     """Trigger background task to send a welcome email."""
     if user.email:
-        send_registration_email_task.delay(user.id)
+        if getattr(settings, 'CELERY_TASK_ALWAYS_EAGER', False):
+            send_registration_email_task(user.id)
+        else:
+            send_registration_email_task.delay(user.id)
 
 
 def send_enrollment_email(user, course):
     """Trigger background task to send a confirmation email when a student enrolls."""
     if user.email:
-        send_enrollment_email_task.delay(user.id, course.id)
+        if getattr(settings, 'CELERY_TASK_ALWAYS_EAGER', False):
+            send_enrollment_email_task(user.id, course.id)
+        else:
+            send_enrollment_email_task.delay(user.id, course.id)
 
 
 def send_otp_email(user, otp_code):
     """Trigger background task to send an OTP code via email."""
     if user.email:
-        send_otp_email_task.delay(user.id, otp_code)
+        if getattr(settings, 'CELERY_TASK_ALWAYS_EAGER', False):
+            send_otp_email_task(user.id, otp_code)
+        else:
+            send_otp_email_task.delay(user.id, otp_code)

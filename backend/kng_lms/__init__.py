@@ -1,3 +1,7 @@
-from .celery import app as celery_app
+# Default imports for the project package
 
-__all__ = ('celery_app',)
+# Import the signals to ensure they are registered globally
+try:
+    import kng_lms.signals
+except ImportError:
+    pass

@@ -13,9 +13,12 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -302,14 +305,29 @@ if not (cloud_name and api_key and api_secret) and cloudinary_url:
         api_key, api_secret, cloud_name = match.groups()
 
 if cloud_name and api_key and api_secret:
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': cloud_name,
-        'API_KEY': api_key,
-        'API_SECRET': api_secret
+    import cloudinary
+    cloudinary.config(
+        cloud_name=cloud_name,
+        api_key=api_key,
+        api_secret=api_secret
+    )
+    STORAGES = {
+        "default": {
+            "BACKEND": "kng_lms.cloudinary_universal.UniversalCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
     }
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 DATABASES['default']['CONN_MAX_AGE'] = 600
 
@@ -321,8 +339,9 @@ CACHES = {
 }
 
 # ── Celery Configuration ──────────────────────────────────────
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+# Using memory broker for local development to avoid Redis dependency errors
+CELERY_BROKER_URL = 'memory://'
+CELERY_RESULT_BACKEND = 'cache+memory://'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

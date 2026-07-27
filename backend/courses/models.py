@@ -90,16 +90,40 @@ class Lesson(models.Model):
     def __str__(self):
         return f"{self.module.title} - {self.title}"
 
+class EnrollmentRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+        ('locked', 'Locked'),
+    )
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='enrollment_requests')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollment_requests')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_enrollments')
+    
+    class Meta:
+        unique_together = ('student', 'course')
+
+    def __str__(self):
+        return f"Request: {self.student.username} for {self.course.title} ({self.status})"
+
 class CourseEnrollment(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, default='enrolled')
+    rejection_reason = models.TextField(blank=True, null=True)
 
     class Meta:
         unique_together = ('student', 'course')
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
+
 
     @property
     def progress_percentage(self):

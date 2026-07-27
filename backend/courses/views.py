@@ -63,7 +63,13 @@ class CourseViewSet(viewsets.ModelViewSet):
             )
 
         if instructor_filter:
-            qs = qs.filter(instructor_id=instructor_filter)
+            if instructor_filter == 'me' and user.is_authenticated:
+                qs = qs.filter(instructor=user)
+            else:
+                try:
+                    qs = qs.filter(instructor_id=int(instructor_filter))
+                except ValueError:
+                    pass
         elif user.is_authenticated and user.role == 'instructor':
              # Default for instructors if no filter applied: Only show their courses
             qs = qs.filter(instructor=user)
@@ -130,20 +136,45 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def enroll(self, request, pk=None):
-        """Enroll in the course."""
+        """Request enrollment in the course."""
         course = self.get_object()
-        from .models import CourseEnrollment
+        from .models import CourseEnrollment, EnrollmentRequest
         
-        enrollment, created = CourseEnrollment.objects.get_or_create(
-            student=request.user,
-            course=course
-        )
-        
-        if created:
-            return Response({'status': 'enrolled', 'message': 'Successfully enrolled!'}, status=status.HTTP_201_CREATED)
-        
-        return Response({'status': 'enrolled', 'message': 'Already enrolled'}, status=status.HTTP_200_OK)
+        # 1. Check if already enrolled
+        if CourseEnrollment.objects.filter(student=request.user, course=course).exists():
+            return Response({'status': 'enrolled', 'message': 'Already enrolled'}, status=status.HTTP_200_OK)
+            
+        # 2. Check for existing request
+        req = EnrollmentRequest.objects.filter(student=request.user, course=course).first()
+        if req:
+            if req.status == 'pending':
+                return Response({'status': 'pending', 'message': 'Request already pending'}, status=status.HTTP_400_BAD_REQUEST)
+            elif req.status == 'locked':
+                return Response({'status': 'locked', 'message': 'Course is locked'}, status=status.HTTP_403_FORBIDDEN)
+            elif req.status == 'rejected':
+                # If rejected, they can try again by updating the existing request
+                req.status = 'pending'
+                req.save()
+                return Response({'status': 'pending', 'message': 'Enrollment request re-submitted!'}, status=status.HTTP_200_OK)
+            
+        # 3. Create new pending request (Change this to CourseEnrollment.objects.create to bypass approval in the future)
+        EnrollmentRequest.objects.create(student=request.user, course=course, status='pending')
+        return Response({'status': 'pending', 'message': 'Enrollment request sent!'}, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
+    def enrollment_status(self, request, pk=None):
+        """Check the user's enrollment status for this course."""
+        course = self.get_object()
+        from .models import CourseEnrollment, EnrollmentRequest
+        
+        if CourseEnrollment.objects.filter(student=request.user, course=course).exists():
+            return Response({'status': 'enrolled'})
+            
+        req = EnrollmentRequest.objects.filter(student=request.user, course=course).first()
+        if req:
+            return Response({'status': req.status})
+            
+        return Response({'status': 'none'})
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_courses(self, request):
         """Get courses the student is enrolled in."""
@@ -197,3 +228,63 @@ class ReviewViewSet(viewsets.ModelViewSet):
         if course_id:
             qs = qs.filter(course_id=course_id)
         return qs
+
+from rest_framework.permissions import IsAdminUser
+from django.utils import timezone
+from .models import EnrollmentRequest, CourseEnrollment
+from .serializers import EnrollmentRequestSerializer
+
+class EnrollmentRequestViewSet(viewsets.ModelViewSet):
+    queryset = EnrollmentRequest.objects.all().order_by('-created_at')
+    serializer_class = EnrollmentRequestSerializer
+    permission_classes = [IsAdminUser]
+
+    @action(detail=True, methods=['post'])
+    def accept(self, request, pk=None):
+        req = self.get_object()
+        
+        # 1. Check if they are already enrolled to prevent duplicates
+        if CourseEnrollment.objects.filter(student=req.student, course=req.course).exists():
+            req.status = 'accepted'
+            req.reviewed_at = timezone.now()
+            req.reviewed_by = request.user
+            req.save()
+            return Response({'status': 'Already enrolled. Request marked accepted.'})
+            
+        # 2. Automatically enroll the student
+        CourseEnrollment.objects.create(student=req.student, course=req.course)
+        
+        # 3. Automatically delete or mark as Accepted
+        req.status = 'accepted'
+        req.reviewed_at = timezone.now()
+        req.reviewed_by = request.user
+        req.save()
+        
+        return Response({'status': 'Accepted and enrolled successfully.'})
+
+    @action(detail=True, methods=['post'])
+    def reject(self, request, pk=None):
+        req = self.get_object()
+        req.status = 'rejected'
+        req.reviewed_at = timezone.now()
+        req.reviewed_by = request.user
+        req.save()
+        return Response({'status': 'Rejected successfully.'})
+
+    @action(detail=True, methods=['post'])
+    def lock(self, request, pk=None):
+        req = self.get_object()
+        req.status = 'locked'
+        req.reviewed_at = timezone.now()
+        req.reviewed_by = request.user
+        req.save()
+        return Response({'status': 'Locked successfully.'})
+
+    @action(detail=True, methods=['post'])
+    def unlock(self, request, pk=None):
+        req = self.get_object()
+        req.status = 'rejected'  # Let them try again
+        req.reviewed_at = timezone.now()
+        req.reviewed_by = request.user
+        req.save()
+        return Response({'status': 'Unlocked successfully.'})

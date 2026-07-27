@@ -16,6 +16,14 @@ const CourseView = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+    const [expandedModules, setExpandedModules] = useState({});
+    const isMobile = window.innerWidth <= 768;
+
+    const toggleModule = (id) => {
+        setExpandedModules(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
     // Handle window resizing
     useEffect(() => {
         const handleResize = () => {
@@ -52,8 +60,7 @@ const CourseView = () => {
     const [completedLessons, setCompletedLessons] = useState([]);
     const [courseProgress, setCourseProgress] = useState(0);
     const [progressUpdating, setProgressUpdating] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
-    const isMobile = window.innerWidth <= 768;
+
 
     // Sync active item and completed lessons
     useEffect(() => {
@@ -70,6 +77,11 @@ const CourseView = () => {
                         setActiveItem({ ...module.lessons[0], type: 'lesson' });
                         break;
                     }
+                }
+                
+                // Expand first module by default
+                if (course.modules[0]) {
+                    setExpandedModules(prev => ({ ...prev, [course.modules[0].id]: true }));
                 }
             }
         }
@@ -142,32 +154,39 @@ const CourseView = () => {
 
         if (activeItem.type === 'lesson') {
             return (
-                <div style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
                     {/* Video Container */}
-                    <div style={{ 
-                        width: '100%', 
-                        background: '#e2e8f0', 
-                        aspectRatio: isMobile ? '16/9' : '21/9',
-                        display: 'flex',
-                        position: 'relative',
-                        borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
-                    }}>
-                        {activeItem.video_url ? (
-                            <StrictVideoPlayer 
-                                src={activeItem.video_url} 
-                                onComplete={handleToggleComplete} 
-                                lessonId={activeItem.id} 
-                            />
-                        ) : (
-                            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.1)' }}>
-                                <PlayCircle size={64} style={{ opacity: 0.2, marginBottom: '16px' }} />
-                                <p style={{ fontWeight: 600 }}>Interactive Lab / Technical Document</p>
-                            </div>
-                        )}
+                    <div style={{ padding: isMobile ? '16px' : '32px 48px 0', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
+                        <div style={{ 
+                            width: '100%', 
+                            background: '#0a0a0a', 
+                            borderRadius: '24px',
+                            overflow: 'hidden',
+                            boxShadow: '0 20px 40px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.05)',
+                            aspectRatio: isMobile ? '16/9' : '21/9',
+                            display: 'flex',
+                            position: 'relative'
+                        }}>
+                            {activeItem.video_url ? (
+                                <StrictVideoPlayer 
+                                    src={activeItem.video_url} 
+                                    onComplete={handleToggleComplete} 
+                                    lessonId={activeItem.id} 
+                                />
+                            ) : (
+                                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1e293b, #0f172a)' }}>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '24px', marginBottom: '24px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <FileText size={48} color="#0A84FF" />
+                                    </div>
+                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '8px' }}>Interactive Lab Session</h3>
+                                    <p style={{ color: '#94a3b8', fontSize: '1rem', maxWidth: '400px', textAlign: 'center' }}>Complete the technical exercises outlined in the project specifications below to proceed.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     
                     {/* Lesson Details */}
-                    <div style={{ padding: isMobile ? '24px 20px' : '48px', maxWidth: '1200px', width: '100%', margin: '0 auto' }}>
+                    <div style={{ padding: isMobile ? '24px 16px' : '48px', maxWidth: '1400px', width: '100%', margin: '0 auto' }}>
                         <div style={{ marginBottom: '40px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0A84FF', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>
                                 <Clock size={16} /> Technical Session
@@ -181,15 +200,18 @@ const CourseView = () => {
                                         borderRadius: '14px', 
                                         padding: '12px 24px', 
                                         fontSize: '0.9rem',
-                                        background: completedLessons.includes(activeItem.id) ? 'rgba(48, 209, 88, 0.1)' : 'rgba(255,255,255,0.03)',
-                                        borderColor: completedLessons.includes(activeItem.id) ? '#30D158' : 'rgba(255,255,255,0.1)',
-                                        color: completedLessons.includes(activeItem.id) ? '#30D158' : 'white',
+                                        fontWeight: 700,
+                                        background: completedLessons.includes(activeItem.id) ? 'rgba(48, 209, 88, 0.1)' : 'white',
+                                        borderColor: completedLessons.includes(activeItem.id) ? '#30D158' : '#e2e8f0',
+                                        color: completedLessons.includes(activeItem.id) ? '#30D158' : '#1a1a2e',
+                                        boxShadow: completedLessons.includes(activeItem.id) ? 'none' : '0 4px 12px rgba(0,0,0,0.05)',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '10px'
+                                        gap: '10px',
+                                        transition: 'all 0.3s ease'
                                     }}
                                 >
-                                    {completedLessons.includes(activeItem.id) ? <CheckCircle size={18} /> : <div style={{ width: 18, height: 18, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.2)' }} />}
+                                    {completedLessons.includes(activeItem.id) ? <CheckCircle size={18} /> : <div style={{ width: 18, height: 18, borderRadius: '50%', border: '2px solid #cbd5e1' }} />}
                                     {completedLessons.includes(activeItem.id) ? "Lesson Completed" : "Mark as Complete"}
                                 </GlassButton>
                             </div>
@@ -335,68 +357,115 @@ const CourseView = () => {
                 width: isMobile ? '100%' : '380px',
                 minWidth: isMobile ? '100%' : '380px',
                 height: '100%',
-                background: 'rgba(10,10,15,0.95)',
+                background: 'rgba(255, 255, 255, 0.98)',
                 backdropFilter: 'blur(40px)',
                 borderRight: '1px solid rgba(0, 0, 0, 0.06)',
                 display: sidebarOpen ? 'flex' : 'none',
                 flexDirection: 'column',
                 position: isMobile ? 'fixed' : 'relative',
-                zIndex: 100, inset: 0
+                zIndex: 100, inset: 0,
+                boxShadow: '4px 0 24px rgba(0,0,0,0.02)'
             }}>
-                <div style={{ padding: '32px 24px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ padding: '32px 24px', borderBottom: '1px solid rgba(0, 0, 0, 0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ overflow: 'hidden' }}>
                         <h4 style={{ fontSize: '0.75rem', fontWeight: 900, color: '#0A84FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Academy Player</h4>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{course.title}</h3>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1a1a2e', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{course.title}</h3>
                     </div>
                     {(isMobile || !isMobile) && (
-                        <button onClick={() => setSidebarOpen(false)} style={{ background: 'rgba(0, 0, 0, 0.03)', border: 'none', color: '#64748b', padding: '8px', borderRadius: '10px', cursor: 'pointer' }}>
+                        <button onClick={() => setSidebarOpen(false)} style={{ background: 'rgba(0, 0, 0, 0.03)', border: 'none', color: '#64748b', padding: '8px', borderRadius: '10px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.06)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.03)'}>
                             <X size={20} />
                         </button>
                     )}
                 </div>
-
-                <div style={{ flex: 1, overflowY: 'auto', padding: '16px 0' }}>
-                    {course.modules?.map((module, mIdx) => (
-                        <div key={module.id} style={{ marginBottom: '8px' }}>
-                            <div style={{ padding: '16px 24px 8px', fontSize: '0.75rem', fontWeight: 900, color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
-                                {mIdx + 1}. {module.title}
-                            </div>
-                            
-                            {module.lessons?.map((lesson) => {
-                                const isActive = activeItem?.id === lesson.id && activeItem?.type === 'lesson';
-                                return (
-                                    <div 
-                                        key={lesson.id}
-                                        onClick={() => selectItem(lesson, 'lesson')}
-                                        style={{ 
-                                            padding: '14px 24px', display: 'flex', gap: '16px', cursor: 'pointer',
-                                            background: isActive ? 'rgba(10, 132, 255, 0.08)' : 'transparent',
-                                            borderLeft: isActive ? '3px solid #0A84FF' : '3px solid transparent',
-                                            transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
-                                        }}
-                                        onMouseEnter={e => !isActive && (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
-                                        onMouseLeave={e => !isActive && (e.currentTarget.style.background = 'transparent')}
-                                    >
-                                        <div style={{ 
-                                            width: '24px', height: '24px', borderRadius: '8px', 
-                                            background: completedLessons.includes(lesson.id) ? '#30D158' : isActive ? '#0A84FF' : 'rgba(255,255,255,0.05)', 
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            flexShrink: 0 
-                                        }}>
-                                            {completedLessons.includes(lesson.id) ? <CheckCircle size={14} color="white" /> : <PlayCircle size={14} color={isActive ? 'white' : 'rgba(255,255,255,0.2)'} />}
-                                        </div>
-                                        <span style={{ fontSize: '0.9rem', color: isActive ? 'white' : 'rgba(255,255,255,0.6)', fontWeight: (isActive || completedLessons.includes(lesson.id)) ? 700 : 500, flex: 1 }}>{lesson.title}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ))}
+                
+                {/* Course Progress Section */}
+                <div style={{ padding: '24px 24px 16px', borderBottom: '1px solid rgba(0, 0, 0, 0.04)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1a1a2e', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Course Progress</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 900, color: '#0A84FF' }}>{Math.round(courseProgress)}%</span>
+                    </div>
+                    <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${courseProgress}%`, height: '100%', background: 'linear-gradient(90deg, #0A84FF, #30D158)', borderRadius: '4px', transition: 'width 1s cubic-bezier(0.16, 1, 0.3, 1)' }} />
+                    </div>
+                    <div style={{ marginTop: '12px', fontSize: '0.8rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                        <CheckCircle size={14} color="#30D158" /> {completedLessons.length} Lessons Completed
+                    </div>
                 </div>
 
-                <div style={{ padding: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.05)' }}>
+                <div style={{ flex: 1, overflowY: 'auto', padding: '12px 8px' }}>
+                    {course.modules?.map((module, mIdx) => {
+                        const isExpanded = expandedModules[module.id];
+                        return (
+                            <div key={module.id} style={{ marginBottom: '8px' }}>
+                                <div 
+                                    onClick={() => toggleModule(module.id)}
+                                    style={{ 
+                                        padding: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                        borderRadius: '16px', transition: 'background 0.2s ease'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.02)'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                >
+                                    <div>
+                                        <div style={{ fontSize: '0.75rem', fontWeight: 900, color: '#0A84FF', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            📚 WEEK {mIdx + 1}
+                                        </div>
+                                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#1a1a2e' }}>{module.title}</div>
+                                    </div>
+                                    <ChevronRight size={18} color="#94a3b8" style={{ transform: isExpanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }} />
+                                </div>
+                                
+                                <div style={{ 
+                                    overflow: 'hidden', 
+                                    maxHeight: isExpanded ? '1000px' : '0', 
+                                    transition: 'max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease',
+                                    opacity: isExpanded ? 1 : 0,
+                                    padding: isExpanded ? '4px 8px 12px' : '0 8px'
+                                }}>
+                                    {module.lessons?.map((lesson) => {
+                                        const isActive = activeItem?.id === lesson.id && activeItem?.type === 'lesson';
+                                        const isCompleted = completedLessons.includes(lesson.id);
+                                        return (
+                                            <div 
+                                                key={lesson.id}
+                                                onClick={() => selectItem(lesson, 'lesson')}
+                                                style={{ 
+                                                    padding: '12px 16px', display: 'flex', gap: '14px', cursor: 'pointer',
+                                                    background: isActive ? '#f0f7ff' : 'transparent',
+                                                    borderRadius: '12px',
+                                                    marginBottom: '4px',
+                                                    transition: 'all 0.2s ease',
+                                                    alignItems: 'center'
+                                                }}
+                                                onMouseEnter={e => !isActive && (e.currentTarget.style.background = 'rgba(0,0,0,0.02)')}
+                                                onMouseLeave={e => !isActive && (e.currentTarget.style.background = 'transparent')}
+                                            >
+                                                <div style={{ 
+                                                    width: '28px', height: '28px', borderRadius: '10px', 
+                                                    background: isCompleted ? 'rgba(48, 209, 88, 0.15)' : isActive ? '#0A84FF' : 'rgba(0,0,0,0.04)', 
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    flexShrink: 0 
+                                                }}>
+                                                    {isCompleted ? <CheckCircle size={14} color="#30D158" /> : <PlayCircle size={14} color={isActive ? 'white' : '#94a3b8'} />}
+                                                </div>
+                                                <span style={{ fontSize: '0.9rem', color: isActive ? '#0A84FF' : '#1a1a2e', fontWeight: (isActive || isCompleted) ? 700 : 500, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {lesson.title}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div style={{ padding: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.04)' }}>
                     <button 
                         onClick={() => navigate('/dashboard')}
-                        style={{ width: '100%', padding: '14px', borderRadius: '14px', background: 'rgba(0, 0, 0, 0.03)', border: '1px solid rgba(0, 0, 0, 0.06)', color: '#1a1a2e', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.3s' }}
+                        style={{ width: '100%', padding: '14px', borderRadius: '16px', background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', color: '#1a1a2e', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.2s ease' }}
+                        onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.06)'}
+                        onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'}
                     >
                         <ArrowLeft size={18} /> Exit Classroom
                     </button>
