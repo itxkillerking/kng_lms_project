@@ -93,10 +93,10 @@ class UniversalCloudinaryStorage(Storage):
         # For raw, Cloudinary URL generator expects the extension in the public_id.
         if res_type in ['image', 'video']:
             public_id = os.path.splitext(clean_name)[0]
-            url, _ = cloudinary.utils.cloudinary_url(public_id, resource_type=res_type, format=ext.strip('.'))
+            url, _ = cloudinary.utils.cloudinary_url(public_id, resource_type=res_type, format=ext.strip('.'), secure=True)
         else:
             public_id = clean_name
-            url, _ = cloudinary.utils.cloudinary_url(public_id, resource_type=res_type)
+            url, _ = cloudinary.utils.cloudinary_url(public_id, resource_type=res_type, secure=True)
             
         return url
 

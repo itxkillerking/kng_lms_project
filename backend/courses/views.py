@@ -137,6 +137,12 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def enroll(self, request, pk=None):
         """Request enrollment in the course."""
+        from django.db import connection
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error("DB PATH: %s", connection.settings_dict["NAME"])
+        logger.error("TABLES: %s", connection.introspection.table_names())
+        
         course = self.get_object()
         from .models import CourseEnrollment, EnrollmentRequest
         
