@@ -149,7 +149,7 @@ const PublicProfilePage = () => {
                                 </div>
                                 {isInstructor ? 'Instructor Biography' : 'About Student'}
                             </h2>
-                            <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
+                            <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.1rem', color: '#475569', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
                                 {profile.bio || (isInstructor ? "Highly specialized technical expert." : "Knowledgeable student committed to mastering new domains within the kng system.")}
                             </div>
                         </section>
@@ -162,7 +162,7 @@ const PublicProfilePage = () => {
                                     </div>
                                     Professional Expertise
                                 </h2>
-                                <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.05rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
+                                <div style={{ padding: '32px', background: 'rgba(0, 0, 0, 0.02)', borderRadius: '28px', border: '1px solid rgba(0, 0, 0, 0.06)', fontSize: '1.05rem', color: '#475569', lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>
                                     {profile.experience || "Technical mastery across complex industrial domains."}
                                 </div>
                             </section>
