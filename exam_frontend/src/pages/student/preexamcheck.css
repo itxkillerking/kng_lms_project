@@ -1,0 +1,227 @@
+/* Phase 8.1: Pre-Exam Camera & Microphone Check Styles */
+
+.preexam-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-bg-main);
+  padding: var(--spacing-4);
+}
+
+.preexam-card {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 540px;
+  overflow: hidden;
+}
+
+.preexam-header {
+  text-align: center;
+  padding: var(--spacing-8) var(--spacing-6) var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.preexam-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-2);
+}
+
+.preexam-header h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  margin: 0 0 var(--spacing-1);
+}
+
+.preexam-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.preexam-body {
+  padding: var(--spacing-6);
+}
+
+.preexam-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0 0 var(--spacing-6);
+  line-height: 1.6;
+}
+
+/* Device Status Grid */
+.device-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.device-status-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background-color: #FAFAFA;
+  transition: border-color var(--transition-normal), background-color var(--transition-normal);
+}
+
+.device-status-item.ready {
+  border-color: var(--color-success);
+  background-color: #F0FDF4;
+}
+
+.device-status-item.error {
+  border-color: var(--color-danger);
+  background-color: #FEF2F2;
+}
+
+.device-status-item.pending {
+  border-color: var(--color-border);
+  background-color: #FAFAFA;
+}
+
+.device-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.device-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.device-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
+}
+
+.device-state {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.device-status-item.ready .device-state {
+  color: var(--color-success);
+}
+
+.device-status-item.error .device-state {
+  color: var(--color-danger);
+}
+
+/* Camera Preview */
+.preexam-preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto var(--spacing-6);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: #000;
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--color-border);
+}
+
+.preexam-video-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: var(--font-size-sm);
+}
+
+/* Status Message */
+.preexam-status-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-4);
+}
+
+.preexam-status-msg.checking {
+  background-color: #EFF6FF;
+  color: #1E40AF;
+}
+
+/* Spinner */
+.checking-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(79, 70, 229, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Actions */
+.preexam-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--color-border);
+  background-color: #FAFAFA;
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+  .preexam-card {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  .device-status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preexam-header {
+    padding: var(--spacing-6) var(--spacing-4) var(--spacing-3);
+  }
+
+  .preexam-body {
+    padding: var(--spacing-4);
+  }
+
+  .preexam-actions {
+    padding: var(--spacing-3) var(--spacing-4);
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .preexam-preview-container {
+    max-width: 100%;
+  }
+}

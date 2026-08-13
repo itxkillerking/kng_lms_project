@@ -184,6 +184,25 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'status': req.status})
             
         return Response({'status': 'none'})
+
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
+    def students(self, request, pk=None):
+        """Get students enrolled in this course (Instructor only)"""
+        course = self.get_object()
+        
+        if request.user.role not in ['admin'] and course.instructor != request.user:
+            return Response({'detail': 'Not authorized to view students.'}, status=status.HTTP_403_FORBIDDEN)
+            
+        enrollments = course.enrollments.select_related('student')
+        
+        page = self.paginate_queryset(enrollments)
+        if page is not None:
+            data = [{'id': e.student.id, 'username': e.student.username, 'email': e.student.email} for e in page]
+            return self.get_paginated_response(data)
+            
+        data = [{'id': e.student.id, 'username': e.student.username, 'email': e.student.email} for e in enrollments]
+        return Response(data)
+
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_courses(self, request):
         """Get courses the student is enrolled in."""

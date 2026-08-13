@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'certificates',
     'core_settings',
     'messaging',
+    'exams',
 ]
 
 # Increase upload limits for large educational files (2 GB)
