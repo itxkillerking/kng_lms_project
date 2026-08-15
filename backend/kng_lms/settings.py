@@ -87,7 +87,6 @@ FILE_UPLOAD_HANDLERS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'kng_lms.cors_middleware.CustomCorsResponseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'kng_lms.middleware.CSPMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -196,6 +195,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "https://klstechcampus.netlify.app",
+    "https://kls-tech-campus-exam-portal.vercel.app",
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
@@ -204,10 +204,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https:\/\/.*\.netlify\.app$",
-    r"^https:\/\/.*\.vercel\.app$",
-]
+# Strict origin matching only
+# CORS_ALLOWED_ORIGIN_REGEXES removed to prevent wildcard Netlify/Vercel bypass
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -241,6 +239,7 @@ CORS_PREFLIGHT_MAX_AGE = 86400
 # ── CSRF & Cookie Configuration ──────────────────────────────
 CSRF_TRUSTED_ORIGINS = [
     "https://klstechcampus.netlify.app",
+    "https://kls-tech-campus-exam-portal.vercel.app",
     "https://jawadahmed.pythonanywhere.com",
     "http://localhost:5173",
     "http://localhost:5174",
