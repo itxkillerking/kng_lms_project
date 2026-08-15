@@ -260,9 +260,12 @@ class ExamAttemptViewSet(viewsets.ModelViewSet):
     def start_exam(self, request):
         exam_id = request.data.get('exam_id')
         try:
-            exam = Exam.objects.get(id=exam_id, status='active')
+            exam = Exam.objects.get(id=exam_id)
         except Exam.DoesNotExist:
-            return Response({'detail': 'Exam not found or not active.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'detail': f'Exam not found (ID: {exam_id}).'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if exam.status != 'active':
+            return Response({'detail': f'Exam is not active. Current status is {exam.status}.'}, status=status.HTTP_400_BAD_REQUEST)
             
         UserActivityLog.objects.create(
             user=request.user, action='exam_started', status='success', 

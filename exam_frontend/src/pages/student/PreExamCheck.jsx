@@ -177,14 +177,19 @@ export const PreExamCheck = ({ onReady, onCancel, examTitle }) => {
     };
   }, [checkDevices]);
 
+  const isReadyRef = useRef(false);
+  useEffect(() => {
+    isReadyRef.current = status === STATUS.READY;
+  }, [status]);
+
   // Cleanup on unmount if not READY (user cancelled)
   useEffect(() => {
     return () => {
-      if (status !== STATUS.READY) {
+      if (!isReadyRef.current) {
         cleanupStream();
       }
     };
-  }, [status, cleanupStream]);
+  }, [cleanupStream]);
 
   const handleRetry = () => {
     setRetrying(true);
