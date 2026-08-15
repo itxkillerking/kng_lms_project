@@ -138,7 +138,7 @@ class PasswordResetSecurityTests(TestCase):
         self.assertEqual(response2.status_code, 400)
 
     @patch('users.tasks.requests.post')
-    @override_settings(BREVO_API_KEY='mock_api_key_123', BREVO_SENDER_NAME='KLS Test', BREVO_SENDER_EMAIL='test@knglogics.com')
+    @override_settings(BREVO_API_KEY='mock_api_key_123', BREVO_SENDER_NAME='KLS Test', BREVO_SENDER_EMAIL='test@knglogics.com', BREVO_OTP_TEMPLATE_ID='42')
     def test_i_brevo_api_integration(self, mock_post):
         # Setup mock response
         mock_post.return_value.status_code = 201
@@ -157,4 +157,5 @@ class PasswordResetSecurityTests(TestCase):
         self.assertEqual(payload['sender']['name'], 'KLS Test')
         self.assertEqual(payload['sender']['email'], 'test@knglogics.com')
         self.assertEqual(payload['to'][0]['email'], self.user.email)
-        self.assertIn('123456', payload['textContent']) # ensure otp is there
+        self.assertEqual(payload['templateId'], 42)
+        self.assertEqual(payload['params']['OTP'], '123456')

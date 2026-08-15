@@ -117,22 +117,27 @@ def send_otp_email_task(user_id, otp_code):
         plain_message = f"KLS Tech Campus Examination Portal\n\nYour password reset verification code:\n{otp_code}\n\nThis code expires in 3 minutes.\nIf you did not request a password reset, ignore this email."
         
         # Use Brevo API if configured
-        if getattr(settings, 'BREVO_API_KEY', None):
+        if getattr(settings, 'BREVO_API_KEY', None) and getattr(settings, 'BREVO_OTP_TEMPLATE_ID', None):
             headers = {
                 'accept': 'application/json',
                 'api-key': settings.BREVO_API_KEY,
                 'content-type': 'application/json'
             }
             payload = {
-                "sender": {
-                    "name": getattr(settings, 'BREVO_SENDER_NAME', 'KLS Tech Campus'),
-                    "email": getattr(settings, 'BREVO_SENDER_EMAIL', 'noreply@knglogics.com')
-                },
+                "templateId": int(settings.BREVO_OTP_TEMPLATE_ID),
                 "to": [{"email": user.email, "name": user.username}],
-                "subject": subject,
-                "htmlContent": html_message,
-                "textContent": plain_message
+                "params": {
+                    "OTP": str(otp_code)
+                }
             }
+            
+            # Optionally override sender if configured, otherwise Brevo uses template default
+            if getattr(settings, 'BREVO_SENDER_EMAIL', None):
+                payload["sender"] = {
+                    "name": getattr(settings, 'BREVO_SENDER_NAME', 'KLS Tech Campus'),
+                    "email": settings.BREVO_SENDER_EMAIL
+                }
+                
             response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, json=payload)
             response.raise_for_status()
         else:

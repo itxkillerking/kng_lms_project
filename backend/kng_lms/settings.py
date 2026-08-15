@@ -301,6 +301,7 @@ SIMPLE_JWT = {
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'noreply@knglogics.com')
 BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'KLS Tech Campus')
+BREVO_OTP_TEMPLATE_ID = os.environ.get('BREVO_OTP_TEMPLATE_ID')
 
 # Fallback for development/other emails that still use django.core.mail
 if not BREVO_API_KEY:
