@@ -180,7 +180,8 @@ const Dashboard = () => {
                         display: 'flex', 
                         gap: '12px', 
                         flexWrap: 'wrap', 
-                        width: isTablet ? '100%' : 'auto' 
+                        width: isTablet ? '100%' : 'auto',
+                        justifyContent: isMobile ? 'center' : 'flex-start'
                     }}>
                         <Link to="/chat" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
                             <GlassButton wide style={{ 
