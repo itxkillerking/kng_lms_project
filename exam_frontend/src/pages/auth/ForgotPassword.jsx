@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
-import { GlassCard } from '../../components/common/GlassCard';
-import { GlassInput } from '../../components/common/GlassInput';
-import { GlassButton } from '../../components/common/GlassButton';
-import { Mail, ArrowLeft, Key, CheckCircle, Lock, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Card, Input, Button } from '../../components/common/UIComponents';
+import { FiMail, FiArrowLeft, FiKey, FiCheckCircle, FiLock, FiShield, FiRefreshCw } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ForgotPassword = () => {
@@ -163,14 +161,14 @@ const ForgotPassword = () => {
 
   return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', overflow: 'hidden' }}>
-      <GlassCard heavy layout style={{ maxWidth: step === 4 ? '500px' : '440px', width: '100%', overflow: 'hidden' }}>
+      <motion.div layout className="card glass-panel-strong" style={{ maxWidth: step === 4 ? '500px' : '440px', width: '100%', overflow: 'hidden', padding: '24px' }}>
         <AnimatePresence mode="wait">
           
           {step === 1 && (
             <motion.div key="step1" variants={pageVariants} initial="initial" animate="in" exit="out" layout>
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <div style={{ display: 'inline-flex', padding: '16px', borderRadius: '50%', background: 'rgba(10, 132, 255, 0.1)', marginBottom: '16px' }}>
-                  <Key size={32} color="var(--accent-blue)" />
+                  <FiKey size={32} color="var(--accent-blue)" />
                 </div>
                 <h2 style={{ fontSize: '2rem', marginBottom: '8px' }}>Reset Password</h2>
                 <p style={{ color: 'var(--text-secondary)' }}>
@@ -181,17 +179,18 @@ const ForgotPassword = () => {
               {error && <ErrorAlert error={error} />}
 
               <form onSubmit={handleRequestOTP}>
-                <GlassInput 
+                <Input 
                   label="Email Address" 
                   type="email"
                   placeholder="name@example.com" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="liquid-input"
                 />
-                <GlassButton type="submit" variant="primary" style={{ width: '100%', marginTop: '24px' }} disabled={isLoading}>
+                <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '24px', padding: '14px' }} disabled={isLoading}>
                   {isLoading ? 'Sending...' : 'Send OTP Code'}
-                </GlassButton>
+                </Button>
               </form>
             </motion.div>
           )}
@@ -200,7 +199,7 @@ const ForgotPassword = () => {
             <motion.div key="step2" variants={pageVariants} initial="initial" animate="in" exit="out" layout>
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <div style={{ display: 'inline-flex', padding: '16px', borderRadius: '50%', background: 'rgba(165, 85, 236, 0.1)', marginBottom: '16px' }}>
-                  <ShieldCheck size={32} color="#A555EC" />
+                  <FiShield size={32} color="#A555EC" />
                 </div>
                 <h2 style={{ fontSize: '1.75rem', marginBottom: '8px' }}>Verify your number</h2>
                 <p style={{ color: 'var(--text-secondary)' }}>
@@ -274,18 +273,18 @@ const ForgotPassword = () => {
                     fontWeight: 500
                   }}
                 >
-                  <RefreshCw size={14} className={isLoading && isResendDisabled ? "spin" : ""} /> Resend
+                  <FiRefreshCw size={14} className={isLoading && isResendDisabled ? "spin" : ""} /> Resend
                 </button>
               </div>
 
-              <GlassButton 
+              <Button 
                 onClick={handleVerifyOTP} 
                 variant="primary" 
-                style={{ width: '100%' }} 
+                style={{ width: '100%', padding: '14px' }} 
                 disabled={isLoading || otp.join('').length < 6 || timeLeft <= 0}
               >
                 {isLoading ? 'Verifying...' : 'Verify Code'}
-              </GlassButton>
+              </Button>
             </motion.div>
           )}
 
@@ -293,7 +292,7 @@ const ForgotPassword = () => {
             <motion.div key="step3" variants={pageVariants} initial="initial" animate="in" exit="out" layout>
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <div style={{ display: 'inline-flex', padding: '16px', borderRadius: '50%', background: 'rgba(48, 209, 88, 0.1)', marginBottom: '16px' }}>
-                  <Lock size={32} color="#30D158" />
+                  <FiLock size={32} color="#30D158" />
                 </div>
                 <h2 style={{ fontSize: '2rem', marginBottom: '8px' }}>Create New Password</h2>
                 <p style={{ color: 'var(--text-secondary)' }}>
@@ -304,28 +303,30 @@ const ForgotPassword = () => {
               {error && <ErrorAlert error={error} />}
 
               <form onSubmit={handleResetPassword}>
-                <GlassInput 
+                <Input 
                   label="New Password" 
                   type="password"
                   placeholder="Enter new password" 
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
+                  className="liquid-input"
                 />
                 <div style={{ marginTop: '16px' }}>
-                  <GlassInput 
+                  <Input 
                     label="Confirm Password" 
                     type="password"
                     placeholder="Confirm new password" 
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    className="liquid-input"
                   />
                 </div>
                 
-                <GlassButton type="submit" variant="primary" style={{ width: '100%', marginTop: '32px' }} disabled={isLoading}>
+                <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '32px', padding: '14px' }} disabled={isLoading}>
                   {isLoading ? 'Resetting...' : 'Reset Password'}
-                </GlassButton>
+                </Button>
               </form>
             </motion.div>
           )}
@@ -345,7 +346,7 @@ const ForgotPassword = () => {
                 transition={{ type: 'spring', delay: 0.2 }}
                 style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}
               >
-                <CheckCircle size={48} color="#30D158" />
+                <FiCheckCircle size={48} color="#30D158" />
               </motion.div>
               <motion.h2 
                 initial={{ y: 20, opacity: 0 }}
@@ -370,11 +371,11 @@ const ForgotPassword = () => {
         {step < 4 && (
           <motion.div layout style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.9rem' }}>
             <Link to="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <ArrowLeft size={16} /> Back to Login
+              <FiArrowLeft size={16} /> Back to Login
             </Link>
           </motion.div>
         )}
-      </GlassCard>
+      </motion.div>
 
       <style>{`
         @keyframes spin {
