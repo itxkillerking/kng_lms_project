@@ -942,7 +942,8 @@ class ResultPDFView(APIView):
                 story.append(Spacer(1, 4))
             else:
                 text_ans = (ans.answer_text if ans else '') or '<i>No answer submitted.</i>'
-                story.append(Paragraph(f"<b>Student Answer:</b><br/>{text_ans.replace('\n', '<br/>')}", body_style))
+                formatted_ans = text_ans.replace('\n', '<br/>')
+                story.append(Paragraph(f"<b>Student Answer:</b><br/>{formatted_ans}", body_style))
 
             story.append(Spacer(1, 6))
             
