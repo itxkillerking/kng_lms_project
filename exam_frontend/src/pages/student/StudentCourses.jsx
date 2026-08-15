@@ -50,13 +50,12 @@ export const StudentCourses = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--spacing-6)' }}>
           {courses.map(course => (
             <Card key={course.id} style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-2)' }}>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--color-text-main)' }}>{course.title}</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--color-text-main)', paddingRight: '8px' }}>{course.title}</h3>
                 <span style={{ padding: '4px 8px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-success)', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' }}>ENROLLED</span>
               </div>
-              <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-4)', flex: 1, fontSize: '0.9rem', lineHeight: '1.4' }}>{course.description || 'No description provided.'}</p>
               
-              <div style={{ padding: 'var(--spacing-3)', background: 'var(--glass-light-bg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-4)' }}>
+              <div style={{ padding: 'var(--spacing-3)', background: 'var(--glass-light-bg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-4)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <p style={{ fontSize: 'var(--font-size-sm)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)' }}>Level:</span> 
                   <strong>{course.level || 'Beginner'}</strong>
