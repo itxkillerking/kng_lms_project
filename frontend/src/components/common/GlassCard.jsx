@@ -1,7 +1,8 @@
 import React from 'react';
 
-export const GlassCard = ({ children, className = '', heavy = false, style = {}, ...props }) => {
-  const baseClass = heavy ? 'glass-panel-heavy' : 'glass-panel';
+export const GlassCard = ({ children, className = '', heavy = false, Heavy, style = {}, ...props }) => {
+  const isHeavy = heavy || Heavy;
+  const baseClass = isHeavy ? 'glass-panel-heavy' : 'glass-panel';
   
   return (
     <div 

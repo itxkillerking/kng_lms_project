@@ -37,11 +37,9 @@ if ALLOWED_HOSTS_ENV:
 else:
     ALLOWED_HOSTS = [
         'jawadahmed.pythonanywhere.com',
-        '.pythonanywhere.com',
         'klstechcampus.netlify.app',
         'localhost',
         '127.0.0.1',
-        '*',
     ]
 
 # SSL / Proxy configuration for PythonAnywhere & reverse proxies
@@ -62,6 +60,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
 
     # Custom Apps
@@ -90,6 +89,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'kng_lms.cors_middleware.CustomCorsResponseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'kng_lms.middleware.CSPMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -191,14 +191,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
 
 # ── CORS Configuration ───────────────────────────────────────
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "https://klstechcampus.netlify.app",
     "http://localhost:5173",
+    "http://localhost:5174",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
     "http://127.0.0.1:3000",
 ]
 
@@ -241,8 +243,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://klstechcampus.netlify.app",
     "https://jawadahmed.pythonanywhere.com",
     "http://localhost:5173",
+    "http://localhost:5174",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
 ]
 
 if not DEBUG:
@@ -261,13 +265,26 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day',
+        'login': '5/minute',
+        'otp_request': '5/minute',
+        'otp_verify': '5/minute',
+        'exam_start': '5/minute',
+        'pdf_upload': '10/minute',
+    }
 }
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
     'ALGORITHM': 'HS256',
@@ -362,4 +379,13 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # VAPID Configuration for Web Push
 VAPID_PRIVATE_KEY = os.path.join(BASE_DIR, 'private_key.pem')
 VAPID_ADMIN_EMAIL = 'mailto:admin@klstechcampus.com'
+
+# ── Security Headers Hardening ────────────────────────────────
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 2592000  # 30 days
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 

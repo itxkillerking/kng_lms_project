@@ -5,7 +5,28 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'role', 'first_name', 'last_name', 'bio', 'profile_picture', 'phone_number', 'instructor_title', 'experience', 'joined_at', 'is_verified_teacher', 'account_status', 'email_verified', 'website_url', 'linkedin_url')
-        read_only_fields = ('joined_at',) # role is now manageable via admin actions
+        read_only_fields = ('joined_at', 'role', 'is_verified_teacher', 'account_status', 'email_verified') # role is now manageable via admin actions
+
+    def to_internal_value(self, data):
+        # Log privilege escalation attempts before DRF strips read_only_fields
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            restricted_fields = ['role', 'is_verified_teacher', 'account_status']
+            attempted = [f for f in restricted_fields if f in data]
+            if attempted:
+                # Log it
+                x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                ip = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+                UserActivityLog.objects.create(
+                    user=request.user,
+                    action='PRIVILEGE_ESCALATION_ATTEMPT',
+                    status='failure',
+                    ip_address=ip,
+                    target_type='User',
+                    target_id=str(request.user.id),
+                    metadata={'attempted_fields': attempted}
+                )
+        return super().to_internal_value(data)
 
 class UserActivityLogSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)

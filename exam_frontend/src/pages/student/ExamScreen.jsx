@@ -277,7 +277,8 @@ export const ExamScreen = () => {
   const answeredCount = Object.values(answers).filter(a => a.text_answer && a.text_answer.trim() !== '').length;
 
   return (
-    <ProctoringWrapper exam={exam} attemptId={attemptId} currentQuestionId={currentQ?.id} onPauseChange={setIsPaused}>
+    <ProctoringWrapper exam={exam} attemptId={attemptId} currentQuestionId={currentQ?.id} questionIndex={currentIndex} totalQuestions={questions.length} onPauseChange={setIsPaused}>
+
       <div className="exam-layout">
         {isOffline && <div className="network-status">You are offline. Answers will not save until connection is restored.</div>}
       

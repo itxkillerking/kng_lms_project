@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ExamViewSet, ExamQuestionViewSet, ExamAttemptViewSet, 
     ExamAnswerViewSet, ExamViolationViewSet, ExamSnapshotViewSet, 
-    ExamResultViewSet, PdfExtractView, ExamImportView
+    ExamResultViewSet, PdfExtractView, ExamImportView, ResultPDFView
 )
 
 router = DefaultRouter()
@@ -18,5 +18,7 @@ router.register(r'exam-results', ExamResultViewSet, basename='examresult')
 urlpatterns = [
     path('pdf-extract/', PdfExtractView.as_view(), name='pdf-extract'),
     path('import/', ExamImportView.as_view(), name='exam-import'),
+    path('exam-attempts/<int:pk>/result-pdf/', ResultPDFView.as_view(), name='exam-attempt-result-pdf'),
     path('', include(router.urls)),
 ]
+

@@ -16,6 +16,17 @@ const ErrorPage = ({ code, title, message }) => {
   );
 };
 
-export const Error403 = () => <ErrorPage code="403" title="Access Denied" message="You don't have permission to view this page." />;
+export const Error403 = () => {
+  const userStr = localStorage.getItem('user');
+  let role = 'Unknown';
+  try {
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      role = user.role || 'undefined';
+    }
+  } catch (e) {}
+
+  return <ErrorPage code="403" title="Access Denied" message={`You don't have permission to view this page. (Debug Role: ${role})`} />;
+};
 export const Error404 = () => <ErrorPage code="404" title="Page Not Found" message="The page you're looking for doesn't exist or has been moved." />;
 export const Error500 = () => <ErrorPage code="500" title="Server Error" message="Something went wrong on our end. Please try again later." />;

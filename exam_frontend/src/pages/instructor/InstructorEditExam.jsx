@@ -12,8 +12,11 @@ export const InstructorEditExam = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
+  const [pendingImportQuestions, setPendingImportQuestions] = useState([]);
+  
   // Question form state
   const [editingQuestion, setEditingQuestion] = useState(null);
+  const [showForm, setShowForm] = useState(false);
   const [qForm, setQForm] = useState({ question_text: '', marks: 1, time_limit_seconds: 60, question_type: 'text', order_number: 1 });
 
   useEffect(() => {
@@ -28,7 +31,8 @@ export const InstructorEditExam = () => {
         examService.getExamQuestions(id)
       ]);
       setExam(examData);
-      setQuestions(questionsData.sort((a,b) => a.order_number - b.order_number));
+      const qList = questionsData.results !== undefined ? questionsData.results : questionsData;
+      setQuestions(Array.isArray(qList) ? qList.sort((a,b) => a.order_number - b.order_number) : []);
     } catch (err) {
       console.error(err);
       alert('Failed to load exam data.');
@@ -40,14 +44,23 @@ export const InstructorEditExam = () => {
   const saveExamDetails = async () => {
     setSaving(true);
     try {
-      await examService.updateExam(id, exam);
-      alert('Exam details saved successfully.');
+      const payload = {
+        title: exam.title,
+        description: exam.description,
+        duration_minutes: exam.duration_minutes,
+        settings: exam.settings
+      };
+      await examService.updateExam(id, payload);
+      alert('Exam settings saved successfully.');
+      loadData();
     } catch (err) {
-      alert('Failed to save exam details.');
+      console.error(err);
+      alert('Failed to save exam details/settings.');
     } finally {
       setSaving(false);
     }
   };
+
 
   const handleSettingsChange = (field, value) => {
     setExam(prev => ({
@@ -59,22 +72,105 @@ export const InstructorEditExam = () => {
     }));
   };
 
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState('');
+  const [pdfSuccess, setPdfSuccess] = useState('');
+
   const saveQuestion = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
       if (editingQuestion) {
-        await examService.updateQuestion(editingQuestion.id, { ...qForm, exam: id });
+        await examService.updateQuestion(editingQuestion.id, { ...editingQuestion, exam: id });
       } else {
         await examService.createQuestion({ ...qForm, exam: id });
       }
       setEditingQuestion(null);
+      // Reset form
+      setQForm({ question_text: '', marks: 1, time_limit_seconds: 60, question_type: 'text', order_number: questions.length + (editingQuestion ? 0 : 2) });
+      setShowForm(false);
       loadData();
     } catch (err) {
       alert('Failed to save question.');
     } finally {
       setSaving(false);
     }
+  };
+
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.type !== 'application/pdf') {
+        setPdfError('Only PDF files are allowed.');
+        return;
+    }
+    
+    setUploadingPdf(true);
+    setPdfError('');
+    setPdfSuccess('');
+    
+    try {
+      const extracted = await examService.extractPdf(file, id);
+      if (!extracted.questions || extracted.questions.length === 0) {
+          setPdfError('No questions could be extracted from this PDF.');
+          setUploadingPdf(false);
+          return;
+      }
+      
+      const startOrder = questions.length > 0 ? Math.max(...questions.map(q => q.order_number)) + 1 : 1;
+      
+      const parsedQuestions = extracted.questions.map((q, i) => ({
+          ...q,
+          order_number: startOrder + i,
+          question_type: q.question_type || 'text',
+          marks: q.marks || 10,
+          time_limit_seconds: q.time_limit || 60,
+      }));
+      
+      setPendingImportQuestions(parsedQuestions);
+      
+      let successMsg = `Extracted ${parsedQuestions.length} questions. Please review them before saving.`;
+      if (extracted.warnings && extracted.warnings.length > 0) {
+        successMsg += ` (Note: ${extracted.warnings.join(', ')})`;
+      }
+      setPdfSuccess(successMsg);
+      
+    } catch (err) {
+        setPdfError('Failed to extract questions. Please check the PDF format.');
+    } finally {
+        setUploadingPdf(false);
+        e.target.value = null;
+    }
+  };
+
+  const savePendingQuestions = async () => {
+      setSaving(true);
+      try {
+          let added = 0;
+          for (let i = 0; i < pendingImportQuestions.length; i++) {
+              const q = pendingImportQuestions[i];
+              await examService.createQuestion({
+                  exam: id,
+                  question_text: q.question_text,
+                  question_type: q.question_type,
+                  marks: q.marks,
+                  order_number: q.order_number,
+                  options: q.options || {},
+                  correct_answer: q.correct_answer || '',
+                  max_words: q.max_words || null,
+                  time_limit_seconds: q.time_limit_seconds || 60
+              });
+              added++;
+          }
+          setPdfSuccess(`Successfully added ${added} questions!`);
+          setPendingImportQuestions([]);
+          loadData();
+      } catch (err) {
+          alert('Failed to save imported questions.');
+      } finally {
+          setSaving(false);
+      }
   };
 
   const deleteQuestion = async (qId) => {
@@ -194,21 +290,36 @@ export const InstructorEditExam = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-6)' }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '200px' }}>
               <label className="input-label">Snapshot Mode</label>
               <select className="input-field" style={{ width: '100%' }} value={exam.settings?.snapshot_mode || 'every_question'} onChange={(e) => handleSettingsChange('snapshot_mode', e.target.value)}>
-                <option value="every_question">Every Question (on load)</option>
-                <option value="every_n_questions">Timer Based Interval</option>
+                <option value="every_question">Every Question</option>
+                <option value="every_n_questions">Every N Questions</option>
+                <option value="random">Random Questions</option>
+                <option value="custom">Custom Questions</option>
               </select>
             </div>
             {exam.settings?.snapshot_mode === 'every_n_questions' && (
-              <div style={{ flex: 1 }}>
-                <label className="input-label">Snapshot Interval (seconds)</label>
-                <input type="number" className="input-field" style={{ width: '100%' }} value={exam.settings?.snapshot_interval || 60} onChange={(e) => handleSettingsChange('snapshot_interval', parseInt(e.target.value) || 60)} />
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <label className="input-label">N Questions Interval (e.g. 5 = Q5, Q10...)</label>
+                <input type="number" className="input-field" style={{ width: '100%' }} value={exam.settings?.snapshot_interval || 5} onChange={(e) => handleSettingsChange('snapshot_interval', parseInt(e.target.value) || 5)} />
+              </div>
+            )}
+            {exam.settings?.snapshot_mode === 'random' && (
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <label className="input-label">Random Snapshot Count (e.g. 5)</label>
+                <input type="number" className="input-field" style={{ width: '100%' }} value={exam.settings?.snapshot_interval || 5} onChange={(e) => handleSettingsChange('snapshot_interval', parseInt(e.target.value) || 5)} />
+              </div>
+            )}
+            {exam.settings?.snapshot_mode === 'custom' && (
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <label className="input-label">Custom Question Numbers (comma-separated, e.g. 2, 7, 15)</label>
+                <input type="text" className="input-field" style={{ width: '100%' }} placeholder="2, 7, 15" value={exam.settings?.snapshot_custom_questions || ''} onChange={(e) => handleSettingsChange('snapshot_custom_questions', e.target.value)} />
               </div>
             )}
           </div>
+
 
           <div style={{ marginTop: 'var(--spacing-6)' }}>
             <Button onClick={saveExamDetails} disabled={saving}>{saving ? 'Saving...' : 'Save Settings'}</Button>
@@ -217,32 +328,128 @@ export const InstructorEditExam = () => {
       )}
 
       {activeTab === 'questions' && (
-        <div style={{ display: 'flex', gap: 'var(--spacing-6)' }}>
-          {/* Question List */}
-          <div style={{ flex: 1 }}>
-            <h3>Question List</h3>
-            {questions.length === 0 ? <p>No questions added yet.</p> : (
-              questions.map((q, index) => (
-                <Card key={q.id} style={{ marginBottom: 'var(--spacing-2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong>Q{q.order_number}:</strong> {q.question_text.substring(0, 50)}...
-                    <br/>
-                    <small style={{ color: 'var(--color-text-muted)' }}>Type: {q.question_type} | Marks: {q.marks} | Time Limit: {q.time_limit_seconds}s</small>
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-                    <button onClick={() => moveQuestion(index, -1)} disabled={index === 0}>↑</button>
-                    <button onClick={() => moveQuestion(index, 1)} disabled={index === questions.length - 1}>↓</button>
-                    <Button onClick={() => { setEditingQuestion(q); setQForm({ question_text: q.question_text, marks: q.marks, time_limit_seconds: q.time_limit_seconds, question_type: q.question_type, order_number: q.order_number }); }}>Edit</Button>
-                    <Button variant="danger" onClick={() => deleteQuestion(q.id)}>Del</Button>
-                  </div>
-                </Card>
-              ))
-            )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          {pdfError && <Alert type="error" message={pdfError} />}
+          {pdfSuccess && <Alert type="success" message={pdfSuccess} />}
+          
+          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-alt)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                  <h4 style={{ marginBottom: 'var(--spacing-2)' }}>Add Questions via PDF</h4>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', margin: 0 }}>
+                      Upload a PDF document. Our AI will extract the questions and append them automatically.
+                  </p>
+              </div>
+              <input 
+                  type="file" 
+                  accept="application/pdf"
+                  id="pdf-upload"
+                  style={{ display: 'none' }}
+                  onChange={handlePdfUpload}
+                  disabled={uploadingPdf}
+              />
+              <Button 
+                  onClick={() => document.getElementById('pdf-upload').click()} 
+                  disabled={uploadingPdf}
+              >
+                  {uploadingPdf ? 'Extracting & Saving...' : 'Upload PDF'}
+              </Button>
           </div>
 
+          {pendingImportQuestions.length > 0 && (
+            <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-light)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+                <h3>Review Extracted Questions</h3>
+                <div>
+                  <Button onClick={() => setPendingImportQuestions([])} variant="secondary" style={{ marginRight: '8px' }}>Cancel</Button>
+                  <Button onClick={savePendingQuestions} disabled={saving}>{saving ? 'Saving...' : 'Save All to Exam'}</Button>
+                </div>
+              </div>
+              {pendingImportQuestions.map((q, index) => (
+                <Card key={index} style={{ marginBottom: 'var(--spacing-2)' }}>
+                  <div style={{ display: 'flex', gap: 'var(--spacing-4)' }}>
+                    <div style={{ flex: 1 }}>
+                      <label className="input-label">Question Text</label>
+                      <textarea className="input-field" style={{ width: '100%', minHeight: '60px' }} value={q.question_text} onChange={(e) => {
+                          const updated = [...pendingImportQuestions];
+                          updated[index].question_text = e.target.value;
+                          setPendingImportQuestions(updated);
+                      }} />
+                    </div>
+                    <div style={{ width: '180px' }}>
+                      <label className="input-label">Type</label>
+                      <select className="input-field" style={{ width: '100%', marginBottom: '4px' }} value={q.question_type} onChange={(e) => {
+                          const updated = [...pendingImportQuestions];
+                          updated[index].question_type = e.target.value;
+                          setPendingImportQuestions(updated);
+                      }}>
+                        <option value="text">Text</option>
+                        <option value="audio">Audio</option>
+                        <option value="code">Code</option>
+                      </select>
+                      {q.confidence_reason && <small style={{ color: 'var(--color-primary)', display: 'block', fontSize: '0.75rem', lineHeight: '1' }}>Detected: {q.confidence_reason}</small>}
+                    </div>
+                    <div style={{ width: '80px' }}>
+                      <label className="input-label">Marks</label>
+                      <input type="number" className="input-field" style={{ width: '100%' }} value={q.marks} onChange={(e) => {
+                          const updated = [...pendingImportQuestions];
+                          updated[index].marks = parseInt(e.target.value) || 0;
+                          setPendingImportQuestions(updated);
+                      }} />
+                    </div>
+                    <div style={{ width: '100px' }}>
+                      <label className="input-label">Time (s)</label>
+                      <input type="number" className="input-field" style={{ width: '100%' }} value={q.time_limit_seconds || ''} onChange={(e) => {
+                          const updated = [...pendingImportQuestions];
+                          updated[index].time_limit_seconds = parseInt(e.target.value) || null;
+                          setPendingImportQuestions(updated);
+                      }} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Button variant="danger" onClick={() => {
+                        const updated = [...pendingImportQuestions];
+                        updated.splice(index, 1);
+                        setPendingImportQuestions(updated);
+                      }}>Del</Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+            {/* Question List */}
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+                <h3>Question List</h3>
+                <Button onClick={() => { setEditingQuestion(null); setShowForm(true); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }}>+ Add Question</Button>
+              </div>
+              {questions.length === 0 ? <p>No questions added yet.</p> : (
+                questions.map((q, index) => (
+                  <Card key={q.id} style={{ marginBottom: 'var(--spacing-2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <strong>Q{q.order_number}:</strong> {q.question_text.substring(0, 50)}...
+                      <br/>
+                      <small style={{ color: 'var(--color-text-muted)' }}>Type: {q.question_type} | Marks: {q.marks} | Time Limit: {q.time_limit_seconds}s</small>
+                    </div>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+                      <button onClick={() => moveQuestion(index, -1)} disabled={index === 0}>↑</button>
+                      <button onClick={() => moveQuestion(index, 1)} disabled={index === questions.length - 1}>↓</button>
+                      <Button onClick={() => { setEditingQuestion(q); setQForm({ question_text: q.question_text, marks: q.marks, time_limit_seconds: q.time_limit_seconds, question_type: q.question_type, order_number: q.order_number }); setShowForm(true); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }}>Edit</Button>
+                      <Button variant="danger" onClick={() => deleteQuestion(q.id)}>Del</Button>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+
           {/* Question Form */}
-          <Card style={{ flex: 1, height: 'fit-content' }}>
-            <h3>{editingQuestion ? 'Edit Question' : 'Add New Question'}</h3>
+          {showForm && (
+          <Card style={{ flex: 1, height: 'fit-content', border: '2px solid var(--color-primary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>{editingQuestion ? 'Edit Question' : 'Add New Question'}</h3>
+                <button style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--color-text-muted)' }} onClick={() => setShowForm(false)}>&times;</button>
+            </div>
             <form onSubmit={saveQuestion}>
               <div style={{ marginBottom: 'var(--spacing-4)' }}>
                 <label className="input-label">Question Type</label>
@@ -397,10 +604,12 @@ export const InstructorEditExam = () => {
               
               <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
                 <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save Question'}</Button>
-                {editingQuestion && <Button variant="secondary" onClick={() => { setEditingQuestion(null); }}>Cancel</Button>}
+                <Button type="button" variant="secondary" onClick={() => { setEditingQuestion(null); setShowForm(false); }}>Cancel</Button>
               </div>
             </form>
           </Card>
+          )}
+          </div>
         </div>
       )}
       <style dangerouslySetInnerHTML={{__html: `

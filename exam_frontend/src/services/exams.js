@@ -19,9 +19,10 @@ export const examService = {
   },
 
   updateExam: async (id, examData) => {
-    const res = await api.put(`/exams/${id}/`, examData);
+    const res = await api.patch(`/exams/${id}/`, examData);
     return res.data;
   },
+
 
   deleteExam: async (id) => {
     const res = await api.delete(`/exams/${id}/`);
@@ -45,6 +46,16 @@ export const examService = {
 
   getAttempts: async (id) => {
     const res = await api.get(`/exams/${id}/attempts/`);
+    return res.data;
+  },
+  
+  getExamStatusOverview: async (id) => {
+    const res = await api.get(`/exams/${id}/status_overview/`);
+    return res.data;
+  },
+  
+  evaluateAttempt: async (attemptId) => {
+    const res = await api.post(`/exam-attempts/${attemptId}/evaluate/`);
     return res.data;
   },
 
@@ -114,9 +125,12 @@ export const examService = {
   },
 
   // AI Module endpoints
-  extractPdf: async (file) => {
+  extractPdf: async (file, examId) => {
     const formData = new FormData();
     formData.append('file', file);
+    if (examId) {
+      formData.append('exam_id', examId);
+    }
     
     const res = await api.post('/pdf-extract/', formData, {
       headers: {
@@ -129,5 +143,20 @@ export const examService = {
   importExam: async (data) => {
     const res = await api.post('/import/', data);
     return res.data;
+  },
+
+  downloadResultPdf: async (attemptId) => {
+    const res = await api.get(`/exam-attempts/${attemptId}/result-pdf/`, {
+      responseType: 'blob'
+    });
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `Exam_Result_${attemptId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   }
 };
+

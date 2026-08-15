@@ -7,6 +7,8 @@ export const ProctoringWrapper = ({
   exam, 
   attemptId, 
   currentQuestionId,
+  questionIndex,
+  totalQuestions,
   children,
   onPauseChange
 }) => {
@@ -22,10 +24,12 @@ export const ProctoringWrapper = ({
   const streamRef = useRef(null);
   const canvasRef = useRef(document.createElement('canvas'));
   const snapshotIntervalRef = useRef(null);
+  const snappedQuestionsRef = useRef(new Set());
   // Track whether we've completed initial hardware init
   const initializedRef = useRef(false);
   
   const settings = exam?.settings || {};
+
   
   // Offline Queue Init
   const queueStore = localforage.createInstance({ name: 'ProctoringQueue' });
@@ -36,6 +40,36 @@ export const ProctoringWrapper = ({
     if (ua.match(/Safari/i) && !ua.match(/Chrome/i)) setIsSupported(false);
     if (/Mobi|Android/i.test(ua)) setIsSupported(false);
   }, []);
+
+  const hasLostCameraRef = useRef(false);
+  const hasLostMicRef = useRef(false);
+
+  // Violation Engine
+  const logViolation = useCallback(async (type, severity, details = '') => {
+    const payload = {
+      attempt: attemptId,
+      question: currentQuestionId,
+      violation_type: type,
+      severity,
+      details
+    };
+    
+    if (severity === 'Medium' || severity === 'High') {
+      setWarnings(prev => prev + 1);
+    }
+
+    if (isOnline) {
+      try {
+         await api.post('/exam-violations/', payload);
+      } catch (e) {
+         await queueStore.setItem(`viol_${Date.now()}`, { type: 'violation', payload });
+         updateQueueCount();
+      }
+    } else {
+      await queueStore.setItem(`viol_${Date.now()}`, { type: 'violation', payload });
+      updateQueueCount();
+    }
+  }, [attemptId, currentQuestionId, isOnline]);
 
   /**
    * Shared function to acquire media stream and wire up track listeners.
@@ -55,6 +89,10 @@ export const ProctoringWrapper = ({
         audio: settings.microphone_required
       });
       streamRef.current = stream;
+      
+      // Reset loss flags since we successfully acquired the stream
+      hasLostCameraRef.current = false;
+      hasLostMicRef.current = false;
       
       // Update camera state
       if (settings.camera_required) {
@@ -84,8 +122,16 @@ export const ProctoringWrapper = ({
       // Register track.onended listeners for disconnect detection
       stream.getTracks().forEach(track => {
         track.onended = () => {
-          if (track.kind === 'video') setCameraActive(false);
-          if (track.kind === 'audio') setMicActive(false);
+          if (track.kind === 'video') {
+             if (hasLostCameraRef.current) return; // Deduplicate logical event
+             hasLostCameraRef.current = true;
+             setCameraActive(false);
+          }
+          if (track.kind === 'audio') {
+             if (hasLostMicRef.current) return; // Deduplicate logical event
+             hasLostMicRef.current = true;
+             setMicActive(false);
+          }
           onPauseChange(true);
           logViolation(
             track.kind === 'video' ? 'CAMERA_OFF' : 'MICROPHONE_OFF', 
@@ -101,7 +147,7 @@ export const ProctoringWrapper = ({
       setMicActive(false);
       return null;
     }
-  }, [settings.camera_required, settings.microphone_required, onPauseChange]);
+  }, [settings.camera_required, settings.microphone_required, onPauseChange, logViolation]);
 
   // Hardware Init — runs once on mount
   useEffect(() => {
@@ -128,12 +174,52 @@ export const ProctoringWrapper = ({
     };
   }, [settings.camera_required, settings.microphone_required]);
 
-  // Snapshot Engine
+  // Deterministic random question set calculation for 'random' mode
+  const selectedRandomQuestions = React.useMemo(() => {
+    if (settings.snapshot_mode !== 'random' || !totalQuestions) return new Set();
+    const count = Math.min(settings.snapshot_interval || 5, totalQuestions);
+    const set = new Set();
+    let seed = ((attemptId || 1) * 2654435761) >>> 0;
+    while (set.size < count) {
+      seed = (seed ^ (seed << 13)) >>> 0;
+      seed = (seed ^ (seed >> 17)) >>> 0;
+      seed = (seed ^ (seed << 5)) >>> 0;
+      const qNum = (seed % totalQuestions) + 1;
+      set.add(qNum);
+    }
+    return set;
+  }, [attemptId, totalQuestions, settings.snapshot_mode, settings.snapshot_interval]);
+
+  // Snapshot Engine supporting 4 modes
   useEffect(() => {
-    if (!settings.camera_required) return;
-    
+    if (!settings.camera_required || !currentQuestionId) return;
+
+    const currentQNum = (questionIndex !== undefined ? questionIndex + 1 : 1);
+    const mode = settings.snapshot_mode || 'every_question';
+    let shouldSnap = false;
+
+    if (mode === 'every_question') {
+      shouldSnap = true;
+    } else if (mode === 'every_n_questions') {
+      const n = settings.snapshot_interval || 5;
+      shouldSnap = (currentQNum % n === 0);
+    } else if (mode === 'random') {
+      shouldSnap = selectedRandomQuestions.has(currentQNum);
+    } else if (mode === 'custom') {
+      const customNums = (settings.snapshot_custom_questions || '')
+        .split(',')
+        .map(s => parseInt(s.trim()))
+        .filter(n => !isNaN(n));
+      shouldSnap = customNums.includes(currentQNum);
+    }
+
+    if (!shouldSnap || snappedQuestionsRef.current.has(currentQuestionId)) {
+      return;
+    }
+
     const takeSnapshot = async () => {
       if (!videoRef.current || !cameraActive) return;
+      snappedQuestionsRef.current.add(currentQuestionId);
       
       const canvas = canvasRef.current;
       canvas.width = 320;
@@ -164,50 +250,55 @@ export const ProctoringWrapper = ({
       }, 'image/webp', 0.5);
     };
 
-    if (settings.snapshot_mode === 'every_question') {
-       // Fire once a few seconds after question changes
-       const t = setTimeout(takeSnapshot, 3000);
-       return () => clearTimeout(t);
-    } else {
-       // Fire every N seconds (simulating every N questions for now if purely time based, but instructor sets interval)
-       snapshotIntervalRef.current = setInterval(takeSnapshot, (settings.snapshot_interval || 60) * 1000);
-       return () => clearInterval(snapshotIntervalRef.current);
-    }
-  }, [currentQuestionId, cameraActive, settings, isOnline, attemptId]);
+    const t = setTimeout(takeSnapshot, 3000);
+    return () => clearTimeout(t);
+  }, [currentQuestionId, questionIndex, cameraActive, settings, isOnline, attemptId, selectedRandomQuestions]);
 
-  // Violation Engine
-  const logViolation = useCallback(async (type, severity, details = '') => {
-    const payload = {
-      attempt: attemptId,
-      question: currentQuestionId,
-      violation_type: type,
-      severity,
-      details
-    };
-    
-    if (severity === 'Medium' || severity === 'High') {
-      setWarnings(prev => prev + 1);
-    }
 
-    if (isOnline) {
-      try {
-         await api.post('/exam-violations/', payload);
-      } catch (e) {
-         await queueStore.setItem(`viol_${Date.now()}`, { type: 'violation', payload });
-         updateQueueCount();
-      }
-    } else {
-      await queueStore.setItem(`viol_${Date.now()}`, { type: 'violation', payload });
-      updateQueueCount();
-    }
-  }, [attemptId, currentQuestionId, isOnline]);
+
 
   useEffect(() => {
-    let timeout;
+    let visibilityTimeout;
+    let isHidden = false;
+    
     const handleVisibility = () => {
       if (document.hidden) {
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(() => logViolation('TAB_SWITCH', 'High', 'User left the exam tab.'), 500);
+        if (visibilityTimeout) clearTimeout(visibilityTimeout);
+        visibilityTimeout = setTimeout(() => {
+          isHidden = true;
+          logViolation('TAB_HIDDEN', 'High', 'User hid the exam tab.');
+        }, 500);
+      } else {
+        if (visibilityTimeout) clearTimeout(visibilityTimeout);
+        if (isHidden) {
+          logViolation('TAB_RETURNED', 'Low', 'User returned to the exam tab.');
+          isHidden = false;
+        }
+      }
+    };
+
+    let blurTimeout;
+    let isBlurred = false;
+    
+    const handleBlur = () => {
+      if (blurTimeout) clearTimeout(blurTimeout);
+      blurTimeout = setTimeout(() => {
+        isBlurred = true;
+        logViolation('WINDOW_BLUR', 'Medium', 'Exam window lost focus.');
+      }, 500);
+    };
+
+    const handleFocus = () => {
+      if (blurTimeout) clearTimeout(blurTimeout);
+      if (isBlurred) {
+        logViolation('WINDOW_FOCUS', 'Low', 'Exam window regained focus.');
+        isBlurred = false;
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      if (settings.fullscreen_required && !document.fullscreenElement) {
+        logViolation('FULLSCREEN_EXIT', 'High', 'User exited fullscreen mode.');
       }
     };
     
@@ -235,17 +326,23 @@ export const ProctoringWrapper = ({
     };
     
     document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('copy', handleCopy);
     document.addEventListener('paste', handlePaste);
     document.addEventListener('contextmenu', handleContextMenu);
     
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.removeEventListener('copy', handleCopy);
       document.removeEventListener('paste', handlePaste);
       document.removeEventListener('contextmenu', handleContextMenu);
     };
-  }, [logViolation, settings.copy_protection]);
+  }, [logViolation, settings.copy_protection, settings.fullscreen_required]);
 
   // Network Sync
   const updateQueueCount = async () => {
@@ -370,14 +467,14 @@ export const ProctoringWrapper = ({
       {/* Proctoring HUD */}
       <div style={{ position: 'fixed', bottom: '20px', left: '20px', zIndex: 9999, display: 'flex', gap: '10px', flexDirection: 'column' }}>
         {settings.camera_required && (
-          <div style={{ width: '150px', height: '100px', backgroundColor: '#000', borderRadius: '8px', overflow: 'hidden', border: cameraActive ? '2px solid green' : '2px solid red' }}>
+          <div style={{ width: '150px', height: '100px', backgroundColor: '#000', borderRadius: '4px', overflow: 'hidden', border: cameraActive ? '2px solid var(--color-success)' : '2px solid var(--color-danger)', boxShadow: 'var(--shadow-sm)' }}>
              <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
           </div>
         )}
-        <div style={{ backgroundColor: 'white', padding: '8px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', fontSize: '12px' }}>
-          <div>🌐 Network: <strong style={{ color: isOnline ? 'green' : 'red' }}>{isOnline ? 'Online' : 'Offline'}</strong></div>
-          {queueCount > 0 && <div style={{ color: 'orange' }}>Pending Syncs: {queueCount}</div>}
-          {settings.microphone_required && <div>🎤 Mic: <strong style={{ color: micActive ? 'green' : 'red' }}>{micActive ? 'Active' : 'Lost'}</strong></div>}
+        <div style={{ backgroundColor: 'white', padding: '12px', borderRadius: '4px', boxShadow: 'var(--shadow-md)', border: '1px solid var(--color-border)', fontSize: '12px', color: 'var(--color-text-main)' }}>
+          <div style={{ marginBottom: '4px' }}>🌐 Network: <strong style={{ color: isOnline ? 'var(--color-success)' : 'var(--color-danger)' }}>{isOnline ? 'Online' : 'Offline'}</strong></div>
+          {queueCount > 0 && <div style={{ color: 'var(--color-warning)', marginBottom: '4px' }}>Pending Syncs: {queueCount}</div>}
+          {settings.microphone_required && <div style={{ marginBottom: '4px' }}>🎤 Mic: <strong style={{ color: micActive ? 'var(--color-success)' : 'var(--color-danger)' }}>{micActive ? 'Active' : 'Lost'}</strong></div>}
           {settings.max_warnings > 0 && <div>⚠️ Warnings: {warnings} / {settings.max_warnings}</div>}
         </div>
       </div>
@@ -390,16 +487,17 @@ export const ProctoringWrapper = ({
           color: 'white', flexDirection: 'column', padding: '20px', textAlign: 'center' 
         }}>
           <div style={{ 
-            backgroundColor: 'rgba(255,255,255,0.08)', 
-            borderRadius: '16px', 
+            backgroundColor: 'white', 
+            borderRadius: '8px', 
             padding: '40px', 
             maxWidth: '480px', 
             width: '100%',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.1)'
+            border: '1px solid var(--color-border)',
+            boxShadow: 'var(--shadow-lg)',
+            color: 'var(--color-text-main)'
           }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '12px', fontWeight: 700 }}>Exam Paused</h2>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '12px', fontWeight: 700, color: 'var(--color-danger)' }}>Exam Paused</h2>
             <p style={{ margin: '0 0 8px', fontSize: '1rem', opacity: 0.9, lineHeight: 1.6 }}>
               {getMissingDeviceMessage()}
             </p>

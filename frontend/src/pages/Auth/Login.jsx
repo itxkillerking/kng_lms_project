@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassInput } from '../../components/common/GlassInput';
 import { GlassButton } from '../../components/common/GlassButton';
+import { LmsBackground } from '../../components/common/LmsBackground';
 import { Lock, User } from 'lucide-react';
 
 const Login = () => {
@@ -66,8 +67,9 @@ const Login = () => {
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <GlassCard heavy style={{ maxWidth: '400px', width: '100%' }}>
+    <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <LmsBackground />
+      <GlassCard heavy style={{ maxWidth: '400px', width: '100%', position: 'relative', zIndex: 2 }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ display: 'inline-flex', padding: '16px', borderRadius: '50%', background: 'rgba(10, 132, 255, 0.1)', marginBottom: '16px' }}>
             <Lock size={32} color="var(--accent-blue)" />

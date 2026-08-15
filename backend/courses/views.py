@@ -7,9 +7,11 @@ from .models import Course, Module, Lesson, Announcement, Category, Review, Less
 from .serializers import (
     CourseSerializer, ModuleSerializer, LessonSerializer, 
     AnnouncementSerializer, CategorySerializer, ReviewSerializer,
-    LessonCommentSerializer
+    LessonCommentSerializer, EnrollmentRequestSerializer
 )
 from .recommendations import get_suggested_courses
+from .permissions import IsCourseInstructorOrReadOnly
+from rest_framework.exceptions import PermissionDenied
 
 class LessonCommentViewSet(viewsets.ModelViewSet):
     queryset = LessonComment.objects.all().order_by('-created_at')
@@ -223,19 +225,34 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsCourseInstructorOrReadOnly]
+
+    def perform_create(self, serializer):
+        course = serializer.validated_data.get('course')
+        if course.instructor != self.request.user and self.request.user.role != 'admin':
+            raise PermissionDenied("You do not have permission to add modules to this course.")
+        serializer.save()
 
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsCourseInstructorOrReadOnly]
+
+    def perform_create(self, serializer):
+        module = serializer.validated_data.get('module')
+        if module.course.instructor != self.request.user and self.request.user.role != 'admin':
+            raise PermissionDenied("You do not have permission to add lessons to this module.")
+        serializer.save()
 
 class AnnouncementViewSet(viewsets.ModelViewSet):
     queryset = Announcement.objects.select_related('teacher', 'course')
     serializer_class = AnnouncementSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsCourseInstructorOrReadOnly]
 
     def perform_create(self, serializer):
+        course = serializer.validated_data.get('course')
+        if course.instructor != self.request.user and self.request.user.role != 'admin':
+            raise PermissionDenied("You do not have permission to add announcements to this course.")
         serializer.save(teacher=self.request.user)
 
 class ReviewViewSet(viewsets.ModelViewSet):

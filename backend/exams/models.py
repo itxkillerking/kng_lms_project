@@ -47,10 +47,12 @@ class ExamSettings(models.Model):
     
     snapshot_mode = models.CharField(max_length=20, choices=SNAPSHOT_MODES, default='every_question')
     snapshot_interval = models.PositiveIntegerField(blank=True, null=True, help_text="Interval parameter depending on mode")
+    snapshot_custom_questions = models.CharField(max_length=255, blank=True, null=True, help_text="Comma-separated question numbers for custom mode")
     
     # Phase 6 Proctoring Controls
     max_warnings = models.PositiveIntegerField(default=5)
     auto_terminate_threshold = models.PositiveIntegerField(null=True, blank=True)
+
 
     def __str__(self):
         return f"Settings for {self.exam.title}"
@@ -161,7 +163,11 @@ class ExamAnswer(models.Model):
 
 class ExamViolation(models.Model):
     VIOLATION_TYPES = (
-        ('TAB_SWITCH', 'Tab Switch'),
+        ('TAB_HIDDEN', 'Tab Hidden'),
+        ('TAB_RETURNED', 'Tab Returned'),
+        ('WINDOW_BLUR', 'Window Blur'),
+        ('WINDOW_FOCUS', 'Window Focus'),
+        ('TAB_SWITCH', 'Tab Switch (Legacy)'),
         ('COPY_ATTEMPT', 'Copy Attempt'),
         ('PASTE_ATTEMPT', 'Paste Attempt'),
         ('RIGHT_CLICK', 'Right Click'),
@@ -212,6 +218,8 @@ class ExamImportMetadata(models.Model):
     imported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='imported_exams')
     import_source = models.CharField(max_length=50, default='PDF')
     extraction_version = models.CharField(max_length=20, default='1.0')
+    file_url = models.URLField(blank=True, null=True)
+    public_id = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Import Metadata for {self.exam.title}"

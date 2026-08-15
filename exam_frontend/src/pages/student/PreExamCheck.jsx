@@ -206,7 +206,7 @@ export const PreExamCheck = ({ onReady, onCancel, examTitle }) => {
 
   return (
     <div className="preexam-container">
-      <div className="preexam-card">
+      <div className="preexam-card glass-panel-strong">
         <div className="preexam-header">
           <div className="preexam-icon">🔒</div>
           <h2>Proctoring Setup</h2>

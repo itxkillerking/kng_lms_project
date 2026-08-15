@@ -86,13 +86,18 @@ class ExamSerializer(serializers.ModelSerializer):
         instance.save()
         
         # Update ExamSettings
-        if settings_data:
-            settings_instance = instance.settings
+        if settings_data is not None:
+            try:
+                settings_instance = instance.settings
+            except ExamSettings.DoesNotExist:
+                settings_instance = ExamSettings.objects.create(exam=instance)
+                
             for attr, value in settings_data.items():
                 setattr(settings_instance, attr, value)
             settings_instance.save()
             
         return instance
+
 
 
 class ExamAnswerSerializer(serializers.ModelSerializer):
@@ -102,9 +107,36 @@ class ExamAnswerSerializer(serializers.ModelSerializer):
             'id', 'attempt', 'question', 'answer_text', 
             'is_flagged', 'created_at', 'updated_at',
             'audio_file', 'transcript_text', 'transcript_status',
-            'code_language'
+            'code_language', 'marks_obtained', 'instructor_feedback'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'is_flagged']
+
+    def validate_audio_file(self, value):
+        if not value:
+            return value
+            
+        if value.size > 15 * 1024 * 1024:
+            raise serializers.ValidationError("Audio file is too large. Maximum size is 15MB.")
+            
+        value.seek(0)
+        header = value.read(12)
+        is_valid_audio = False
+        
+        # Check magic bytes for supported audio formats (WebM, OGG, MP3, WAV)
+        if header.startswith(b'\x1aE\xdf\xa3'): # WebM/MKV
+            is_valid_audio = True
+        elif header.startswith(b'OggS'): # OGG
+            is_valid_audio = True
+        elif header.startswith(b'ID3') or header.startswith(b'\xff\xfb') or header.startswith(b'\xff\xf3') or header.startswith(b'\xff\xf2'): # MP3
+            is_valid_audio = True
+        elif header[0:4] == b'RIFF' and header[8:12] == b'WAVE': # WAV
+            is_valid_audio = True
+            
+        if not is_valid_audio:
+            raise serializers.ValidationError("Invalid audio format. Allowed: WebM, OGG, MP3, WAV.")
+            
+        value.seek(0)
+        return value
 
 
 class ExamAttemptSerializer(serializers.ModelSerializer):

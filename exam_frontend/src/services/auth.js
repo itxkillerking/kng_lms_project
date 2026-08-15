@@ -18,6 +18,14 @@ export const authService = {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('jwt_refresh');
     localStorage.removeItem('user');
+    localStorage.removeItem('exam_import_draft');
+    
+    // Clear any attempt-specific drafts
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('exam_draft_')) {
+        localStorage.removeItem(key);
+      }
+    });
   },
   
   getCurrentUser: () => {

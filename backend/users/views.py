@@ -12,6 +12,18 @@ from .communication import (
     generate_otp,
 )
 from django.utils import timezone
+from kng_lms.throttles import LoginRateThrottle, OTPRequestRateThrottle, OTPVerifyRateThrottle
+from rest_framework_simplejwt.tokens import RefreshToken
+import traceback
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+from kng_lms.throttles import LoginRateThrottle, OTPRequestRateThrottle, OTPVerifyRateThrottle
 
 
 class RegisterView(generics.CreateAPIView):
@@ -146,35 +158,83 @@ class InstructorRevokeRequestViewSet(viewsets.ModelViewSet):
 
 class CustomTokenObtainPairView(BaseTokenObtainPairView):
     permission_classes = (AllowAny,)
+    throttle_classes = [LoginRateThrottle]
 
     def options(self, request, *args, **kwargs):
         return Response(status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
+        ip = get_client_ip(request)
+        username = request.data.get('username')
+        
+        # 1. Lockout Check
+        if username:
             try:
-                user = User.objects.get(username=request.data.get('username'))
+                user = User.objects.get(username=username)
+                time_threshold = timezone.now() - timezone.timedelta(minutes=15)
+                failed_attempts = UserActivityLog.objects.filter(
+                    user=user, 
+                    action='login', 
+                    status='failure', 
+                    timestamp__gte=time_threshold
+                ).count()
                 
-                # Check for Suspended Account
-                if user.account_status == 'suspended':
+                if failed_attempts >= 5:
+                    UserActivityLog.objects.create(
+                        user=user, action='ACCOUNT_LOGIN_LOCKOUT', status='failure', ip_address=ip,
+                        metadata={'reason': 'Exceeded 5 failed login attempts in 15 minutes'}
+                    )
                     return Response(
-                        {'detail': 'Your account is suspended cannot login', 'code': 'account_suspended'},
+                        {'detail': 'Too many failed login attempts. Please try again later.', 'code': 'account_locked'},
                         status=status.HTTP_403_FORBIDDEN
                     )
-                
-                UserActivityLog.objects.create(user=user, action='login')
             except User.DoesNotExist:
                 pass
-        return response
+                
+        # 2. Proceed with Login
+        try:
+            response = super().post(request, *args, **kwargs)
+            if response.status_code == 200 and username:
+                try:
+                    user = User.objects.get(username=username)
+                    if user.account_status == 'suspended':
+                        UserActivityLog.objects.create(
+                            user=user, action='login', status='failure', ip_address=ip,
+                            metadata={'reason': 'Account suspended'}
+                        )
+                        return Response(
+                            {'detail': 'Your account is suspended cannot login', 'code': 'account_suspended'},
+                            status=status.HTTP_403_FORBIDDEN
+                        )
+                    UserActivityLog.objects.create(user=user, action='login', status='success', ip_address=ip)
+                except User.DoesNotExist:
+                    pass
+            return response
+        except Exception as e:
+            if username:
+                try:
+                    user = User.objects.get(username=username)
+                    UserActivityLog.objects.create(user=user, action='login', status='failure', ip_address=ip, metadata={'reason': 'Invalid credentials'})
+                except User.DoesNotExist:
+                    pass
+            raise
 
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
     
     def post(self, request):
-        UserActivityLog.objects.create(user=request.user, action='logout')
-        return Response({"status": "Successfully logged out"}, status=status.HTTP_200_OK)
+        ip = get_client_ip(request)
+        try:
+            refresh_token = request.data.get("refresh")
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            UserActivityLog.objects.create(user=request.user, action='logout', status='success', ip_address=ip)
+            return Response({"status": "Successfully logged out"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            UserActivityLog.objects.create(user=request.user, action='logout', status='failure', ip_address=ip, metadata={'error': str(e)})
+            return Response({"status": "Logout processed"}, status=status.HTTP_200_OK)
 
 
 # ── OTP Endpoints ──────────────────────────────────────────────
@@ -182,6 +242,7 @@ class LogoutView(generics.GenericAPIView):
 class RequestOTPView(generics.GenericAPIView):
     """Request an OTP code for password reset."""
     permission_classes = (AllowAny,)
+    throttle_classes = [OTPRequestRateThrottle]
 
     def post(self, request):
         email = request.data.get('email')
@@ -210,6 +271,11 @@ class RequestOTPView(generics.GenericAPIView):
 
         # Send OTP via email
         send_otp_email(user, code)
+        
+        UserActivityLog.objects.create(
+            user=user, action='otp_request', status='success', 
+            ip_address=get_client_ip(request), metadata={'purpose': purpose}
+        )
 
         return Response({'status': 'If an account with that email exists, an OTP has been sent.'})
 
@@ -217,6 +283,7 @@ class RequestOTPView(generics.GenericAPIView):
 class VerifyOTPView(generics.GenericAPIView):
     """Verify an OTP code and allow password reset."""
     permission_classes = (AllowAny,)
+    throttle_classes = [OTPVerifyRateThrottle]
 
     def post(self, request):
         email = request.data.get('email')
@@ -242,6 +309,10 @@ class VerifyOTPView(generics.GenericAPIView):
         ).first()
 
         if not otp:
+            UserActivityLog.objects.create(
+                user=user, action='otp_verify', status='failure', 
+                ip_address=get_client_ip(request), metadata={'purpose': purpose, 'reason': 'Invalid or expired OTP'}
+            )
             return Response({'error': 'Invalid or expired OTP code'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Mark OTP as used
@@ -253,11 +324,23 @@ class VerifyOTPView(generics.GenericAPIView):
                 return Response({'error': 'New password is required'}, status=status.HTTP_400_BAD_REQUEST)
             user.set_password(new_password)
             user.save()
+            
+            UserActivityLog.objects.create(
+                user=user, action='password_reset', status='success', 
+                ip_address=get_client_ip(request)
+            )
+            
             return Response({'status': 'Password has been reset successfully'})
 
         elif purpose == 'email_verify':
             user.email_verified = True
             user.save()
+            
+            UserActivityLog.objects.create(
+                user=user, action='email_verify', status='success', 
+                ip_address=get_client_ip(request)
+            )
+            
             return Response({'status': 'Email verified successfully'})
 
         return Response({'status': 'OTP verified successfully'})

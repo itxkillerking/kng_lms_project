@@ -7,14 +7,90 @@
   padding: 0;
 }
 
+/* Liquid Glass Utility Classes */
+.glass-panel-strong {
+  background: var(--glass-strong-bg);
+  backdrop-filter: var(--glass-strong-blur);
+  -webkit-backdrop-filter: var(--glass-strong-blur);
+  border: var(--glass-strong-border);
+  border-top: var(--glass-strong-border-top);
+  box-shadow: var(--glass-strong-shadow);
+  border-radius: var(--radius-xl);
+}
+
+.glass-panel-medium {
+  background: var(--glass-medium-bg);
+  backdrop-filter: var(--glass-medium-blur);
+  -webkit-backdrop-filter: var(--glass-medium-blur);
+  border: var(--glass-medium-border);
+  border-top: var(--glass-medium-border-top);
+  box-shadow: var(--glass-medium-shadow);
+  border-radius: var(--radius-lg);
+}
+
+.glass-panel-light {
+  background: var(--glass-light-bg);
+  backdrop-filter: var(--glass-light-blur);
+  -webkit-backdrop-filter: var(--glass-light-blur);
+  border: var(--glass-light-border);
+  box-shadow: var(--glass-light-shadow);
+  border-radius: var(--radius-md);
+}
+
+/* Base Body Styles */
 body {
   font-family: var(--font-family-base);
-  background-color: var(--color-bg-main);
+  background-color: #F8FAFC; /* Light fallback */
   color: var(--color-text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  margin: 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated Aurora Background & Logo Watermark */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Background Gradients / Aurora */
+body::before {
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.4), transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.3), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.4), transparent 60%);
+  animation: aurora-flow 25s ease-in-out infinite alternate;
+  opacity: 0.8;
+}
+
+/* Logo Watermark */
+body::after {
+  background-image: url('/logo_background.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: min(80vw, 800px);
+  opacity: 0.15;
+  filter: blur(8px);
+}
+
+@keyframes aurora-flow {
+  0% { transform: scale(1) translate(0px, 0px); }
+  33% { transform: scale(1.15) translate(20px, -20px); }
+  66% { transform: scale(1.05) translate(-20px, 20px); }
+  100% { transform: scale(1.2) translate(30px, 10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 a {
@@ -47,16 +123,3 @@ h1 { font-size: var(--font-size-3xl); }
 h2 { font-size: var(--font-size-2xl); }
 h3 { font-size: var(--font-size-xl); }
 h4 { font-size: var(--font-size-lg); }
-
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: var(--shadow-glass);
-}
-
-[data-theme='dark'] .glass-panel {
-  background: rgba(31, 41, 55, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}

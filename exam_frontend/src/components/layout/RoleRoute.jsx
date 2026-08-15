@@ -18,7 +18,11 @@ export const RoleRoute = ({ allowedRoles }) => {
       } catch(e) {}
   }
 
-  if (!activeUser || !allowedRoles.includes(activeUser.role)) {
+  if (!activeUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!allowedRoles.includes(activeUser.role)) {
     return <Navigate to="/403" replace />;
   }
 

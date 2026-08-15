@@ -121,7 +121,7 @@ export const AssignStudentsModal = ({ exam, onClose, onAssigned }) => {
                       <span>{student.username} {student.email ? `(${student.email})` : ''}</span>
                     </label>
                   ))}
-                  {filteredStudents.length === 0 && <p style={{ color: 'var(--color-text-muted)' }}>No students found.</p>}
+                  {filteredStudents.length === 0 && <p style={{ color: 'var(--color-text-muted)' }}>No students enrolled.</p>}
                 </div>
               </div>
             )}

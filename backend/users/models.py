@@ -83,19 +83,21 @@ class UserOTP(models.Model):
 
 
 class UserActivityLog(models.Model):
-    ACTION_CHOICES = [
-        ('login', 'Login'),
-        ('logout', 'Logout'),
-    ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activity_logs')
-    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activity_logs', null=True, blank=True)
+    action = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, default='success')
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    target_type = models.CharField(max_length=50, null=True, blank=True)
+    target_id = models.CharField(max_length=255, null=True, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-timestamp']
 
     def __str__(self):
-        return f"{self.user.username} - {self.action} at {self.timestamp}"
+        actor = self.user.username if self.user else "Anonymous"
+        return f"{actor} - {self.action} at {self.timestamp}"
 
 class SuspensionRequest(models.Model):
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submitted_suspension_requests')

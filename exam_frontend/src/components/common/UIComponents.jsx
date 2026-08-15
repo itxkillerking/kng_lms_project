@@ -11,7 +11,7 @@ export const Button = ({ children, variant = 'primary', size = 'md', className =
 
 export const Card = ({ children, className = '', ...props }) => {
   return (
-    <div className={`card glass-panel ${className}`} {...props}>
+    <div className={`card glass-panel-medium ${className}`} {...props}>
       {children}
     </div>
   );

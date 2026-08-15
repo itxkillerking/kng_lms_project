@@ -67,17 +67,25 @@ export const AudioQuestionEditor = ({
   const [micError, setMicError] = useState('');
   const [audioUrl, setAudioUrl] = useState(audioBlob ? URL.createObjectURL(audioBlob) : null);
   const [transcriptStatus, setTranscriptStatus] = useState('waiting');
+  const [speechSupported, setSpeechSupported] = useState(true);
   
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const timerRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      setTranscriptStatus('auto-STT unavailable (manual fallback active)');
+    }
+  }, []);
 
   useEffect(() => {
     if (audioBlob) {
       setAudioUrl(URL.createObjectURL(audioBlob));
-      setTranscriptStatus('processing');
-      // Simulate processing
-      setTimeout(() => setTranscriptStatus('ready'), 3000);
+      setTranscriptStatus('ready');
     }
   }, [audioBlob]);
 
@@ -100,16 +108,53 @@ export const AudioQuestionEditor = ({
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        // Check size
         if (blob.size > 10 * 1024 * 1024) {
            setMicError('Recording exceeded 10MB upload limit. Please record a shorter message.');
            return;
         }
         setAudioUrl(URL.createObjectURL(blob));
         onSaveAudio(blob);
-        setTranscriptStatus('processing');
-        setTimeout(() => setTranscriptStatus('ready'), 3000); // simulated wait
+        setTranscriptStatus('ready');
       };
+
+      // Real Speech Recognition initialization
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition && transcriptEnabled) {
+        try {
+          const recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = 'en-US';
+
+          let initialText = transcriptText || '';
+
+          recognition.onresult = (event) => {
+            let finalTranscript = '';
+            let currentInterim = '';
+            for (let i = 0; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript + ' ';
+              } else {
+                currentInterim += event.results[i][0].transcript;
+              }
+            }
+            const combined = ((initialText ? initialText + ' ' : '') + finalTranscript + currentInterim).trim();
+            onTranscriptChange(combined);
+          };
+
+          recognition.onerror = () => {
+            setTranscriptStatus('manual editing available');
+          };
+
+          recognition.start();
+          recognitionRef.current = recognition;
+          setTranscriptStatus('live transcribing...');
+        } catch (e) {
+          setTranscriptStatus('manual editing available');
+        }
+      } else {
+        setTranscriptStatus(speechSupported ? 'waiting' : 'auto-STT unavailable (manual fallback active)');
+      }
 
       mediaRecorder.start();
       setIsRecording(true);
@@ -130,15 +175,19 @@ export const AudioQuestionEditor = ({
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
     }
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch(e) {}
+      recognitionRef.current = null;
+    }
     setIsRecording(false);
-    clearInterval(timerRef.current);
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   const deleteRecording = () => {
     if (window.confirm("Delete this recording?")) {
       setAudioUrl(null);
       onSaveAudio(null);
-      setTranscriptStatus('waiting');
+      setTranscriptStatus(speechSupported ? 'waiting' : 'auto-STT unavailable (manual fallback active)');
       onTranscriptChange('');
     }
   };
@@ -146,6 +195,9 @@ export const AudioQuestionEditor = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
       {micError && <Alert type="warning" message={micError} />}
+      {!speechSupported && transcriptEnabled && (
+        <Alert type="info" message="Notice: Automatic speech-to-text is not supported in this browser. You can record audio normally and edit your transcript text below." />
+      )}
       
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)', padding: 'var(--spacing-4)', backgroundColor: '#FAFAFA', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
         {!audioUrl ? (
@@ -178,7 +230,7 @@ export const AudioQuestionEditor = ({
         <div style={{ border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-4)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-2)' }}>
             <strong>Transcript / Text Answer</strong>
-            <span style={{ fontSize: 'var(--font-size-sm)', color: transcriptStatus === 'ready' ? 'var(--color-success)' : 'var(--color-text-muted)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', color: transcriptStatus === 'live transcribing...' ? 'var(--color-primary)' : 'var(--color-text-muted)' }}>
               Status: {transcriptStatus}
             </span>
           </div>
@@ -187,10 +239,11 @@ export const AudioQuestionEditor = ({
             value={transcriptText || ''}
             onChange={(e) => onTranscriptChange(e.target.value)}
             disabled={disabled}
-            placeholder={micError ? 'Type your answer here manually...' : 'Transcript will appear here or you can type manually...'}
+            placeholder={micError ? 'Type your answer here manually...' : 'Transcript will appear live as you speak or you can type manually...'}
           />
         </div>
       )}
     </div>
   );
 };
+
