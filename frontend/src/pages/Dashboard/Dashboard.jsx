@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
-import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Shield, User as UserIcon, LogOut, Search, Sparkles, Star, AlertCircle, MessageSquare } from 'lucide-react';
+import { Play, Clock, BookOpen, Award, CheckCircle, ChevronRight, Bell, Mail, Shield, User as UserIcon, LogOut, Search, Sparkles, Star, AlertCircle, MessageSquare, ExternalLink } from 'lucide-react';
 import SplashScreen from '../../components/common/SplashScreen';
 import NotificationBadge from '../../components/common/NotificationBadge';
 import { useNavigate, Link } from 'react-router-dom';
@@ -201,6 +201,24 @@ const Dashboard = () => {
                                 <NotificationBadge />
                             </GlassButton>
                         </Link>
+                        <a href="https://kls-tech-campus-exam-portal.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
+                            <GlassButton wide style={{ 
+                                borderRadius: '16px', 
+                                border: '1px solid rgba(191, 90, 242, 0.3)', 
+                                padding: '14px 28px', 
+                                background: 'rgba(191, 90, 242, 0.12)',
+                                color: '#BF5AF2', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                gap: '10px',
+                                fontWeight: 800,
+                                boxShadow: '0 4px 15px rgba(191, 90, 242, 0.1)'
+                            }}>
+                                <ExternalLink size={18} color="#BF5AF2" /> 
+                                <span style={{ color: '#BF5AF2' }}>Launch Exam Portal</span> 
+                            </GlassButton>
+                        </a>
                         <Link to="/profile" style={{ textDecoration: 'none', flex: isTablet ? 1 : 'none', minWidth: isExtraSmall ? '100%' : 'auto' }}>
                             <GlassButton primary wide style={{ borderRadius: '16px', padding: '14px 28px', fontWeight: 700 }}>
                                 Profile Settings

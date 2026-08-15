@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X, MessageSquare, Shield } from 'lucide-react';
+import { Layout, Users, BookOpen, FileText, CheckSquare, Megaphone, LogOut, ChevronRight, Menu, X, MessageSquare, Shield, ExternalLink } from 'lucide-react';
 import { GlassCard } from '../../components/common/GlassCard';
 import { GlassButton } from '../../components/common/GlassButton';
 import { useAuth } from '../../context/AuthContext';
@@ -59,6 +59,7 @@ const TeacherDashboard = () => {
     { label: 'Announcements', path: '/teacher/announcements', icon: Megaphone },
     { label: 'Direct Messages', path: '/chat', icon: MessageSquare },
     { label: 'Profile', path: '/profile', icon: Users },
+    { label: 'Launch Exam Portal', path: 'https://kls-tech-campus-exam-portal.vercel.app/', icon: ExternalLink, special: true }
   ];
 
   if (user?.role === 'admin') {
@@ -142,6 +143,33 @@ const TeacherDashboard = () => {
                 const Icon = item.icon;
                 const currentPath = location.pathname;
                 const isActive = currentPath === item.path || (item.path !== '/teacher' && currentPath.startsWith(item.path));
+                if (item.path.startsWith('http')) {
+                  return (
+                    <a 
+                      key={item.path} 
+                      href={item.path} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setSidebarOpen(false)}
+                      style={{ 
+                        textDecoration: 'none', 
+                        color: isActive ? '#1a1a2e' : '#64748b',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '14px 20px',
+                        borderRadius: '16px',
+                        background: isActive ? 'rgba(10, 132, 255, 0.1)' : item.special ? 'rgba(191, 90, 242, 0.05)' : 'transparent',
+                        border: isActive ? '1px solid rgba(10, 132, 255, 0.2)' : item.special ? '1px solid rgba(191, 90, 242, 0.1)' : '1px solid transparent',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <Icon size={20} color={isActive ? '#0A84FF' : item.special ? '#BF5AF2' : 'currentColor'} />
+                      <span style={{ fontWeight: isActive || item.special ? 700 : 500, fontSize: '0.95rem' }}>{item.label}</span>
+                    </a>
+                  );
+                }
+
                 return (
                   <Link 
                     key={item.path} 

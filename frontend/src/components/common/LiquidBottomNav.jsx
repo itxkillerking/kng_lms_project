@@ -287,6 +287,11 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
           setShowMoreMenu(true);
         });
       }
+    } else if (path && path.startsWith('http')) {
+      window.open(path, '_blank', 'noopener,noreferrer');
+      // Force bubble to snap back to the actual current route since we aren't navigating internally
+      const currentActive = getActiveItemInfo();
+      setBubblePath(currentActive.isMore ? 'more' : currentActive.path);
     } else if (path) {
       if (location.pathname !== path) {
         navigate(path);
@@ -300,6 +305,8 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
     setShowMoreMenu(false);
     if (path === 'logout') {
       onLogout();
+    } else if (path && path.startsWith('http')) {
+      window.open(path, '_blank', 'noopener,noreferrer');
     } else {
       if (location.pathname !== path) {
         navigate(path);
