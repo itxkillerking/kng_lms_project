@@ -117,14 +117,18 @@ def send_otp_email_task(user_id, otp_code):
         plain_message = f"KLS Tech Campus Examination Portal\n\nYour password reset verification code:\n{otp_code}\n\nThis code expires in 3 minutes.\nIf you did not request a password reset, ignore this email."
         
         # Use Brevo API if configured
-        if getattr(settings, 'BREVO_API_KEY', None) and getattr(settings, 'BREVO_OTP_TEMPLATE_ID', None):
+        api_key = getattr(settings, 'BREVO_API_KEY', None)
+        template_id = getattr(settings, 'BREVO_OTP_TEMPLATE_ID', None)
+        
+        if api_key and template_id:
+            print(f"[DIAGNOSTIC] OTP email task started. Using Brevo Template ID: {template_id}")
             headers = {
                 'accept': 'application/json',
-                'api-key': settings.BREVO_API_KEY,
+                'api-key': api_key,
                 'content-type': 'application/json'
             }
             payload = {
-                "templateId": int(settings.BREVO_OTP_TEMPLATE_ID),
+                "templateId": int(template_id),
                 "to": [{"email": user.email, "name": user.username}],
                 "params": {
                     "OTP": str(otp_code)
@@ -138,9 +142,18 @@ def send_otp_email_task(user_id, otp_code):
                     "email": settings.BREVO_SENDER_EMAIL
                 }
                 
+            print("[DIAGNOSTIC] Brevo API request started...")
             response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, json=payload)
-            response.raise_for_status()
+            print(f"[DIAGNOSTIC] Brevo API response status: {response.status_code}")
+            
+            try:
+                response.raise_for_status()
+                print("[DIAGNOSTIC] Brevo API request successful.")
+            except Exception as e:
+                print(f"[DIAGNOSTIC] Brevo API request failed: {str(e)}")
+                raise
         else:
+            print(f"[DIAGNOSTIC] Falling back to standard send_mail. API_KEY present: {bool(api_key)}, TEMPLATE_ID present: {bool(template_id)}")
             # Fallback to standard Django send_mail (e.g., console backend in dev)
             send_mail(
                 subject=subject,
