@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     RegisterView, CurrentUserView, AdminUserViewSet,
     CustomTokenObtainPairView, LogoutView,
-    RequestOTPView, VerifyOTPView,
+    RequestOTPView, VerifyOTPView, ResetPasswordView,
     InstructorStudentsView, SuspensionRequestViewSet,
     PublicProfileView, InstructorRevokeRequestViewSet
 )
@@ -25,6 +25,7 @@ urlpatterns = [
     path('me/', CurrentUserView.as_view(), name='current_user'),
     path('otp/request/', RequestOTPView.as_view(), name='request_otp'),
     path('otp/verify/', VerifyOTPView.as_view(), name='verify_otp'),
+    path('password/reset/', ResetPasswordView.as_view(), name='password_reset'),
     path('instructor-students/', InstructorStudentsView.as_view(), name='instructor_students'),
     path('profile/<int:pk>/', PublicProfileView.as_view(), name='public_profile'),
     path('', include(router.urls)),

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Button, Input, Alert } from '../../components/common/UIComponents';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import './login.css'; // Let's add specific liquid input styles here if needed
@@ -165,6 +165,12 @@ export const Login = () => {
             >
               {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
             </button>
+          </motion.div>
+          
+          <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--spacing-4)' }}>
+            <Link to="/forgot-password" style={{ color: 'var(--color-primary)', fontSize: '0.9rem', textDecoration: 'none', fontWeight: '500' }}>
+              Forgot Password?
+            </Link>
           </motion.div>
           
           <motion.div variants={itemVariants}>

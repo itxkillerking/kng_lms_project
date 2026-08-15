@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView as BaseTokenObtainPairView
 from .serializers import UserSerializer, RegisterSerializer, UserActivityLogSerializer, SuspensionRequestSerializer, InstructorRevokeRequestSerializer
-from .models import User, UserActivityLog, UserOTP, SuspensionRequest, InstructorRevokeRequest
+from .models import User, UserActivityLog, UserOTP, SuspensionRequest, InstructorRevokeRequest, PasswordResetToken
 from .permissions import IsSuperAdmin, IsStaffOrAdmin
 from .communication import (
     send_registration_email,
@@ -15,7 +15,9 @@ from django.utils import timezone
 from kng_lms.throttles import LoginRateThrottle, OTPRequestRateThrottle, OTPVerifyRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 import traceback
-
+import secrets
+import hashlib
+from django.db import transaction
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -266,7 +268,7 @@ class RequestOTPView(generics.GenericAPIView):
             user=user,
             code=code,
             purpose=purpose,
-            expires_at=timezone.now() + timezone.timedelta(minutes=10),
+            expires_at=timezone.now() + timezone.timedelta(minutes=3),
         )
 
         # Send OTP via email
@@ -288,7 +290,6 @@ class VerifyOTPView(generics.GenericAPIView):
     def post(self, request):
         email = request.data.get('email')
         code = request.data.get('code')
-        new_password = request.data.get('new_password')
         purpose = request.data.get('purpose', 'password_reset')
         
         if not all([email, code]):
@@ -320,17 +321,28 @@ class VerifyOTPView(generics.GenericAPIView):
         otp.save()
 
         if purpose == 'password_reset':
-            if not new_password:
-                return Response({'error': 'New password is required'}, status=status.HTTP_400_BAD_REQUEST)
-            user.set_password(new_password)
-            user.save()
-            
-            UserActivityLog.objects.create(
-                user=user, action='password_reset', status='success', 
-                ip_address=get_client_ip(request)
+            # Invalidate previous reset tokens
+            PasswordResetToken.objects.filter(user=user, is_used=False).update(is_used=True)
+
+            # Generate new token
+            raw_token = secrets.token_urlsafe(48)
+            token_hash = hashlib.sha256(raw_token.encode('utf-8')).hexdigest()
+
+            PasswordResetToken.objects.create(
+                user=user,
+                token_hash=token_hash,
+                expires_at=timezone.now() + timezone.timedelta(minutes=5)
             )
-            
-            return Response({'status': 'Password has been reset successfully'})
+
+            UserActivityLog.objects.create(
+                user=user, action='otp_verify', status='success', 
+                ip_address=get_client_ip(request), metadata={'purpose': purpose}
+            )
+
+            return Response({
+                'status': 'OTP verified successfully',
+                'reset_token': raw_token
+            })
 
         elif purpose == 'email_verify':
             user.email_verified = True
@@ -344,6 +356,56 @@ class VerifyOTPView(generics.GenericAPIView):
             return Response({'status': 'Email verified successfully'})
 
         return Response({'status': 'OTP verified successfully'})
+
+class ResetPasswordView(generics.GenericAPIView):
+    """Verify reset token and change password."""
+    permission_classes = (AllowAny,)
+    throttle_classes = [OTPVerifyRateThrottle]
+
+    def post(self, request):
+        reset_token = request.data.get('reset_token')
+        new_password = request.data.get('new_password')
+        email = request.data.get('email')
+
+        if not all([reset_token, new_password]):
+            return Response({'error': 'Token and new password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        token_hash = hashlib.sha256(reset_token.encode('utf-8')).hexdigest()
+
+        try:
+            with transaction.atomic():
+                token_record = PasswordResetToken.objects.select_for_update().get(
+                    token_hash=token_hash,
+                    is_used=False,
+                    expires_at__gt=timezone.now()
+                )
+
+                # Secondary verification if email is provided by frontend
+                if email and token_record.user.email != email:
+                    raise PasswordResetToken.DoesNotExist
+
+                user = token_record.user
+
+                # Set new password
+                user.set_password(new_password)
+                user.save()
+
+                # Mark token as used
+                token_record.is_used = True
+                token_record.save()
+
+                # Invalidate JWT sessions if possible by invalidating outstanding tokens (placeholder comment)
+                # If using SimpleJWT Blacklist, we could blacklist here.
+
+                UserActivityLog.objects.create(
+                    user=user, action='password_reset', status='success', 
+                    ip_address=get_client_ip(request)
+                )
+
+                return Response({'status': 'Password has been reset successfully'})
+
+        except PasswordResetToken.DoesNotExist:
+            return Response({'error': 'Invalid, expired, or already used reset token'}, status=status.HTTP_400_BAD_REQUEST)
 
 # ── Instructor Students and Suspension Requests Endpoint ──────────────────
 

@@ -8,6 +8,7 @@ import { AuthLayout, StudentLayout, InstructorLayout } from './components/layout
 
 // Pages
 import { Login } from './pages/auth/Login';
+import ForgotPassword from './pages/auth/ForgotPassword';
 import { Dashboard } from './pages/shared/Dashboard';
 import { Error403, Error404, Error500 } from './pages/errors/ErrorPages';
 import { ViolationsPlaceholder, SnapshotsPlaceholder, ReportsPlaceholder } from './pages/placeholders/Placeholders';
@@ -34,6 +35,7 @@ function App() {
             {/* Public Routes */}
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
 
             {/* Protected Routes */}

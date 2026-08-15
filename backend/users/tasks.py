@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.html import strip_tags
 from django.contrib.auth import get_user_model
 from courses.models import Course
+import requests
 
 User = get_user_model()
 
@@ -93,27 +94,60 @@ def send_otp_email_task(user_id, otp_code):
     """Background task to send an OTP code email."""
     try:
         user = User.objects.get(id=user_id)
-        subject = '🔐 Your Verification Code - KNG Logics LMS'
+        subject = '🔐 Your Password Reset Code - KLS Tech Campus Examination Portal'
         html_message = f"""
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #f8fafc; padding: 40px; border-radius: 20px;">
-            <h2 style="color: #f8fafc; font-size: 22px; text-align: center;">Your Verification Code</h2>
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h1 style="font-size: 24px; font-weight: 700; color: #f8fafc;">KLS Tech Campus Examination Portal</h1>
+            </div>
+            <h2 style="color: #f8fafc; font-size: 20px; text-align: center;">Your password reset verification code:</h2>
             <div style="text-align: center; margin: 32px 0;">
                 <div style="display: inline-block; background: rgba(10, 132, 255, 0.15); border: 2px solid rgba(10, 132, 255, 0.3); border-radius: 16px; padding: 24px 48px;">
                     <span style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #0A84FF;">{otp_code}</span>
                 </div>
             </div>
+            <p style="text-align: center; color: #94a3b8; font-size: 16px;">
+                This code expires in 3 minutes.
+            </p>
+            <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: 24px;">
+                If you did not request a password reset, ignore this email.
+            </p>
         </div>
         """
-        plain_message = f"Your KNG Logics LMS verification code is: {otp_code}."
-        send_mail(
-            subject=subject,
-            message=plain_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=False,
-        )
+        plain_message = f"KLS Tech Campus Examination Portal\n\nYour password reset verification code:\n{otp_code}\n\nThis code expires in 3 minutes.\nIf you did not request a password reset, ignore this email."
+        
+        # Use Brevo API if configured
+        if getattr(settings, 'BREVO_API_KEY', None):
+            headers = {
+                'accept': 'application/json',
+                'api-key': settings.BREVO_API_KEY,
+                'content-type': 'application/json'
+            }
+            payload = {
+                "sender": {
+                    "name": getattr(settings, 'BREVO_SENDER_NAME', 'KLS Tech Campus'),
+                    "email": getattr(settings, 'BREVO_SENDER_EMAIL', 'noreply@knglogics.com')
+                },
+                "to": [{"email": user.email, "name": user.username}],
+                "subject": subject,
+                "htmlContent": html_message,
+                "textContent": plain_message
+            }
+            response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, json=payload)
+            response.raise_for_status()
+        else:
+            # Fallback to standard Django send_mail (e.g., console backend in dev)
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                html_message=html_message,
+                fail_silently=False,
+            )
     except User.DoesNotExist:
         pass
+    except requests.exceptions.RequestException as e:
+        print(f"[CELERY ERROR] Brevo API failed: {e}")
     except Exception as e:
         print(f"[CELERY ERROR] OTP email failed: {e}")

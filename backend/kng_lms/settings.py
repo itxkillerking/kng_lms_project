@@ -297,11 +297,19 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# ── Email Configuration ──────────────────────────────────────
-# For development: prints emails to console
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ── Email Configuration (Brevo API) ──────────────────────────────
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', 'noreply@knglogics.com')
+BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'KLS Tech Campus')
 
-DEFAULT_FROM_EMAIL = 'KNG Logics LMS <noreply@knglogics.com>'
+# Fallback for development/other emails that still use django.core.mail
+if not BREVO_API_KEY:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # We still need a dummy backend so Django doesn't crash on standard send_mail
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+DEFAULT_FROM_EMAIL = BREVO_SENDER_EMAIL
 FRONTEND_URL = 'http://localhost:5173'
 
 # ── Scalability & Caching (Redis & Connection Pooling) ──────────

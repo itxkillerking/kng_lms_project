@@ -135,3 +135,23 @@ class InstructorRevokeRequest(models.Model):
 
     def __str__(self):
         return f"Revoke Request: {self.instructor.username} by {self.staff_member.username} ({self.status})"
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reset_tokens')
+    token_hash = models.CharField(max_length=64)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['token_hash']),
+            models.Index(fields=['user', 'is_used']),
+        ]
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    def __str__(self):
+        return f"Reset Token for {self.user.username}"
