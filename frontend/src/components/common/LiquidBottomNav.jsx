@@ -47,6 +47,7 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
   const wasDraggingRef = useRef(false);
+  const wasSwipingRef = useRef(false);
   const dragStartX = useRef(0);
   const dragStartY = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -198,6 +199,7 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
     
     isPointerDownRef.current = true;
     isDraggingRef.current = false;
+    wasSwipingRef.current = false;
     dragStartX.current = e.clientX;
     dragStartY.current = e.clientY;
   };
@@ -239,8 +241,9 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
           containerRef.current.setPointerCapture(e.pointerId);
         } catch (err) {}
       } else if (dy > 10 && dy > dx) {
-        // Vertical swipe/scroll - cancel drag entirely
+        // Vertical swipe/scroll - cancel drag entirely and prevent subsequent click
         isPointerDownRef.current = false;
+        wasSwipingRef.current = true;
         return;
       } else {
         return;
@@ -275,17 +278,18 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
       if (bubblePath) {
         executeNavigation(bubblePath);
       }
-
-      // Reset wasDragging state shortly after release to unblock normal clicks
-      setTimeout(() => {
-        wasDraggingRef.current = false;
-      }, 50);
     }
+
+    // Reset suppression states shortly after release to unblock normal clicks
+    setTimeout(() => {
+      wasDraggingRef.current = false;
+      wasSwipingRef.current = false;
+    }, 50);
   };
 
   const handleItemClick = (e, path) => {
-    // If a drag just finished, suppress this secondary click event
-    if (isDraggingRef.current || wasDraggingRef.current) {
+    // If a drag or swipe just finished, suppress this secondary click event
+    if (isDraggingRef.current || wasDraggingRef.current || wasSwipingRef.current) {
       e.preventDefault();
       e.stopPropagation();
       return;
