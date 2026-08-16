@@ -451,14 +451,6 @@ export const InstructorEditExam = () => {
                 <button style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--color-text-muted)' }} onClick={() => setShowForm(false)}>&times;</button>
             </div>
             <form onSubmit={saveQuestion}>
-              <div style={{ marginBottom: 'var(--spacing-4)' }}>
-                <label className="input-label">Question Type</label>
-                <select className="input-field" style={{ width: '100%' }} value={qForm.question_type} onChange={e => setQForm({...qForm, question_type: e.target.value})}>
-                  <option value="text">Text (Essay/Short Answer)</option>
-                  <option value="audio">Audio Response</option>
-                  <option value="code">Code Editor</option>
-                </select>
-              </div>
               
               {editingQuestion ? (
                 <>
