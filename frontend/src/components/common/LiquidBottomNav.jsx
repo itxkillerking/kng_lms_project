@@ -207,21 +207,13 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
   const handlePointerMove = (e) => {
     if (!containerRef.current) return;
     
-    // Safety check for missed pointerups (e.g. hovered without holding)
-    if (e.pointerType === 'mouse' && e.buttons === 0) {
-      if (isPointerDownRef.current) {
-        // Cancel drag instead of navigating if they released outside and came back
+    // Strict requirement: pointermove returns immediately if pointer is not pressed.
+    // This prevents any drag state from activating or updating on hover.
+    if (e.pointerType !== 'touch' && e.buttons === 0) {
+      if (isPointerDownRef.current || isDraggingRef.current) {
         isPointerDownRef.current = false;
-        if (isDraggingRef.current) {
-          isDraggingRef.current = false;
-          setIsDragging(false);
-          // Snap back to actual route without navigating
-          const currentActive = getActiveItemInfo();
-          const targetPath = currentActive.isMore ? 'more' : currentActive.path;
-          setBubblePath(targetPath);
-          const targetX = getTargetX(targetPath);
-          if (targetX !== null) dragX.jump(targetX);
-        }
+        isDraggingRef.current = false;
+        setIsDragging(false);
         try { containerRef.current.releasePointerCapture(e.pointerId); } catch(err) {}
       }
       return;
