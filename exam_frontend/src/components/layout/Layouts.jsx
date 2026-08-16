@@ -24,7 +24,10 @@ const BottomNav = ({ items, onLogout }) => {
   
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
+  const wasDraggingRef = useRef(false);
+  const wasSwipingRef = useRef(false);
   const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragX = useMotionValue(0);
 
@@ -142,17 +145,21 @@ const BottomNav = ({ items, onLogout }) => {
     if (!containerRef.current) return;
     isPointerDownRef.current = true;
     isDraggingRef.current = false;
+    wasSwipingRef.current = false;
     dragStartX.current = e.clientX;
+    dragStartY.current = e.clientY;
   };
 
   const handlePointerMove = (e) => {
     if (!containerRef.current) return;
     
-    // Safety check: if pointer is moving but no mouse buttons are pressed, we are NOT dragging.
-    // e.buttons === 0 means no buttons are held. (e.pointerType === 'mouse' prevents touch issues)
-    if (e.pointerType === 'mouse' && e.buttons === 0) {
-      if (isPointerDownRef.current) {
-        handlePointerUp(e);
+    // Strict requirement: pointermove returns immediately if pointer is not pressed.
+    if (e.pointerType !== 'touch' && e.buttons === 0) {
+      if (isPointerDownRef.current || isDraggingRef.current) {
+        isPointerDownRef.current = false;
+        isDraggingRef.current = false;
+        setIsDragging(false);
+        try { containerRef.current.releasePointerCapture(e.pointerId); } catch(err) {}
       }
       return;
     }
@@ -160,13 +167,21 @@ const BottomNav = ({ items, onLogout }) => {
     if (!isPointerDownRef.current) return;
     
     if (!isDraggingRef.current) {
-      // Threshold of 5px to distinguish between click and drag
-      if (Math.abs(e.clientX - dragStartX.current) > 5) {
+      const dx = Math.abs(e.clientX - dragStartX.current);
+      const dy = Math.abs(e.clientY - dragStartY.current);
+      
+      if (dx > 5 && dx > dy) {
+        // Horizontal drag
         isDraggingRef.current = true;
         setIsDragging(true);
         try {
           containerRef.current.setPointerCapture(e.pointerId);
         } catch (err) {}
+      } else if (dy > 10 && dy > dx) {
+        // Vertical swipe/scroll - cancel drag entirely and prevent subsequent click
+        isPointerDownRef.current = false;
+        wasSwipingRef.current = true;
+        return;
       } else {
         return;
       }
@@ -185,48 +200,51 @@ const BottomNav = ({ items, onLogout }) => {
       } catch (err) {}
     }
     
-    if (!isDraggingRef.current) {
-      // It was just a click. Handle it here because touchAction: 'none' may suppress native clicks
-      const clickedItemEl = e.target.closest('.bottom-nav-item');
-      if (clickedItemEl) {
-        const clickedPath = Object.keys(itemRefs.current).find(path => itemRefs.current[path] === clickedItemEl);
-        if (clickedPath) {
-          if (clickedPath === 'logout') {
-            pendingRouteRef.current = 'logout';
-            setBubblePath('logout');
-            const targetX = getTargetX('logout');
-            if (targetX !== null) animate(dragX, targetX, { type: "tween", duration: 0.35, ease: "easeInOut" });
-            onLogout();
-          } else {
-            pendingRouteRef.current = clickedPath;
-            setBubblePath(clickedPath);
-            const targetX = getTargetX(clickedPath);
-            if (targetX !== null) animate(dragX, targetX, { type: "tween", duration: 0.35, ease: "easeInOut" });
-            if (!location.pathname.startsWith(clickedPath)) {
-              navigate(clickedPath);
-            }
-          }
-        }
+    if (isDraggingRef.current) {
+      // Finished dragging
+      wasDraggingRef.current = true;
+      isDraggingRef.current = false;
+      setIsDragging(false);
+      
+      if (bubblePath) {
+        executeNavigation(bubblePath);
       }
+    }
+
+    // Reset suppression states shortly after release to unblock normal clicks
+    setTimeout(() => {
+      wasDraggingRef.current = false;
+      wasSwipingRef.current = false;
+    }, 50);
+  };
+
+  const executeNavigation = (path) => {
+    if (path === 'logout') {
+      pendingRouteRef.current = 'logout';
+      setBubblePath('logout');
+      const targetX = getTargetX('logout');
+      if (targetX !== null) animate(dragX, targetX, { type: "tween", duration: 0.35, ease: "easeInOut" });
+      onLogout();
+    } else {
+      pendingRouteRef.current = path;
+      setBubblePath(path);
+      const targetX = getTargetX(path);
+      if (targetX !== null) animate(dragX, targetX, { type: "tween", duration: 0.35, ease: "easeInOut" });
+      if (!location.pathname.startsWith(path)) {
+        navigate(path);
+      }
+    }
+  };
+
+  const handleItemClick = (e, path) => {
+    // If a drag or swipe just finished, suppress this secondary click event
+    if (isDraggingRef.current || wasDraggingRef.current || wasSwipingRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
       return;
     }
     
-    isDraggingRef.current = false;
-    setIsDragging(false);
-    
-    if (bubblePath) {
-      const targetX = getTargetX(bubblePath);
-      if (targetX !== null) {
-        animate(dragX, targetX, { type: "tween", duration: 0.2, ease: "easeOut" });
-      }
-      
-      if (bubblePath === 'logout') {
-        onLogout();
-      } else if (!location.pathname.startsWith(bubblePath)) {
-        pendingRouteRef.current = bubblePath;
-        navigate(bubblePath);
-      }
-    }
+    executeNavigation(path);
   };
 
   // Create a mask with a transparent hole matching the bubble size (approx 65px width)
@@ -287,6 +305,7 @@ const BottomNav = ({ items, onLogout }) => {
                 key={item.path}
                 className={`bottom-nav-item ${isNearest ? 'nearest' : ''}`}
                 ref={el => itemRefs.current[item.path] = el}
+                onClickCapture={(e) => handleItemClick(e, item.path)}
               >
                 <div className="nav-icon-container" style={{ opacity: isNearest ? 0 : 0.6 }}>
                   <Icon size={22} className="nav-icon" />
@@ -305,6 +324,7 @@ const BottomNav = ({ items, onLogout }) => {
             className={`bottom-nav-item logout-btn ${bubblePath === 'logout' ? 'nearest' : ''}`} 
             ref={el => itemRefs.current['logout'] = el}
             title="Logout"
+            onClickCapture={(e) => handleItemClick(e, 'logout')}
           >
             <div className="nav-icon-container" style={{ opacity: bubblePath === 'logout' ? 0 : 0.8, color: 'var(--color-danger)' }}>
               <FiLogOut size={22} className="nav-icon" />
