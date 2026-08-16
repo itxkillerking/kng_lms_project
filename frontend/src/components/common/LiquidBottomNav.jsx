@@ -48,6 +48,7 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
   const isDraggingRef = useRef(false);
   const wasDraggingRef = useRef(false);
   const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragX = useMotionValue(0);
 
@@ -198,6 +199,7 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
     isPointerDownRef.current = true;
     isDraggingRef.current = false;
     dragStartX.current = e.clientX;
+    dragStartY.current = e.clientY;
   };
 
   const handlePointerMove = (e) => {
@@ -206,7 +208,19 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
     // Safety check for missed pointerups (e.g. hovered without holding)
     if (e.pointerType === 'mouse' && e.buttons === 0) {
       if (isPointerDownRef.current) {
-        handlePointerUp(e);
+        // Cancel drag instead of navigating if they released outside and came back
+        isPointerDownRef.current = false;
+        if (isDraggingRef.current) {
+          isDraggingRef.current = false;
+          setIsDragging(false);
+          // Snap back to actual route without navigating
+          const currentActive = getActiveItemInfo();
+          const targetPath = currentActive.isMore ? 'more' : currentActive.path;
+          setBubblePath(targetPath);
+          const targetX = getTargetX(targetPath);
+          if (targetX !== null) dragX.jump(targetX);
+        }
+        try { containerRef.current.releasePointerCapture(e.pointerId); } catch(err) {}
       }
       return;
     }
@@ -214,12 +228,20 @@ export const LiquidBottomNav = ({ items, onLogout }) => {
     if (!isPointerDownRef.current) return;
     
     if (!isDraggingRef.current) {
-      if (Math.abs(e.clientX - dragStartX.current) > 5) {
+      const dx = Math.abs(e.clientX - dragStartX.current);
+      const dy = Math.abs(e.clientY - dragStartY.current);
+      
+      if (dx > 5 && dx > dy) {
+        // Horizontal drag
         isDraggingRef.current = true;
         setIsDragging(true);
         try {
           containerRef.current.setPointerCapture(e.pointerId);
         } catch (err) {}
+      } else if (dy > 10 && dy > dx) {
+        // Vertical swipe/scroll - cancel drag entirely
+        isPointerDownRef.current = false;
+        return;
       } else {
         return;
       }
